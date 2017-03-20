@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "funct.h"
 
+//This may be improved as it seems to be a bottleneck in the computation. clangini
 void RoSeFr(int ReCuVe,int *RexxAt,float **ReCoor,int FrCuVe,int *FrxxAt,
             int FrAtNu,float **SeFrCo,float AnglRo,float **RoSFCo)
 /* This function rotates the seeded fragment around the axis built with 
