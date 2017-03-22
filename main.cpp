@@ -1593,8 +1593,8 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
           FrNuPB=0;
           FrNuSp=0;
         }
-        for (j=1;j<=ReAcNu+ReDoNu;j++) {
-          for (k=1;k<=FrAcNu+FrDoNu;k++) {
+        for (j=1;j<=ReAcNu+ReDoNu;j++) { //j loops over receptor vectors. clangini
+          for (k=1;k<=FrAcNu+FrDoNu;k++) {//k loops over fragment vectors. clangini
             if ((ReDATy[j]!=FrDATy[k])&&     /* vector types must be different */
                 (UndisAt_fr[FrDAAt[k]])&&    /* atom accepted (symmetry) */
                 (PolVect_rec_01[j])) {       /* rec. vector accept. (probe vdW) */
