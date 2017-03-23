@@ -175,3 +175,35 @@ void Quaternion<T>::quatConjugateVec(V *v1,V *v2,V *v3,V *ref){//Overloaded
   *v2 = qm.y + ref[2];
   *v3 = qm.z + ref[3];
 }
+
+//Methods for setting quaternion components
+template<class T>
+const Quaternion<T>& Quaternion<T>::Set(T w_i, T x_i, T y_i, T z_i)
+{
+  w = w_i;
+  x = x_i;
+  y = y_i;
+  z = z_i;
+  return *this;
+}
+
+template<class T>
+const Quaternion<T>& Quaternion<T>::fromAngleAxis(T angle, const T *axis){
+  const float halfAngle = 0.5*angle;
+  const float sin_half = sin(halfAngle);
+  w = cos(halfAngle);
+  x = axis[1]*sin_half;
+  y = axis[2]*sin_half;
+  z = axis[3]*sin_half;
+  return (*this);
+}
+template<class T>
+const Quaternion<T>& Quaternion<T>::fromAngleAxis(T angle, T ax1, T ax2, T ax3){
+  const float halfAngle = 0.5*angle;
+  const float sin_half = sin(halfAngle);
+  w = cos(halfAngle);
+  x = ax1*sin_half;
+  y = ax2*sin_half;
+  z = ax3*sin_half;
+  return (*this);
+}

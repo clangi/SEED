@@ -66,6 +66,16 @@ template <class T>
 int Quaternion<T>::howMany(){
   return total_number;
 }
+// Method for setting private components
+template<class T>
+const Quaternion<T>& Quaternion<T>::Set(T w_i, T x_i, T y_i, T z_i)
+{
+  w = w_i;
+  x = x_i;
+  y = y_i;
+  z = z_i;
+  return *this;
+}
 // Overloaded operators
 template <class T>
 const Quaternion<T>& Quaternion<T>::operator=(const Quaternion<T>& q){
@@ -140,6 +150,7 @@ void Quaternion<T>::print_quat(void) const {
 
 template <class T>
 Quaternion<T> Quaternion<T>::conj(void){
+  //print_summary();
   return Quaternion(w, -x, -y, -z);
 }
 template <class T>
@@ -172,7 +183,9 @@ template<typename V>
 void Quaternion<T>::quatConjugateVec(V *v){
   //WARNING: it modifies the original vector v!
   Quaternion<T> qv(0.0, v[1],v[2],v[3]);
+  //print_summary();
   Quaternion<T> qm = (*this)*qv*conj();
+  //print_summary();
   v[1] = qm.x;
   v[2] = qm.y;
   v[3] = qm.z;
@@ -204,4 +217,25 @@ void Quaternion<T>::quatConjugateVec(V *v1,V *v2,V *v3,V *ref){//Overloaded
   *v1 = qm.x + ref[1];
   *v2 = qm.y + ref[2];
   *v3 = qm.z + ref[3];
+}
+
+template<class T>
+const Quaternion<T>& Quaternion<T>::fromAngleAxis(T angle, const T *axis){
+  const float halfAngle = 0.5*angle;
+  const float sin_half = sin(halfAngle);
+  w = cos(halfAngle);
+  x = axis[1]*sin_half;
+  y = axis[2]*sin_half;
+  z = axis[3]*sin_half;
+  return (*this);
+}
+template<class T>
+const Quaternion<T>& Quaternion<T>::fromAngleAxis(T angle, T ax1, T ax2, T ax3){
+  const float halfAngle = 0.5*angle;
+  const float sin_half = sin(halfAngle);
+  w = cos(halfAngle);
+  x = ax1*sin_half;
+  y = ax2*sin_half;
+  z = ax3*sin_half;
+  return (*this);
 }
