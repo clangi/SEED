@@ -145,6 +145,10 @@ void FiAlHy(int FrAtNu,int FrBdNu,int *FrAtEl_nu,int **FrBdAr,int *AliHyd,
             int *NonAliHy);
 float VeNorm(float a1,float a2,float a3);
 void NormVe(float *a1,float *a2,float *a3);
+/*clangini START*/
+/* overloaded NormVe for double */
+void NormVe(double *a1, double *a2, double *a3);
+/*clangini END*/
 void PoCoVe(float a1,float a2,float a3,float b1,float b2,float b3,float len,
             float *c1,float *c2,float *c3);
 void VectPr(float a1,float a2,float a3,float b1,float b2,float b3,float *c1,

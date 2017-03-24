@@ -10,6 +10,9 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#ifdef USE_QUATERNION_ROTATION
+#include <quaternion.h>
+#endif
 /* CLANGINI 2016 END */
 #include "funct.h"
 
@@ -278,6 +281,10 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   bool align_flag; //align fragment
   float FrAlRef_m[3][3], *FrAlRef_rows[3], **FrAlRef,
         FrAlSet_m[3][3], *FrAlSet_rows[3], **FrAlSet;
+  #ifdef USE_QUATERNION_ROTATION //clangini
+  double SeFrAx[4]; //axis for fragment rotation
+  Quaternion<double> q_SeFr; //calls default constructor
+  #endif
   /* CLANGINI 2016 END*/
 #ifdef OMP
   char * numThreads;
@@ -1606,14 +1613,38 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
               SeedFr(j,ReVeCo,k,FrVeCo,FrAtNu,FrCoor,ReDATy,SeFrCo,FrAtoTyp_nu,
                   FrDAAt,ReAtoTyp_nu,ReDAAt,BLAtTy,FPaOut);
 
+              #ifdef USE_QUATERNION_ROTATION //clangini
+              AnglRo = 6.2831854/NuRoAx;
+
+              SeFrAx[1]=ReCoor[ReDAAt[j]][1]-SeFrCo[FrDAAt[k]][1];
+              SeFrAx[2]=ReCoor[ReDAAt[j]][2]-SeFrCo[FrDAAt[k]][2];
+              SeFrAx[3]=ReCoor[ReDAAt[j]][3]-SeFrCo[FrDAAt[k]][3];
+              NormVe(&SeFrAx[1],&SeFrAx[2],&SeFrAx[3]);
+              q_SeFr.fromAngleAxis(AnglRo,SeFrAx);
+
+              for (int ii=1;ii<=FrAtNu;ii++) {
+                //Need to add back the
+                RoSFCo[ii][1] = SeFrCo[ii][1];
+                RoSFCo[ii][2] = SeFrCo[ii][2];
+                RoSFCo[ii][3] = SeFrCo[ii][3];
+              }
+              #endif
+
               /* Make rotations */
               for (l=1;l<=NuRoAx;l++) {
+                #ifdef USE_QUATERNION_ROTATION //clangini
+                FrNuTo = FrNuTo+1;
+                for (int ii=1;ii<=FrAtNu;ii++){
+                  q_SeFr.quatConjugateVecRef(RoSFCo[ii],SeFrCo[FrDAAt[k]]);
+                }
+                #else
                 AnglRo=6.2831854/NuRoAx*l;
 
                 FrNuTo=FrNuTo+1;
 
                 /* RoSFCo is the position of the rotated fragment */
                 RoSeFr(j,ReDAAt,ReCoor,k,FrDAAt,FrAtNu,SeFrCo,AnglRo,RoSFCo);
+                #endif
 
                 VW_f=0.0;
                 VW_s=0.0;
@@ -2078,15 +2109,38 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
               /* Seed fragment */
               SeedFr_ap(j,apol_Vect_re,ReApAt,k,apol_Vect_fr,FrApAt,FrCoor,
                   ReVdWR,FrVdWR,FrAtNu,FPaOut,SeFrCo);
+              #ifdef USE_QUATERNION_ROTATION //clangini
+              AnglRo = 6.2831854/NuRoAx;
+
+              SeFrAx[1]=ReCoor[ReApAt[j]][1]-SeFrCo[FrApAt[k]][1];
+              SeFrAx[2]=ReCoor[ReApAt[j]][2]-SeFrCo[FrApAt[k]][2];
+              SeFrAx[3]=ReCoor[ReApAt[j]][3]-SeFrCo[FrApAt[k]][3];
+              NormVe(&SeFrAx[1],&SeFrAx[2],&SeFrAx[3]);
+              q_SeFr.fromAngleAxis(AnglRo,SeFrAx);
+
+              for (int ii=1;ii<=FrAtNu;ii++) {
+                //Need to add back the
+                RoSFCo[ii][1] = SeFrCo[ii][1];
+                RoSFCo[ii][2] = SeFrCo[ii][2];
+                RoSFCo[ii][3] = SeFrCo[ii][3];
+              }
+              #endif
 
               /* Make rotations */
               for (l=1;l<=NuRoAx;l++) {
+                #ifdef USE_QUATERNION_ROTATION //clangini
+                FrNuTo = FrNuTo+1;
+                for (int ii=1;ii<=FrAtNu;ii++){
+                  q_SeFr.quatConjugateVecRef(RoSFCo[ii],SeFrCo[FrApAt[k]]);
+                }
+                #else
                 AnglRo=6.2831854/NuRoAx*l;
 
                 FrNuTo=FrNuTo+1;
 
                 /* RoSFCo is the position of the rotated fragment */
                 RoSeFr(j,ReApAt,ReCoor,k,FrApAt,FrAtNu,SeFrCo,AnglRo,RoSFCo);
+                #endif
 
                 VW_f=0.0;
                 VW_s=0.0;
@@ -2578,14 +2632,38 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
               SeedFr(j,ReVeCo,k,FrVeCo,FrAtNu,FrCoor,ReDATy,SeFrCo,FrAtoTyp_nu,
                   FrDAAt,ReAtoTyp_nu,ReDAAt,BLAtTy,FPaOut);
 
+              #ifdef USE_QUATERNION_ROTATION //clangini
+              AnglRo = 6.2831854/NuRoAx;
+
+              SeFrAx[1]=ReCoor[ReDAAt[j]][1]-SeFrCo[FrDAAt[k]][1];
+              SeFrAx[2]=ReCoor[ReDAAt[j]][2]-SeFrCo[FrDAAt[k]][2];
+              SeFrAx[3]=ReCoor[ReDAAt[j]][3]-SeFrCo[FrDAAt[k]][3];
+              NormVe(&SeFrAx[1],&SeFrAx[2],&SeFrAx[3]);
+              q_SeFr.fromAngleAxis(AnglRo,SeFrAx);
+
+              for (int ii=1;ii<=FrAtNu;ii++) {
+                //Need to add back the
+                RoSFCo[ii][1] = SeFrCo[ii][1];
+                RoSFCo[ii][2] = SeFrCo[ii][2];
+                RoSFCo[ii][3] = SeFrCo[ii][3];
+              }
+              #endif
+
               /* Make rotations */
               for (l=1;l<=NuRoAx;l++) {
+                #ifdef USE_QUATERNION_ROTATION //clangini
+                FrNuTo = FrNuTo+1;
+                for (int ii=1;ii<=FrAtNu;ii++){
+                  q_SeFr.quatConjugateVecRef(RoSFCo[ii],SeFrCo[FrDAAt[k]]);
+                }
+                #else
                 AnglRo=6.2831854/NuRoAx*l;
 
                 FrNuTo=FrNuTo+1;
 
                 /* RoSFCo is the position of the rotated fragment */
                 RoSeFr(j,ReDAAt,ReCoor,k,FrDAAt,FrAtNu,SeFrCo,AnglRo,RoSFCo);
+                #endif
 
                 VW_f=0.0;
                 VW_s=0.0;
@@ -2915,15 +2993,38 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
               /* Seed fragment */
               SeedFr_ap(j,apol_Vect_re,ReApAt,k,apol_Vect_fr,FrApAt,FrCoor,
                   ReVdWR,FrVdWR,FrAtNu,FPaOut,SeFrCo);
+              #ifdef USE_QUATERNION_ROTATION //clangini
+              AnglRo = 6.2831854/NuRoAx;
+
+              SeFrAx[1]=ReCoor[ReApAt[j]][1]-SeFrCo[FrApAt[k]][1];
+              SeFrAx[2]=ReCoor[ReApAt[j]][2]-SeFrCo[FrApAt[k]][2];
+              SeFrAx[3]=ReCoor[ReApAt[j]][3]-SeFrCo[FrApAt[k]][3];
+              NormVe(&SeFrAx[1],&SeFrAx[2],&SeFrAx[3]);
+              q_SeFr.fromAngleAxis(AnglRo,SeFrAx);
+
+              for (int ii=1;ii<=FrAtNu;ii++) {
+                //Need to add back the
+                RoSFCo[ii][1] = SeFrCo[ii][1];
+                RoSFCo[ii][2] = SeFrCo[ii][2];
+                RoSFCo[ii][3] = SeFrCo[ii][3];
+              }
+              #endif
 
               /* Make rotations */
               for (l=1;l<=NuRoAx;l++) {
+                #ifdef USE_QUATERNION_ROTATION //clangini
+                FrNuTo = FrNuTo+1;
+                for (int ii=1;ii<=FrAtNu;ii++){
+                  q_SeFr.quatConjugateVecRef(RoSFCo[ii],SeFrCo[FrApAt[k]]);
+                }
+                #else
                 AnglRo=6.2831854/NuRoAx*l;
 
                 FrNuTo=FrNuTo+1;
 
                 /* RoSFCo is the position of the rotated fragment */
                 RoSeFr(j,ReApAt,ReCoor,k,FrApAt,FrAtNu,SeFrCo,AnglRo,RoSFCo);
+                #endif
 
                 VW_f=0.0;
                 VW_s=0.0;

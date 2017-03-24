@@ -8,7 +8,7 @@ float VeNorm(float a1,float a2,float a3)
   float norm;
 
   norm=sqrtf(a1*a1+a2*a2+a3*a3);
-  
+
   return norm;
 }
 
@@ -26,11 +26,21 @@ void NormVe(float *a1,float *a2,float *a3)
   *a3=*a3/norm;
 }
 
+void NormVe(double *a1, double *a2, double *a3)
+/* Overloaded NormVe for doubles. clangini */
+{
+  double norm;
+  norm = sqrtf((*a1)*(*a1)+(*a2)*(*a2)+(*a3)*(*a3));
+
+  *a1=*a1/norm;
+  *a2=*a2/norm;
+  *a3=*a3/norm;
+}
 
 
 void PoCoVe(float a1,float a2,float a3,float b1,float b2,float b3,float len,
             float *c1,float *c2,float *c3)
-/* This function computes the coordinates of C which is along the vector AB  
+/* This function computes the coordinates of C which is along the vector AB
    and at a distance of len from A */
 {
   float vec1,vec2,vec3;
@@ -38,7 +48,7 @@ void PoCoVe(float a1,float a2,float a3,float b1,float b2,float b3,float len,
   vec1=b1-a1;
   vec2=b2-a2;
   vec3=b3-a3;
-  
+
   NormVe(&vec1,&vec2,&vec3);
 
   *c1=a1+len*vec1;
@@ -61,7 +71,7 @@ void VectPr(float a1,float a2,float a3,float b1,float b2,float b3,float *c1,
 
 float PlaAng(float o1,float o2,float o3,float a1,float a2,float a3,float b1,
              float b2,float b3)
-/* This function returns the angle between the vectors OA and OB. The angle 
+/* This function returns the angle between the vectors OA and OB. The angle
    value ranges from 0 to PI */
 {
   float vecA1,vecA2,vecA3,vecB1,vecB2,vecB3,normA,normB,ScaPro,StorVa;
@@ -72,7 +82,7 @@ float PlaAng(float o1,float o2,float o3,float a1,float a2,float a3,float b1,
 
   vecB1=b1-o1;
   vecB2=b2-o2;
-  vecB3=b3-o3;  
+  vecB3=b3-o3;
 
   normA=VeNorm(vecA1,vecA2,vecA3);
   normB=VeNorm(vecB1,vecB2,vecB3);
@@ -91,8 +101,8 @@ float PlaAng(float o1,float o2,float o3,float a1,float a2,float a3,float b1,
 
 void RoArVe(float a1,float a2,float a3,float vec1,float vec2,float vec3,
             float ang,float *b1,float *b2,float *b3)
-/* This function rotates the point A around the vector Vec through origin for 
-   an angle ang in radian. The result is given in B */ 
+/* This function rotates the point A around the vector Vec through origin for
+   an angle ang in radian. The result is given in B */
 {
   float v1,v2,v3,rtl1,rtl2,rtl3,sinl,cosl,rl,help1,help2,help3;
 
@@ -110,7 +120,7 @@ void RoArVe(float a1,float a2,float a3,float vec1,float vec2,float vec3,
 
   *b1=a1+v1*sinl+(rtl1-a1)*cosl;
   *b2=a2+v2*sinl+(rtl2-a2)*cosl;
-  *b3=a3+v3*sinl+(rtl3-a3)*cosl;  
+  *b3=a3+v3*sinl+(rtl3-a3)*cosl;
 }
 
 
@@ -138,13 +148,13 @@ void AxisVe(float a1,float a2,float a3,float b1,float b2,float b3,
 
 void RotPla(float a1,float a2,float a3,float b1,float b2,float b3,float c1,
             float c2,float c3,float angl,float *d1,float *d2,float *d3)
-/* This function computes the coordinates of the point D which results from 
+/* This function computes the coordinates of the point D which results from
    the rotation of C with angle angl in radian around B in the ABC plane */
 {
   float bc1,bc2,bc3,arot1,arot2,arot3,bc1ret,bc2ret,bc3ret;
 
   AxisVe(a1,a2,a3,b1,b2,b3,c1,c2,c3,&arot1,&arot2,&arot3);
-  
+
   bc1=c1-b1;
   bc2=c2-b2;
   bc3=c3-b3;
@@ -160,7 +170,7 @@ void RotPla(float a1,float a2,float a3,float b1,float b2,float b3,float c1,
 
 float DihAng(float a1,float a2,float a3,float b1,float b2,float b3,
              float c1,float c2,float c3,float d1,float d2,float d3)
-/* This function returns the dihedral angle between the ABC and BCD planes. 
+/* This function returns the dihedral angle between the ABC and BCD planes.
    The dihedral angle ranges from 0 to PI */
 {
   float ba1,ba2,ba3,bc1,bc2,bc3,VePrA1,VePrA2,VePrA3,cb1,cb2,cb3,cd1,cd2,cd3,
@@ -169,7 +179,7 @@ float DihAng(float a1,float a2,float a3,float b1,float b2,float b3,
   ba1=a1-b1;
   ba2=a2-b2;
   ba3=a3-b3;
-  
+
   bc1=c1-b1;
   bc2=c2-b2;
   bc3=c3-b3;
@@ -187,7 +197,7 @@ float DihAng(float a1,float a2,float a3,float b1,float b2,float b3,
 
   VectPr(cb1,cb2,cb3,cd1,cd2,cd3,&VePrB1,&VePrB2,&VePrB3);
   normB=VeNorm(VePrB1,VePrB2,VePrB3);
-  
+
   ScaPro=VePrA1*VePrB1+VePrA2*VePrB2+VePrA3*VePrB3;
 
   StorVa=ScaPro/(normA*normB);
@@ -216,7 +226,7 @@ float DihAng(float a1,float a2,float a3,float b1,float b2,float b3,
 
 float TrProd(float ox,float oy,float oz,float ax,float ay,float az,
              float bx,float by,float bz,float cx,float cy,float cz)
-/* This function returns the triple scalar product of the vectors oa, ob 
+/* This function returns the triple scalar product of the vectors oa, ob
    and oc */
 {
   float vec1x,vec1y,vec1z,vec2x,vec2y,vec2z,vec3x,vec3y,vec3z,norm1,norm2,
