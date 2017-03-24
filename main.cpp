@@ -13,6 +13,7 @@
 #ifdef USE_QUATERNION_ROTATION
 #include <quaternion.h>
 #endif
+#include <unordered_map> //C++11 feature. Implemented as hash table
 /* CLANGINI 2016 END */
 #include "funct.h"
 
@@ -278,6 +279,9 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   float MolWei = 0.0; // Molecular Weight clangini
   int *CluIndex_sort; // Array Clu index number -> sorted Clu index number clangini
   std::string AlTySp;
+  std::string FragNa_str; //C++ string equivalent to FragNa
+  std::unordered_map<std::string, int> FragNa_map;
+  char buff[12]; // buffer for string manipulation
   bool align_flag; //align fragment
   float FrAlRef_m[3][3], *FrAlRef_rows[3], **FrAlRef,
         FrAlSet_m[3][3], *FrAlSet_rows[3], **FrAlSet;
@@ -1318,6 +1322,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
     /* ReFrFi_mol2 has been reimplemented in C++ clangini */
     /* Reads the next valid molecule. If it detects any problems it skips the molecule. clangini */
     LstFra_f = ReFrFi_mol2(&FrInStream,&FrInPos,&SkiFra,&CurFraTot,FragNa,
+                           FragNa_str,
                            &FrAtNu,&FrBdNu,&FrAtEl,&FrCoor,&FrAtTy,&FrSyAtTy,
                            &FrPaCh,&FrBdAr,&FrBdTy,FrSubN,FrSubC,&FrCoNu,
                            &SubNa,AlTySp);
@@ -1337,6 +1342,12 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
     //}
 
     //CurFraTot++; //This is updated in ReFrFi_mol2
+    if ( ++FragNa_map[FragNa_str] > 1){
+      sprintf(buff, "$%d",FragNa_map[FragNa_str]);
+      strcat(FragNa,buff);
+    }
+    std::cout<< "FragNa_str: " << FragNa_str << " "
+      << FragNa_map[FragNa_str] << std::endl;
     CurFra++; /* After succesfully reading, we update the current fragment index */
     i = CurFra; /* Not to change i to CurFra everywhere in the following clangini*/
     fprintf(FPaOut,"-------------------------------------------------\n\n");//Moved here clangini
@@ -4597,7 +4608,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                   "_clus_pproc.mol2\0"); // clangini
           FilePa=fopen(WriPat,"a");
           for (j=1;j<=((NuLiEnClus<NuPosSdCl)?NuLiEnClus:NuPosSdCl);j++){
-            append_pose_to_mol2(FilePa,FragNa,FrAtNu,FrBdNu,j,FrAtEl,FrCoPo,
+            append_pose_to_mol2(FilePa,FragNa,/*FragNa_map[FragNa_str],*/FrAtNu,
+                                FrBdNu,j,FrAtEl,FrCoPo,
                                 FrPosAr_sort[j],FrSyAtTy,FrAtTy,CurFra,FrBdAr,
                                 FrBdTy,SdClusAr_sort[j],To_s_ro[FrPosAr_sort[j]],
                                 FrPaCh,SubNa,AlTySp);
@@ -4615,11 +4627,13 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                   "_clus_best_pproc.mol2\0");
           FilePa=fopen(WriPat,"a");
           for (j=1;j<=((NuPosMem<NuPosSdCl)?NuPosMem:NuPosSdCl);j++){
-            append_pose_to_mol2(FilePa,FragNa,FrAtNu,FrBdNu,j,FrAtEl,FrCoPo,
-                    FrPosAr_pproc[Index_pproc[j]],FrSyAtTy,FrAtTy,CurFra,FrBdAr,
-                    FrBdTy,CluIndex_sort[SdClusAr_pproc[Index_pproc[j]]],
-                    To_s_ro[FrPosAr_pproc[Index_pproc[j]]],FrPaCh,SubNa,
-                    AlTySp);
+            append_pose_to_mol2(FilePa,FragNa,/*FragNa_map[FragNa_str],*/FrAtNu,
+                                FrBdNu,j,FrAtEl,FrCoPo,
+                                FrPosAr_pproc[Index_pproc[j]],FrSyAtTy,
+                                FrAtTy,CurFra,FrBdAr,FrBdTy,
+                                CluIndex_sort[SdClusAr_pproc[Index_pproc[j]]],
+                                To_s_ro[FrPosAr_pproc[Index_pproc[j]]],
+                                FrPaCh,SubNa,AlTySp);
           }
           fclose(FilePa);
         }

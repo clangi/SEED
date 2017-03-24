@@ -412,7 +412,8 @@ void append_to_mol2(int CurFra,int NuPosSdCl,int FrAtNu,char **FrAtTy,
         fclose(FilePa);
 }
 
-void append_pose_to_mol2(FILE *FilePa,char *FragNa,int FrAtNu,int FrBdNu,int imol,
+void append_pose_to_mol2(FILE *FilePa,char *FragNa,/*int FragNa_count,*/
+                int FrAtNu,int FrBdNu,int imol,
                 char **FrAtEl,float ***FrCoPo,int Fr_nu,char **FrSyAtTy,
                 char **FrAtTy,int CurFra,int **FrBdAr,char **FrBdTy,
                 int SdClu,float To_s_ro,float *FrPaCh,char **SubNa,
@@ -426,6 +427,11 @@ void append_pose_to_mol2(FILE *FilePa,char *FragNa,int FrAtNu,int FrBdNu,int imo
                              //clangini
   fprintf(FilePa,"@<TRIPOS>MOLECULE\n");
   fprintf(FilePa,"%s\n",FragNa);
+  //if (FragNa_count > 1){
+  //  fprintf(FilePa,"%s_%d\n",FragNa,FragNa_count);
+  //} else {
+  //  fprintf(FilePa,"%s\n",FragNa);
+  //}
   fprintf(FilePa," %d %d 1 0 0\n",FrAtNu,FrBdNu);/*always include one substructure ??*/
   fprintf(FilePa,"****\n");
   fprintf(FilePa,"USER_CHARGES\n");
@@ -471,7 +477,8 @@ void append_pose_to_mol2(FILE *FilePa,char *FragNa,int FrAtNu,int FrBdNu,int imo
         /* This function appends a single pose as a new molecule
            to a mol2 file.
            ATTENTION: This is an overloaded function where
-           FrCoPo is passed as **float and not as ***float */
+           FrCoPo is passed as **float and not as ***float
+           At the moment this is not actually used by the program */
 {
   int ii; /*ii=general counter(atom,bond, ...)*/
   int iat;

@@ -89,7 +89,8 @@ float **convert2pp_return(int irl, int irh,int icl, int ich,float *first,
 void print_pp(int irl, int irh,int icl, int ich,float **mat);
 /* CLANGINI 2016 */
 int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
-                int *SkiFra,int *CurFraTot,char *FragNa,int *FrAtNu,int *FrBdNu,
+                int *SkiFra,int *CurFraTot,char *FragNa,std::string &FragNa_str,
+                int *FrAtNu,int *FrBdNu,
                 char ***FrAtEl,float ***FrCoor,char ***FrAtTy,  char ***FrSyAtTy,float **FrPaCh,
                 int ***FrBdAr,char ***FrBdTy,char *FrSubN,char *FrSubC,
                 int *FrCoNu,char ***SubNa, std::string &AlTySp);
@@ -117,7 +118,8 @@ void append_to_mol2(int CurFra,int NuPosSdCl,int FrAtNu,char **FrAtTy,
                     char **SubNa,char *FrFiNa_out,int FrBdNu,char **FrAtEl,
                     float *FrPaCh,int **FrBdAr,char **FrBdTy,
                     char *FragNa,int *SdClusAr_sort,float *To_s_ro, char *WriPat);
-void append_pose_to_mol2(FILE *FilePa,char *FragNa,int FrAtNu,int FrBdNu,int imol,
+void append_pose_to_mol2(FILE *FilePa,char *FragNa,/*int FragNa_count,*/
+                         int FrAtNu,int FrBdNu,int imol,
                          char **FrAtEl,float ***FrCoPo,int Fr_nu,char **FrSyAtTy,
                          char **FrAtTy,int CurFra,int **FrBdAr,char **FrBdTy,
                          int SdClu,float To_s_ro,float *FrPaCh,char **SubNa,

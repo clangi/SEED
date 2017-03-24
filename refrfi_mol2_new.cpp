@@ -16,8 +16,10 @@
 */
 
 int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
-                int *SkiFra,int *CurFraTot,char *FragNa,int *FrAtNu,int *FrBdNu,
-                char ***FrAtEl,float ***FrCoor,char ***FrAtTy,  char ***FrSyAtTy,float **FrPaCh,
+                int *SkiFra,int *CurFraTot,char *FragNa,
+                std::string & FragNa_str,int *FrAtNu,int *FrBdNu,
+                char ***FrAtEl,float ***FrCoor,char ***FrAtTy,char ***FrSyAtTy,
+                float **FrPaCh,
                 int ***FrBdAr,char ***FrBdTy,char *FrSubN,char *FrSubC,
                 int *FrCoNu, char ***SubNa, std::string &AlTySp )
 /* This function reads the file of the current fragment (CurFra) in the mol2
@@ -27,6 +29,7 @@ int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
    SkiFra  counter of skipped fragments
    FrFiNa  names of the files containing the fragments
    FragNa  name of the fragment
+   FragNa_str  name of the fragment as C++ string
    FrAtNu  number of atoms in the fragment (for one conformation)
    FrBdNu  number of bonds in the fragment (for one conformation)
    FrAtEl  fragment atoms elements
@@ -89,9 +92,9 @@ int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
     //std::cout << "No eof reached" << std::endl; /* clangini */
 
     //StrLin = getline(inStream);
-    std::getline(*inStream,StrLin);
-	  boost::trim(StrLin);
-	  strcpy(FragNa, StrLin.c_str()); /* Read fragment name */
+    std::getline(*inStream,FragNa_str);
+	  boost::trim(FragNa_str);
+	  strcpy(FragNa, FragNa_str.c_str()); /* Read fragment name */
     //std::cout << "FragNa is: " << FragNa << std::endl; /* clangini */
 	  //StrLin = getline(inStream);     /* Read FrAtNu, FrBdNu, FrCoNu */
     std::getline(*inStream,StrLin);
