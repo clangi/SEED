@@ -10,9 +10,11 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+
 #ifdef USE_QUATERNION_ROTATION
 #include <quaternion.h>
 #endif
+
 #include <unordered_map> //C++11 feature. Implemented as hash table
 /* CLANGINI 2016 END */
 #include "funct.h"
@@ -219,7 +221,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
                                                 mult_fact_rmin,mult_fact_rmax,gc_cutclus,gc_endifclus,gc_weighneg,
                                                 gc_weighpos,MaxGrIn,RedRPV_nkvRatio,NCutapolRatio;*/
       float **FrCoor,*FrPaCh,**ReCoor,*RePaCh,**ReVeCo,**FrVeCo,**SeFrCo,
-      AnglRo,**RoSFCo,*VdWRad,*VdWEne,*ReVdWR,*ReVdWE,*FrVdWR,*FrVdWE,
+      /*AnglRo,*/**RoSFCo,*VdWRad,*VdWEne,*ReVdWR,*ReVdWE,*FrVdWR,*FrVdWE,
       LaVdWR,ReMaxC[4],ReMinC[4],SphAng,VdWFaB,BSMaxC[4],BSMinC[4],CoDieV,
       CoGrIn,CoGrSi,***CoGrRP,BuEvFa,*ReVdWE_sr,*FrVdWE_sr,
       FrMaEn,PsSpRa,GrSiCu_en,VWEnEv_ps,
@@ -285,10 +287,11 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   bool align_flag; //align fragment
   float FrAlRef_m[3][3], *FrAlRef_rows[3], **FrAlRef,
         FrAlSet_m[3][3], *FrAlSet_rows[3], **FrAlSet;
-  #ifdef USE_QUATERNION_ROTATION //clangini
+  double AnglRo; //before it was a float. clangini
+#ifdef USE_QUATERNION_ROTATION //clangini
   double SeFrAx[4]; //axis for fragment rotation
   Quaternion<double> q_SeFr; //calls default constructor
-  #endif
+#endif
   /* CLANGINI 2016 END*/
 #ifdef OMP
   char * numThreads;
@@ -1360,28 +1363,28 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
     if(align_flag){
       // Find rotation quaternion
       //std::cout<<"Old: "<<FrCoor[1][1]<<" "<<FrCoor[1][2]<<" "<<FrCoor[1][3]<<" "<<std::endl;
-      //#ifdef DEBUG_CL
-      /*sprintf(WriPat,"%s","rotate_test.mol2\0"); // clangini
+#ifdef DEBUG_CL
+      sprintf(WriPat,"%s","rotate_test.mol2\0"); // clangini
       FilePa=fopen(WriPat,"a");
       append_pose_to_mol2(FilePa,FragNa,FrAtNu,FrBdNu,1,FrAtEl,FrCoor,
                           1,FrSyAtTy,FrAtTy,CurFra,FrBdAr,
                           FrBdTy,1,0.0,
                           FrPaCh,SubNa,AlTySp);
-      fclose(FilePa);*/
-      //#endif
+      fclose(FilePa);
+#endif
       struct_align(FrCoor,FrAtNu,FrAlRef,FrAlSet,3);
-      //#ifdef DEBUG_CL
-      /*sprintf(WriPat,"%s","rotate_test.mol2\0"); // clangini
+#ifdef DEBUG_CL
+      sprintf(WriPat,"%s","rotate_test.mol2\0"); // clangini
       FilePa=fopen(WriPat,"a");
       append_pose_to_mol2(FilePa,FragNa,FrAtNu,FrBdNu,1,FrAtEl,FrCoor,
                           1,FrSyAtTy,FrAtTy,CurFra,FrBdAr,
                           FrBdTy,1,0.0,
                           FrPaCh,SubNa,AlTySp);
-      fclose(FilePa);*/
+      fclose(FilePa);
       //std::cout<<"New: "<<FrCoor[1][1]<<" "<<FrCoor[1][2]<<" "<<FrCoor[1][3]<<" "<<std::endl;
       //std::cout<<"New: "<<FrCoor[2][1]<<" "<<FrCoor[2][2]<<" "<<FrCoor[2][3]<<" "<<std::endl;
       //std::cout<<"New: "<<FrCoor[3][1]<<" "<<FrCoor[3][2]<<" "<<FrCoor[3][3]<<" "<<std::endl;
-      //#endif
+#endif
     }
     /* CLANGINI 2016 end */
 
@@ -1624,8 +1627,8 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
               SeedFr(j,ReVeCo,k,FrVeCo,FrAtNu,FrCoor,ReDATy,SeFrCo,FrAtoTyp_nu,
                   FrDAAt,ReAtoTyp_nu,ReDAAt,BLAtTy,FPaOut);
 
-              #ifdef USE_QUATERNION_ROTATION //clangini
-              AnglRo = 6.2831854/NuRoAx;
+#ifdef USE_QUATERNION_ROTATION //clangini
+              AnglRo = 6.283185307179586476925286766559/NuRoAx;
 
               SeFrAx[1]=ReCoor[ReDAAt[j]][1]-SeFrCo[FrDAAt[k]][1];
               SeFrAx[2]=ReCoor[ReDAAt[j]][2]-SeFrCo[FrDAAt[k]][2];
@@ -1634,28 +1637,67 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
               q_SeFr.fromAngleAxis(AnglRo,SeFrAx);
 
               for (int ii=1;ii<=FrAtNu;ii++) {
-                //Need to add back the
                 RoSFCo[ii][1] = SeFrCo[ii][1];
                 RoSFCo[ii][2] = SeFrCo[ii][2];
                 RoSFCo[ii][3] = SeFrCo[ii][3];
               }
-              #endif
+
+#ifdef DEBUG_CL
+              sprintf(WriPat,"%s","quaternion_start.mol2\0"); // clangini
+              FilePa=fopen(WriPat,"a");
+              append_pose_to_mol2(FilePa,FragNa,FrAtNu,FrBdNu,1,FrAtEl,RoSFCo,
+                                  1,FrSyAtTy,FrAtTy,CurFra,FrBdAr,
+                                  FrBdTy,1,0.0,
+                                  FrPaCh,SubNa,AlTySp);
+              fclose(FilePa);
+              double **RoSFCo_dbg;
+              RoSFCo_dbg=dmatrix(1,FrAtNu,1,3);
+              for (int ii=1;ii<=FrAtNu;ii++) {
+                //Need to add back the
+                RoSFCo_dbg[ii][1] = SeFrCo[ii][1];
+                RoSFCo_dbg[ii][2] = SeFrCo[ii][2];
+                RoSFCo_dbg[ii][3] = SeFrCo[ii][3];
+              }
+              double AnglRo_double = 6.283185307179586476925286766559/NuRoAx;
+              q_SeFr.fromAngleAxis(AnglRo_double,SeFrAx);
+              for (int ii=1; ii <= NuRoAx; ii++){
+                for (int jj=1;jj<=FrAtNu;jj++){
+                  q_SeFr.quatConjugateVecRef(RoSFCo_dbg[jj],
+                                      (double)SeFrCo[FrDAAt[k]][1],
+                                      (double)SeFrCo[FrDAAt[k]][2],
+                                      (double)SeFrCo[FrDAAt[k]][3]);
+                }
+                //q_SeFr.norm_inplace();
+              }
+              sprintf(WriPat,"%s","quaternion_end.mol2\0"); // clangini
+              FilePa=fopen(WriPat,"a");
+              append_pose_to_mol2_double(FilePa,FragNa,FrAtNu,FrBdNu,1,FrAtEl,
+                                  RoSFCo_dbg,
+                                  1,FrSyAtTy,FrAtTy,CurFra,FrBdAr,
+                                  FrBdTy,1,0.0,
+                                  FrPaCh,SubNa,AlTySp);
+              fclose(FilePa);
+              free_dmatrix(RoSFCo_dbg,1,FrAtNu,1,3);
+              q_SeFr.fromAngleAxis(AnglRo,SeFrAx);
+#endif
+
+#endif
 
               /* Make rotations */
               for (l=1;l<=NuRoAx;l++) {
-                #ifdef USE_QUATERNION_ROTATION //clangini
+#ifdef USE_QUATERNION_ROTATION //clangini
                 FrNuTo = FrNuTo+1;
                 for (int ii=1;ii<=FrAtNu;ii++){
                   q_SeFr.quatConjugateVecRef(RoSFCo[ii],SeFrCo[FrDAAt[k]]);
                 }
-                #else
+#else
                 AnglRo=6.2831854/NuRoAx*l;
 
                 FrNuTo=FrNuTo+1;
 
                 /* RoSFCo is the position of the rotated fragment */
                 RoSeFr(j,ReDAAt,ReCoor,k,FrDAAt,FrAtNu,SeFrCo,AnglRo,RoSFCo);
-                #endif
+#endif
 
                 VW_f=0.0;
                 VW_s=0.0;
@@ -2121,7 +2163,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
               SeedFr_ap(j,apol_Vect_re,ReApAt,k,apol_Vect_fr,FrApAt,FrCoor,
                   ReVdWR,FrVdWR,FrAtNu,FPaOut,SeFrCo);
               #ifdef USE_QUATERNION_ROTATION //clangini
-              AnglRo = 6.2831854/NuRoAx;
+              AnglRo = 6.283185307179586476925286766559/NuRoAx;
 
               SeFrAx[1]=ReCoor[ReApAt[j]][1]-SeFrCo[FrApAt[k]][1];
               SeFrAx[2]=ReCoor[ReApAt[j]][2]-SeFrCo[FrApAt[k]][2];
@@ -2644,7 +2686,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                   FrDAAt,ReAtoTyp_nu,ReDAAt,BLAtTy,FPaOut);
 
               #ifdef USE_QUATERNION_ROTATION //clangini
-              AnglRo = 6.2831854/NuRoAx;
+              AnglRo = 6.283185307179586476925286766559/NuRoAx;
 
               SeFrAx[1]=ReCoor[ReDAAt[j]][1]-SeFrCo[FrDAAt[k]][1];
               SeFrAx[2]=ReCoor[ReDAAt[j]][2]-SeFrCo[FrDAAt[k]][2];
@@ -3005,7 +3047,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
               SeedFr_ap(j,apol_Vect_re,ReApAt,k,apol_Vect_fr,FrApAt,FrCoor,
                   ReVdWR,FrVdWR,FrAtNu,FPaOut,SeFrCo);
               #ifdef USE_QUATERNION_ROTATION //clangini
-              AnglRo = 6.2831854/NuRoAx;
+              AnglRo = 6.283185307179586476925286766559/NuRoAx;
 
               SeFrAx[1]=ReCoor[ReApAt[j]][1]-SeFrCo[FrApAt[k]][1];
               SeFrAx[2]=ReCoor[ReApAt[j]][2]-SeFrCo[FrApAt[k]][2];
@@ -3639,6 +3681,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
     if (EvalEn[0]!='y') {
       fprintf(FPaOut,"Total number of generated fragments of type %d (%s) : %d\n",
           i,FragNa,FrNuTo); /* clangini */
+      //std::cout << FrNuTo << " " << ToNFrP << std::endl; //clangini
       //std::cout << "HERE" << std::endl; //clangini
       /*fprintf(FPaOut,"Total number of generated fragments of type %d (%s) : %d\n",
           i,&FrFiNa_out[CurFra][1],FrNuTo); clangini*/

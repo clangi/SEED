@@ -124,6 +124,13 @@ void append_pose_to_mol2(FILE *FilePa,char *FragNa,/*int FragNa_count,*/
                          char **FrAtTy,int CurFra,int **FrBdAr,char **FrBdTy,
                          int SdClu,float To_s_ro,float *FrPaCh,char **SubNa,
                          std::string const& AlTySp);
+#ifdef DEBUG_CL
+void append_pose_to_mol2_double(FILE *FilePa,char *FragNa,int FrAtNu,int FrBdNu,int imol,
+                char **FrAtEl,double **FrCoPo,int Fr_nu,char **FrSyAtTy,
+                char **FrAtTy,int CurFra,int **FrBdAr,char **FrBdTy,
+                int SdClu,float To_s_ro,float *FrPaCh,char **SubNa,
+                std::string const&AlTySp);
+#endif
 void append_pose_to_mol2(FILE *FilePa,char *FragNa,int FrAtNu,int FrBdNu,int imol,
  char **FrAtEl,float **FrCoPo,int Fr_nu,char **FrSyAtTy,
  char **FrAtTy,int CurFra,int **FrBdAr,char **FrBdTy,

@@ -68,6 +68,8 @@ class Quaternion {
     template<typename V>
     void quatConjugateVecRef(V *v,V *ref);
     template<typename V>
+    void quatConjugateVecRef(V *v,V ref1,V ref2,V ref3);
+    template<typename V>
     void quatConjugateVec(V *v1,V *v2,V *v3,V *ref);//Overloaded
     //template<typename V>
     //void quatConjugateVec(V v1,V v2,V v3,V ref1,V ref2,V ref3);//Overloaded

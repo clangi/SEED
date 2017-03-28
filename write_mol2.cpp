@@ -478,7 +478,71 @@ void append_pose_to_mol2(FILE *FilePa,char *FragNa,int FrAtNu,int FrBdNu,int imo
            to a mol2 file.
            ATTENTION: This is an overloaded function where
            FrCoPo is passed as **float and not as ***float
-           At the moment this is not actually used by the program */
+           At the moment this is used in the debugging */
+{
+  int ii; /*ii=general counter(atom,bond, ...)*/
+  int iat;
+  char AlTySp_c[_STRLENGTH]; //Consider to add a check on the sting length.
+                             //clangini
+  fprintf(FilePa,"@<TRIPOS>MOLECULE\n");
+  fprintf(FilePa,"%s\n",FragNa);
+  fprintf(FilePa," %d %d 1 0 0\n",FrAtNu,FrBdNu);/*always include one substructure ??*/
+  fprintf(FilePa,"****\n");
+  fprintf(FilePa,"USER_CHARGES\n");
+  fprintf(FilePa,"INVALID_CHARGES\n");
+  fprintf(FilePa,"Pose: %3d Cluster: %3d TotEn: %8.2f Fr_nu: %6d\n",imol,SdClu,To_s_ro,Fr_nu);
+
+  /* Write the atoms */
+  fprintf(FilePa,"@<TRIPOS>ATOM\n");
+#ifdef DEBUG_CL
+  for(ii=1;ii<=FrAtNu;ii++){
+        fprintf(FilePa,"%7d %-8s %18.16f %18.16f %18.16f %-7s%d %s%14.5f\n",
+                ii,&FrAtEl[ii][1],FrCoPo[ii][1],
+                FrCoPo[ii][2],FrCoPo[ii][3],
+                &FrSyAtTy[ii][1],1,&SubNa[ii][1],FrPaCh[ii]); //isub==1 always
+  }
+#else
+  for(ii=1;ii<=FrAtNu;ii++){
+    fprintf(FilePa,"%7d %-8s%10.4f%10.4f%10.4f %-7s%d %s%14.5f\n",
+            ii,&FrAtEl[ii][1],FrCoPo[ii][1],
+            FrCoPo[ii][2],FrCoPo[ii][3],
+            &FrSyAtTy[ii][1],1,&SubNa[ii][1],FrPaCh[ii]); //isub==1 always
+  }
+#endif
+
+  /* Write the bonds */
+  fprintf(FilePa,"@<TRIPOS>BOND\n");
+  for (ii=1;ii<=FrBdNu;ii++) {
+          fprintf(FilePa,"%7d%8d%8d %s\n",
+                          ii,FrBdAr[ii][1],FrBdAr[ii][2],&FrBdTy[ii][1]);
+  }
+  /* Do not write the substructures any more */
+
+  /* Write the CHARMM atom types */
+  fprintf(FilePa,"@<TRIPOS>ALT_TYPE\n");
+  //fprintf(FilePa,"CHARMM_ALL_ALT_TYPE_SET\n"); /*This has to be changed according to input*/
+  //fprintf(FilePa,"CHARMM_ALL");/*same as above*/
+  strcpy(AlTySp_c, AlTySp.c_str());
+  fprintf(FilePa,"%s\n",strcat(AlTySp_c,"_ALT_TYPE_SET"));
+  fprintf(FilePa,"%s",AlTySp.c_str());
+  for(iat = 1; iat <= FrAtNu; iat++){
+          fprintf(FilePa," %d %s",iat,&FrAtTy[iat][1]);
+  }
+  fprintf(FilePa,"\n");
+
+}
+
+#ifdef DEBUG_CL
+void append_pose_to_mol2_double(FILE *FilePa,char *FragNa,int FrAtNu,int FrBdNu,int imol,
+                char **FrAtEl,double **FrCoPo,int Fr_nu,char **FrSyAtTy,
+                char **FrAtTy,int CurFra,int **FrBdAr,char **FrBdTy,
+                int SdClu,float To_s_ro,float *FrPaCh,char **SubNa,
+                std::string const&AlTySp)
+        /* This function appends a single pose as a new molecule
+           to a mol2 file.
+           ATTENTION: This is an overloaded function where
+           FrCoPo is passed as **float and not as ***float
+           At the moment this is used in the debugging */
 {
   int ii; /*ii=general counter(atom,bond, ...)*/
   int iat;
@@ -495,7 +559,7 @@ void append_pose_to_mol2(FILE *FilePa,char *FragNa,int FrAtNu,int FrBdNu,int imo
   /* Write the atoms */
   fprintf(FilePa,"@<TRIPOS>ATOM\n");
   for(ii=1;ii<=FrAtNu;ii++){
-    fprintf(FilePa,"%7d %-8s%10.4f%10.4f%10.4f %-7s%d %s%14.5f\n",
+    fprintf(FilePa,"%7d %-8s %18.16f %18.16f %18.16f %-7s%d %s%14.5f\n",
             ii,&FrAtEl[ii][1],FrCoPo[ii][1],
             FrCoPo[ii][2],FrCoPo[ii][3],
             &FrSyAtTy[ii][1],1,&SubNa[ii][1],FrPaCh[ii]); //isub==1 always
@@ -522,5 +586,6 @@ void append_pose_to_mol2(FILE *FilePa,char *FragNa,int FrAtNu,int FrBdNu,int imo
   fprintf(FilePa,"\n");
 
 }
+#endif
 
 /* C.LANGINI 2016 END */

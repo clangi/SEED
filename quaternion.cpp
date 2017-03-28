@@ -166,6 +166,18 @@ void Quaternion<T>::quatConjugateVecRef(V *v,V *ref){
   v[2] = qm.y + ref[2];
   v[3] = qm.z + ref[3];
 }
+
+template<class T>
+template<typename V>
+void Quaternion<T>::quatConjugateVecRef(V *v,V ref1,V ref2,V ref3){
+  //WARNING: it modifies the original vector v!
+  Quaternion<T> qv(0.0, v[1]-ref1,v[2]-ref2,v[3]-ref3);
+  Quaternion<T> qm = (*this)*qv*conj();
+  v[1] = qm.x + ref1;
+  v[2] = qm.y + ref2;
+  v[3] = qm.z + ref3;
+}
+
 template<class T>
 template<typename V>
 void Quaternion<T>::quatConjugateVec(V *v1,V *v2,V *v3,V *ref){//Overloaded
@@ -189,8 +201,8 @@ const Quaternion<T>& Quaternion<T>::Set(T w_i, T x_i, T y_i, T z_i)
 
 template<class T>
 const Quaternion<T>& Quaternion<T>::fromAngleAxis(T angle, const T *axis){
-  const float halfAngle = 0.5*angle;
-  const float sin_half = sin(halfAngle);
+  const T halfAngle = 0.5*angle;
+  const T sin_half = sin(halfAngle);
   w = cos(halfAngle);
   x = axis[1]*sin_half;
   y = axis[2]*sin_half;
@@ -199,8 +211,8 @@ const Quaternion<T>& Quaternion<T>::fromAngleAxis(T angle, const T *axis){
 }
 template<class T>
 const Quaternion<T>& Quaternion<T>::fromAngleAxis(T angle, T ax1, T ax2, T ax3){
-  const float halfAngle = 0.5*angle;
-  const float sin_half = sin(halfAngle);
+  const T halfAngle = 0.5*angle;
+  const T sin_half = sin(halfAngle);
   w = cos(halfAngle);
   x = ax1*sin_half;
   y = ax2*sin_half;
