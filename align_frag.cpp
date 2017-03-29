@@ -7,7 +7,7 @@
 
 using namespace std;
 
-bool set_align_ref(float **FrCoor,int FrAtNu, float **ref, float **FrAlSet)
+bool set_align_ref(double **FrCoor,int FrAtNu, double **ref, double **FrAlSet)
   /*##########################################
   Set a three atom reference for fragment alignment. The first atom of
   the fragment is placed in the origin, the second on the x-axis and the
@@ -15,21 +15,21 @@ bool set_align_ref(float **FrCoor,int FrAtNu, float **ref, float **FrAlSet)
   ############################################*/
 
   /*##########################################
-  float **FrCoor - Original fragment coordinates
+  double **FrCoor - Original fragment coordinates
   int FrAtNu - Number of atoms
-  float **ref - New coordinates of the three atoms used as reference
-  float **FrAlSet - Old coordinates of the three atoms used as reference
+  double **ref - New coordinates of the three atoms used as reference
+  double **FrAlSet - Old coordinates of the three atoms used as reference
   ############################################*/
 {
-  float ang123,d12,d23;
-  float dAB[4], dAC[4], cPr[4];
-  //float align_set[4][4];// ref[4][4];
+  double ang123,d12,d23;
+  double dAB[4], dAC[4], cPr[4];
+  //double align_set[4][4];// ref[4][4];
   int i,j, iat;
   /*##########################################
   int i,j,iat - multipurpose indices
-  float ang123 - angle (in range 0-180) between atoms 1,2,3
-  float d12 - distance between atom 1 and 2
-  float d13 - distance between atom 1 and 3
+  double ang123 - angle (in range 0-180) between atoms 1,2,3
+  double d12 - distance between atom 1 and 2
+  double d13 - distance between atom 1 and 3
   dAB - difference between coordinates of second and first atom
   dAC - difference between coordinates of third and first atom
   cPr - Cross product between dAB and dAC to check for collinearity
@@ -85,25 +85,25 @@ bool set_align_ref(float **FrCoor,int FrAtNu, float **ref, float **FrAlSet)
   return false;
 }
 
-void struct_align(float **FrCoor,int FrAtNu, float **FrAlRef,
-                float **FrAlSet,int AlAtNu)
+void struct_align(double **FrCoor,int FrAtNu, double **FrAlRef,
+                double **FrAlSet,int AlAtNu)
   /*########################
   Perform least square alignment using quaternions. It is a wrapper for align_3D
-  float **FrCoor - Fragment coords
+  double **FrCoor - Fragment coords
   int FrAtNu - Number of atoms
-  float **FrAlRef - Reference for alignment
-  float **FrAlSet - Alignment set
+  double **FrAlRef - Reference for alignment
+  double **FrAlSet - Alignment set
   int AlAtNu - Number of atoms in the alignment set
   ########################*/
 {
   Quaternion<double> *qrot;
-  float tvec[4], cto[4], ctn[4];
+  double tvec[4], cto[4], ctn[4];
   int iat;
   /*########################
   Quaternion<double> *qrot - Rotation Quaternion
-  float tvec[4] - Tranlation vectors
-  float cto[4] - Old centroid of the alignment set
-  float ctn[4] - New centroid of the alignment set
+  double tvec[4] - Tranlation vectors
+  double cto[4] - Old centroid of the alignment set
+  double ctn[4] - New centroid of the alignment set
   ########################*/
   //cout << "before align 3D" << endl;
   align_3D(AlAtNu,FrAlSet,FrAlRef,&qrot,tvec,cto,ctn);
@@ -125,17 +125,17 @@ void struct_align(float **FrCoor,int FrAtNu, float **FrAlRef,
 }
 
 template<class T>
-void align_3D(int n,float **FrAlSet,float **FrAlRef,Quaternion<T> **qrot,
-                float *tvec,float *cto,float *ctn)
+void align_3D(int n,double **FrAlSet,double **FrAlRef,Quaternion<T> **qrot,
+                double *tvec,double *cto,double *ctn)
   /*########################
   Calculate quaternion and translation vector for least square alignment.
   int n - Number of atoms
-  float **FrAlSet - Coordinates of set to align
-  float **FrAlRef - Coordinates of reference set
+  double **FrAlSet - Coordinates of set to align
+  double **FrAlRef - Coordinates of reference set
   Quaternion<T> **qrot - Alignment quaternion
-  float *tvec - Translation vector
-  float *cto - Old centroid
-  float *ctn - New cetroid
+  double *tvec - Translation vector
+  double *cto - Old centroid
+  double *ctn - New cetroid
   ########################*/
 {
   Quaternion<double> *qrot_L;
@@ -220,12 +220,12 @@ void align_3D(int n,float **FrAlSet,float **FrAlRef,Quaternion<T> **qrot,
   free_dmatrix(mataT,1,4,1,4);
 }
 
-void CentroidCalc(float **Coord,int nAt,float *centroid)
+void CentroidCalc(double **Coord,int nAt,double *centroid)
   /*########################
   Calculate geometric centroid.
-  float **Coord - molecule coordinates
+  double **Coord - molecule coordinates
   int nAt - number of atoms
-  float *centroid - centroid coordinates
+  double *centroid - centroid coordinates
   ########################*/
 {
   int i;

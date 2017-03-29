@@ -5,17 +5,17 @@
 #endif
 
 void write_charmm(int CurFra,int SFWrNu,int FrAtNu,int *Index_ro,
-                  float *Coulo_ro,float *Vande_ro,float *TotEn_ro,
-                  char **FrAtTy,float ***FrCoPo,char **ResN_fr,
+                  double *Coulo_ro,double *Vande_ro,double *TotEn_ro,
+                  char **FrAtTy,double ***FrCoPo,char **ResN_fr,
                   char **FrFiNa_out)
 /* This function makes a unique charmm format file :
-   WriPat  the path of the file in which one writes the charmm format 
+   WriPat  the path of the file in which one writes the charmm format
    FrAtTy  fragment atoms types
    FraNam  fragment name
    SegIde  identification string for the charmm format
    ToNuAt  incrementation up to the total number of atoms
    FrCoPo  coordinates to be written
-   LiFrNu  limit fragment number as output 
+   LiFrNu  limit fragment number as output
    FolLin  starting number of the following lines to be written */
 {
   FILE *FilePa_1;
@@ -34,14 +34,14 @@ void write_charmm(int CurFra,int SFWrNu,int FrAtNu,int *Index_ro,
   ToNuAt=0;
 
 /* Decide the number of fragment which will be written in the output file */
-  if (SFWrNu>999) 
+  if (SFWrNu>999)
     LiFrNu=999;
   else
     LiFrNu=SFWrNu;
   fprintf(FilePa_1,"%5d\n",LiFrNu*FrAtNu);
 
-/* Decide the starting number of the following lines to be written */ 
-  if (FrAtNu>=5) 
+/* Decide the starting number of the following lines to be written */
+  if (FrAtNu>=5)
     FolLin=6;
   else
     FolLin=4;

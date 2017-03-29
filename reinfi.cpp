@@ -9,61 +9,61 @@
 #endif
 
 /*void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
-            int *FragNu,char ***FrFiNa,char *TREFiP,float *SphAng,
-            int *SphPoN,int *NuRoAx,float *VdWFaB,float *CoDieV,int *CoDieP,
-            float *CoGrIn,float *CoGrSi,char *OutFil,float *BuEvFa,
-            float **FrMaEn,float *PsSpRa,float *GrSiCu_en,
+            int *FragNu,char ***FrFiNa,char *TREFiP,double *SphAng,
+            int *SphPoN,int *NuRoAx,double *VdWFaB,double *CoDieV,int *CoDieP,
+            double *CoGrIn,double *CoGrSi,char *OutFil,double *BuEvFa,
+            double **FrMaEn,double *PsSpRa,double *GrSiCu_en,
             int *FiNuMa,double *GrInSo,double *GrSiSo,double *WaMoRa,
             int *NPtSphere,double *DielWa,double *DielRe,char *ReDesoAlg,
             char *DesoMapAcc,char *DesoMapFile,char *FDexe,char *FDdir,
             double *ReSurfDens_apol,double *PtDensFr,double *Sphere_apol,
-            float *NCutapolRatio,double *ScaleDeso,
-            double *ScaleVDW,float **SimWei,float *SimExp,
-            float *SimCut,float **FrMaEn_sd,float *SimExp_sd,float *SimCut_sd,
-            int *BSMeNu,int **BSMeAN,float ***BSMeVE,char *CoGrAcc,
+            double *NCutapolRatio,double *ScaleDeso,
+            double *ScaleVDW,double **SimWei,double *SimExp,
+            double *SimCut,double **FrMaEn_sd,double *SimExp_sd,double *SimCut_sd,
+            int *BSMeNu,int **BSMeAN,double ***BSMeVE,char *CoGrAcc,
             char *CoGrFile,char *EvalEn,char *Solv_typ,
-            char *SpPoCh_opt,float *SpPoCh_cent,float *SpPoCh_rad,
-            float *SFDeso_fr,float *SFDeso_re,float *SFVWEn,float *SFIntElec,
-            int *NuClusMem,float *RedRPV_rp,float*RedRPV_nkvRatio,float *ScMaBump,
-            float *MuFaVdWCoff_ap,int *NuLiEnClus,char ***ApPoChoi,
-            float *VWGrIn,float *VWGrSi,float *BumpFaCut,char *VWGrAcc,
+            char *SpPoCh_opt,double *SpPoCh_cent,double *SpPoCh_rad,
+            double *SFDeso_fr,double *SFDeso_re,double *SFVWEn,double *SFIntElec,
+            int *NuClusMem,double *RedRPV_rp,double*RedRPV_nkvRatio,double *ScMaBump,
+            double *MuFaVdWCoff_ap,int *NuLiEnClus,char ***ApPoChoi,
+            double *VWGrIn,double *VWGrSi,double *BumpFaCut,char *VWGrAcc,
             char *VWGrFile,int *MaxPosClus,int *PrintLev,
-            int *NumbAT,char ***AtTyAr,int **AtENAr,float **VdWRad,
-            float **VdWEne,float ***BLAtTy,int *distrPointBSNumb,
-	    float ***distrPointBS,float *angle_rmin,float *angle_rmax,
-	    float *mult_fact_rmin,float *mult_fact_rmax,char *EmpCorrB,
-            char *gc_opt,int *gc_reprke,float *gc_cutclus,float *gc_endifclus,
-            float *gc_weighneg,float *gc_weighpos,int *gc_maxwrite,
+            int *NumbAT,char ***AtTyAr,int **AtENAr,double **VdWRad,
+            double **VdWEne,double ***BLAtTy,int *distrPointBSNumb,
+	    double ***distrPointBS,double *angle_rmin,double *angle_rmax,
+	    double *mult_fact_rmin,double *mult_fact_rmax,char *EmpCorrB,
+            char *gc_opt,int *gc_reprke,double *gc_cutclus,double *gc_endifclus,
+            double *gc_weighneg,double *gc_weighpos,int *gc_maxwrite,
             char *write_pproc_opt,char *write_pproc_chm_opt,int *CorrFiNumb)*/
 void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
-            char *FrFiNa,char *TREFiP,float *SphAng,
-            int *SphPoN,int *NuRoAx,float *VdWFaB,float *CoDieV,int *CoDieP,
-            float *CoGrIn,float *CoGrSi,char *OutFil,float *BuEvFa,
-            float *FrMaEn,float *PsSpRa,float *GrSiCu_en,
+            char *FrFiNa,char *TREFiP,double *SphAng,
+            int *SphPoN,int *NuRoAx,double *VdWFaB,double *CoDieV,int *CoDieP,
+            double *CoGrIn,double *CoGrSi,char *OutFil,double *BuEvFa,
+            double *FrMaEn,double *PsSpRa,double *GrSiCu_en,
             int *FiNuMa,double *GrInSo,double *GrSiSo,double *WaMoRa,
             int *NPtSphere,double *DielWa,double *DielRe,char *ReDesoAlg,
             char *DesoMapAcc,char *DesoMapFile,char *FDexe,char *FDdir,
             double *ReSurfDens_apol,double *PtDensFr,double *Sphere_apol,
-            float *NCutapolRatio/**NCutapol*/,double *ScaleDeso,
-            double *ScaleVDW,float **SimWei,float *SimExp,
-            float *SimCut,float *FrMaEn_sd,float *SimExp_sd,float *SimCut_sd,
-            int *BSMeNu,int **BSMeAN,float ***BSMeVE,char *CoGrAcc,
+            double *NCutapolRatio/**NCutapol*/,double *ScaleDeso,
+            double *ScaleVDW,double **SimWei,double *SimExp,
+            double *SimCut,double *FrMaEn_sd,double *SimExp_sd,double *SimCut_sd,
+            int *BSMeNu,int **BSMeAN,double ***BSMeVE,char *CoGrAcc,
             char *CoGrFile,char *EvalEn,char *Solv_typ,
-            char *SpPoCh_opt,float *SpPoCh_cent,float *SpPoCh_rad,
-            float *SFDeso_fr,float *SFDeso_re,float *SFVWEn,float *SFIntElec,
-            int *NuClusMem,int *NuPosMem /*clangini*/,float *RedRPV_rp,
-            float*RedRPV_nkvRatio,float *ScMaBump, /*int *RedRPV_nkv, dey new */
-            float *MuFaVdWCoff_ap,int *NuLiEnClus,char *ApPoChoi,
-            float *VWGrIn,float *VWGrSi,float *BumpFaCut,char *VWGrAcc,
+            char *SpPoCh_opt,double *SpPoCh_cent,double *SpPoCh_rad,
+            double *SFDeso_fr,double *SFDeso_re,double *SFVWEn,double *SFIntElec,
+            int *NuClusMem,int *NuPosMem /*clangini*/,double *RedRPV_rp,
+            double*RedRPV_nkvRatio,double *ScMaBump, /*int *RedRPV_nkv, dey new */
+            double *MuFaVdWCoff_ap,int *NuLiEnClus,char *ApPoChoi,
+            double *VWGrIn,double *VWGrSi,double *BumpFaCut,char *VWGrAcc,
             char *VWGrFile,int *MaxPosClus,int *PrintLev,
-            int *NumbAT,char ***AtTyAr,int **AtENAr,float **VdWRad,
-            float **VdWEne,float ***BLAtTy,int *distrPointBSNumb,
-	    float ***distrPointBS,float *angle_rmin,float *angle_rmax,
-	    float *mult_fact_rmin,float *mult_fact_rmax,char *EmpCorrB,
-            char *gc_opt,int *gc_reprke,float *gc_cutclus,float *gc_endifclus,
-            float *gc_weighneg,float *gc_weighpos,int *gc_maxwrite,
+            int *NumbAT,char ***AtTyAr,int **AtENAr,double **VdWRad,
+            double **VdWEne,double ***BLAtTy,int *distrPointBSNumb,
+	    double ***distrPointBS,double *angle_rmin,double *angle_rmax,
+	    double *mult_fact_rmin,double *mult_fact_rmax,char *EmpCorrB,
+            char *gc_opt,int *gc_reprke,double *gc_cutclus,double *gc_endifclus,
+            double *gc_weighneg,double *gc_weighpos,int *gc_maxwrite,
             char *write_pproc_opt,char *write_pproc_chm_opt,char *write_best_opt,
-            char *write_sumtab_opt,float **AtWei)
+            char *write_sumtab_opt,double **AtWei)
 /* This function reads the data of the input (InpFil) and parameters (TREFiP)
    files :
    OutFil  path of the file containing the output informations
@@ -176,11 +176,11 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
     FILE *FilePa,*FilePa2;/* unused variable : ,*FilChk;*/
   /* char StrLin[_STRLENGTH], **FrFiNa_L,**ApPoChoi_L,**AtTyAr_L; */
   char StrLin[_STRLENGTH], /*FrFiNa_L[_STRLENGTH], ApPoChoi_L[2]*/ **AtTyAr_L;
- /* float *FrMaEn_L,Value_nd,*FrMaEn_sd_L,*VdWRad_L,*VdWEne_L,UsVal;*/
-  float Value_nd, *VdWRad_L, *VdWEne_L, UsVal;
+ /* double *FrMaEn_L,Value_nd,*FrMaEn_sd_L,*VdWRad_L,*VdWEne_L,UsVal;*/
+  double Value_nd, *VdWRad_L, *VdWEne_L, UsVal;
   int *BSReNu_L,i,NonDef,AtoEle_1,AtoEle_2,j,Atom1,Atom2,dummy1,UsVal2,k;
   int AtEl; //clangini
-  //float AtWei_k; // clangini
+  //double AtWei_k; // clangini
   char dummyStr[5]; //clangini
 /* ----------------------------------------- */
 /* ---------- Read the input file ---------- */
@@ -224,10 +224,10 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
    criterion */
   SkipComLin(FilePa,StrLin);
   sscanf(StrLin,"%d",distrPointBSNumb);
-  *distrPointBS=matrix(1,*distrPointBSNumb,1,3);
+  *distrPointBS=dmatrix(1,*distrPointBSNumb,1,3);
   for (i=1;i<=*distrPointBSNumb;i++) {
     fgets_wrapper(StrLin,_STRLENGTH,FilePa);
-    sscanf(StrLin,"%f%f%f",&(*distrPointBS)[i][1],&(*distrPointBS)[i][2],
+    sscanf(StrLin,"%lf%lf%lf",&(*distrPointBS)[i][1],&(*distrPointBS)[i][2],
            &(*distrPointBS)[i][3]);
   }
 
@@ -236,16 +236,16 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
   SkipComLin(FilePa,StrLin);
   sscanf(StrLin,"%d",BSMeNu);
   *BSMeAN=ivector(1,*BSMeNu);
-  *BSMeVE=matrix(1,*BSMeNu,1,3);
+  *BSMeVE=dmatrix(1,*BSMeNu,1,3);
   for (i=1;i<=*BSMeNu;i++) {
     fgets_wrapper(StrLin,_STRLENGTH,FilePa);
-    sscanf(StrLin,"%d%f%f%f",&(*BSMeAN)[i],&(*BSMeVE)[i][1],&(*BSMeVE)[i][2],
+    sscanf(StrLin,"%d%lf%lf%lf",&(*BSMeAN)[i],&(*BSMeVE)[i][1],&(*BSMeVE)[i][2],
 	   &(*BSMeVE)[i][3]);
   }
 
 /* Select only fragments in sphere (y/n, sphere center, sphere radius) */
   SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%s%f%f%f%f",SpPoCh_opt,&SpPoCh_cent[1],&SpPoCh_cent[2],
+  sscanf(StrLin,"%s%lf%lf%lf%lf",SpPoCh_opt,&SpPoCh_cent[1],&SpPoCh_cent[2],
          &SpPoCh_cent[3],SpPoCh_rad);
 
 /* Number of fragments / Compute the energy of these positions (y,n)
@@ -257,8 +257,8 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
   /* sscanf(StrLin,"%d%s",FragNu,EvalEn);*/
   sscanf(StrLin, "%s", EvalEn);
   fgets_wrapper(StrLin,_STRLENGTH,FilePa);
-  //sscanf(StrLin, "%s%s%f%f", FrFiNa_L, ApPoChoi_L, FrMaEn, FrMaEn_sd);
-  sscanf(StrLin, "%s%s%f%f", FrFiNa, ApPoChoi, FrMaEn, FrMaEn_sd);
+  //sscanf(StrLin, "%s%s%lf%lf", FrFiNa_L, ApPoChoi_L, FrMaEn, FrMaEn_sd);
+  sscanf(StrLin, "%s%s%lf%lf", FrFiNa, ApPoChoi, FrMaEn, FrMaEn_sd);
   //*FrFiNa = FrFiNa_L;
   //*ApPoChoi = ApPoChoi_L;
 
@@ -274,7 +274,7 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
   /* *CorrFiNumb=0;
   for (i=1;i<=*FragNu;i++) {
     fgets_wrapper(StrLin,_STRLENGTH,FilePa);
-    sscanf(StrLin,"%s%s%f%f",FrFiNa_L[i]+1,ApPoChoi_L[i]+1,&FrMaEn_L[i],
+    sscanf(StrLin,"%s%s%lf%lf",FrFiNa_L[i]+1,ApPoChoi_L[i]+1,&FrMaEn_L[i],
                              &FrMaEn_sd_L[i]);
 
     if(!CheckMol2File( FrFiNa_L[i]+1 ))
@@ -327,7 +327,7 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
 /* old : Maximal number of conserved vectors : polar case / apolar case */
 /* Ratio of conserved vectors to retain : polar case / apolar case */
   SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%f%f",RedRPV_nkvRatio,NCutapolRatio);
+  sscanf(StrLin,"%lf%lf",RedRPV_nkvRatio,NCutapolRatio);
 
 /* Number of cluster members to be written in output files */
 // cluster members for the first clustering!
@@ -367,16 +367,16 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
    bumps, the factor for the checking of the bumps distances and the factor of
    bump evaluation */
   SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%f%f%f",ScMaBump,VdWFaB,BuEvFa);
+  sscanf(StrLin,"%lf%lf%lf",ScMaBump,VdWFaB,BuEvFa);
 
 /* Cutoff (maximal vdW energy) for bump checking with fast energy evaluation */
   SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%f",BumpFaCut);
+  sscanf(StrLin,"%lf",BumpFaCut);
 
 /* Read the sphere angle and number of desired points on the part of the
    sphere */
   SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%f%d",SphAng,SphPoN);
+  sscanf(StrLin,"%lf%d",SphAng,SphPoN);
 
 /* Read the number of fragment rotations around each axis */
   SkipComLin(FilePa,StrLin);
@@ -385,30 +385,30 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
 /* Read the parameters used for the reduction of rec polar
    and apolar vectors */
   SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%f%f%f%f",angle_rmin,angle_rmax,
+  sscanf(StrLin,"%lf%lf%lf%lf",angle_rmin,angle_rmax,
          mult_fact_rmin,mult_fact_rmax);
 
 /* Reducing of the rec. polar vect. : vdW radius probe */
   SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%f",RedRPV_rp);
+  sscanf(StrLin,"%lf",RedRPV_rp);
 
 /* Read for the coulombic interaction : dielectric power, grid increase and
    grid size */
   SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%d%f%f",CoDieP,CoGrIn,CoGrSi);
+  sscanf(StrLin,"%d%lf%lf",CoDieP,CoGrIn,CoGrSi);
 
 /* Read VWGrIn and VWGrSi */
   SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%f%f",VWGrIn,VWGrSi);
+  sscanf(StrLin,"%lf%lf",VWGrIn,VWGrSi);
 
 /* Read the pseudo-sphere radius as cutoff and grid size of the cubes for the
    evaluation of the vdW energy */
   SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%f%f",PsSpRa,GrSiCu_en);
+  sscanf(StrLin,"%lf%lf",PsSpRa,GrSiCu_en);
 
 /* Multiplic. factor for vdW energy cutoff in seeding apolar fragments */
   SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%f",MuFaVdWCoff_ap);
+  sscanf(StrLin,"%lf",MuFaVdWCoff_ap);
 
 /* Maximal number of mol2 files to be written for each fragment type */
   SkipComLin(FilePa,StrLin);
@@ -453,7 +453,7 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
 /* Scaling factors for vdW energy, for electrostatic interaction energy and
    for the receptor/fragment desolvation energies */
   SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%f%f%f%f",SFVWEn,SFIntElec,SFDeso_re,SFDeso_fr);
+  sscanf(StrLin,"%lf%lf%lf%lf",SFVWEn,SFIntElec,SFDeso_re,SFDeso_fr);
 
 /*clangini 2016 START*/
 /* Similarity weight factors (150 atom elements) for GSEAL */
@@ -481,7 +481,7 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
   if (NonDef) {
     for (i=1;i<=NonDef;i++) {
       fgets_wrapper(StrLin,_STRLENGTH,FilePa);
-      sscanf(StrLin,"%d%d%f",&AtoEle_1,&AtoEle_2,&Value_nd);
+      sscanf(StrLin,"%d%d%lf",&AtoEle_1,&AtoEle_2,&Value_nd);
       SimWei[AtoEle_1][AtoEle_2]=Value_nd;
       if (AtoEle_1!=AtoEle_2)
         SimWei[AtoEle_2][AtoEle_1]=Value_nd;
@@ -490,11 +490,11 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
 
 /* Similarity exponential and cutoff factors for GSEAL */
   SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%f%f",SimExp,SimCut);
+  sscanf(StrLin,"%lf%lf",SimExp,SimCut);
 
 /* Similarity exponential and cutoff factors for GSEAL (second) */
   SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%f%f",SimExp_sd,SimCut_sd);
+  sscanf(StrLin,"%lf%lf",SimExp_sd,SimCut_sd);
 
 /* Maximal number of positions to be clustered */
   SkipComLin(FilePa,StrLin);
@@ -504,7 +504,7 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
    modifications (Compare with UHBD options) */
 /* build geometrical centers for FFLD */
 /*  SkipComLin(FilePa,StrLin); */
-/*  sscanf(StrLin,"%s%d%d%f%f%f%f",gc_opt,gc_maxwrite,gc_reprke,gc_cutclus,
+/*  sscanf(StrLin,"%s%d%d%lf%lf%lf%lf",gc_opt,gc_maxwrite,gc_reprke,gc_cutclus,
                 gc_endifclus,gc_weighneg,gc_weighpos); */
   gc_opt = (char *)"n"; //added explicit cast. clangini
 /* clangini 2016 end */
@@ -534,21 +534,21 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
   sscanf(StrLin,"%d",NumbAT);
   AtTyAr_L=cmatrix(1,*NumbAT,1,7);
   *AtENAr=ivector(1,*NumbAT);
-  VdWRad_L=vector(1,*NumbAT);
-  VdWEne_L=vector(1,*NumbAT);
+  VdWRad_L=dvector(1,*NumbAT);
+  VdWEne_L=dvector(1,*NumbAT);
   *AtTyAr=AtTyAr_L;
   *VdWRad=VdWRad_L;
   *VdWEne=VdWEne_L;
   for (i=1;i<=*NumbAT;i++) {
     fgets_wrapper(StrLin,_STRLENGTH,FilePa);
-    sscanf(StrLin,"%d%s%d%f%f",&dummy1,&AtTyAr_L[i][1],&(*AtENAr)[i],
+    sscanf(StrLin,"%d%s%d%lf%lf",&dummy1,&AtTyAr_L[i][1],&(*AtENAr)[i],
            &VdWRad_L[i],&VdWEne_L[i]);
   }
 
 /* Read and construct BLAtTy */
   SkipComLin(FilePa,StrLin);
-  *BLAtTy=matrix(1,*NumbAT,1,*NumbAT);
-  sscanf(StrLin,"%f",&UsVal);
+  *BLAtTy=dmatrix(1,*NumbAT,1,*NumbAT);
+  sscanf(StrLin,"%lf",&UsVal);
   for (i=1;i<=*NumbAT;i++) {
     for (j=1;j<=*NumbAT;j++) {
       (*BLAtTy)[i][j]=UsVal;
@@ -559,7 +559,7 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
   sscanf(StrLin,"%d",&UsVal2);
   for (k=1;k<=UsVal2;k++) {
     fgets_wrapper(StrLin,_STRLENGTH,FilePa);
-    sscanf(StrLin,"%d%d%f",&Atom1,&Atom2,&UsVal);
+    sscanf(StrLin,"%d%d%lf",&Atom1,&Atom2,&UsVal);
     for (i=1;i<=*NumbAT;i++) {
       for (j=1;j<=*NumbAT;j++) {
         if ((((*AtENAr)[i]==Atom1)&&((*AtENAr)[j]==Atom2))||
@@ -573,7 +573,7 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
   sscanf(StrLin,"%d",&UsVal2);
   for (k=1;k<=UsVal2;k++) {
     fgets_wrapper(StrLin,_STRLENGTH,FilePa);
-    sscanf(StrLin,"%d%d%f",&Atom1,&Atom2,&UsVal);
+    sscanf(StrLin,"%d%d%lf",&Atom1,&Atom2,&UsVal);
     (*BLAtTy)[Atom1][Atom2]=UsVal;
     (*BLAtTy)[Atom2][Atom1]=UsVal;
   }
@@ -594,10 +594,10 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
   SkipComLin(FilePa,StrLin);
   sscanf(StrLin,"%d",&UsVal2); // Number of elements (without element 0)
   //std::cout << "UsVal2 "<<UsVal2<<std::endl;
-  *AtWei=vector(0,UsVal2);
+  *AtWei=dvector(0,UsVal2);
   for (k=0;k<=UsVal2;k++) {
     fgets_wrapper(StrLin,_STRLENGTH,FilePa);
-    sscanf(StrLin,"%s%d%f",dummyStr,&AtEl,&(*AtWei)[k]);
+    sscanf(StrLin,"%s%d%lf",dummyStr,&AtEl,&(*AtWei)[k]);
     //std::cout << "dummyStr: "<<dummyStr
     //          << " AtEl: "<< AtEl
     //          << " k: " << k

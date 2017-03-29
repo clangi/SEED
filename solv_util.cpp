@@ -4,15 +4,15 @@
 #include "nrutil.h"
 #include "funct.h"
 
-float MaxVector(float *Vector, int VectorStart, int VectorEnd)
-/* Find the maximum of Array[*] between ArrayStart and ArrayEnd (float) */
+double MaxVector(double *Vector, int VectorStart, int VectorEnd)
+/* Find the maximum of Array[*] between ArrayStart and ArrayEnd (double) */
 {
   int i;
-  float max;
+  double max;
 
   max=Vector[VectorStart];
 
-  for (i=VectorStart;i<=VectorEnd;i++) 
+  for (i=VectorStart;i<=VectorEnd;i++)
     max = (Vector[i]>max) ? Vector[i] : max;
 
   return max;
@@ -26,7 +26,7 @@ double MaxDVector(double *Vector, int VectorStart, int VectorEnd)
 
   max=Vector[VectorStart];
 
-  for (i=VectorStart;i<=VectorEnd;i++) 
+  for (i=VectorStart;i<=VectorEnd;i++)
     max = (Vector[i]>max) ? Vector[i] : max;
 
   return max;
@@ -46,9 +46,9 @@ double MinVector(double *Vector, int VectorStart, int VectorEnd)
   return min;
 }
 
-int getColumnFrom2DArray(float **Array2D, int ColumnNum, 
+int getColumnFrom2DArray(double **Array2D, int ColumnNum,
                          int start, int end, double *Column)
-/* Get column "ColumnNum" from the matrix Array2D. Start from 
+/* Get column "ColumnNum" from the matrix Array2D. Start from
    line "start" and go up to line "end" */
 {
   int i;
@@ -56,14 +56,14 @@ int getColumnFrom2DArray(float **Array2D, int ColumnNum,
   for (i=start;i<=end;i++)
     Column[i]=Array2D[i][ColumnNum];
 
-  if (i == end) 
+  if (i == end)
     return 1;
   else
     return 0;
 }
 
-int SumVectors(double *vect1, float *vect2, int start, int end, double *sum)
-/* Sum vect1 and vect2 between "start" and "end" and put the sum 
+int SumVectors(double *vect1, double *vect2, int start, int end, double *sum)
+/* Sum vect1 and vect2 between "start" and "end" and put the sum
    in the vector sum */
 {
   int i;
@@ -71,15 +71,15 @@ int SumVectors(double *vect1, float *vect2, int start, int end, double *sum)
   for (i=start;i<=end;i++)
     sum[i]=vect1[i]+vect2[i];
 
-  if (i == end) 
+  if (i == end)
     return 1;
   else
     return 0;
 }
 
-int SubstractVectors(double *vect1, float *vect2, int start, int end, 
+int SubstractVectors(double *vect1, double *vect2, int start, int end,
     double *sum)
-/* Sum vect2 from vect1 between "start" and "end" and put the result 
+/* Sum vect2 from vect1 between "start" and "end" and put the result
    in the vector sum */
 {
   int i;
@@ -87,7 +87,7 @@ int SubstractVectors(double *vect1, float *vect2, int start, int end,
   for (i=start;i<=end;i++)
     sum[i]=vect1[i]-vect2[i];
 
-  if (i == end) 
+  if (i == end)
     return 1;
   else
     return 0;
@@ -130,7 +130,7 @@ struct point pt_minus_pt(struct point pt1, struct point pt2)
 }
 
 double pt_scal_pt(struct point pt1, struct point pt2)
-/* Get the scalar product of the 2 struct point pt1 and pt2 
+/* Get the scalar product of the 2 struct point pt1 and pt2
    and return the result */
 {
   return (pt1.x * pt2.x + pt1.y * pt2.y +  pt1.z * pt2.z);
@@ -145,14 +145,14 @@ void pt_eq_pt(struct point *Ppt1, struct point pt2)
 }
 
 void DSort(int N,int *IndArr,double *SorArr)
-/* This function sorts an array of double SorArr and gives also the new order 
+/* This function sorts an array of double SorArr and gives also the new order
    in the array IndArr. The result goes from the smallest to the largest. */
 {
   int m,k,i,j,l,nn,tempin,loopva;
-  float aln2i,lognb2,temp;
+  double aln2i,lognb2,temp;
 
   aln2i=1.0/0.69314718;
-  lognb2= (float) ((int) (logf(N)*aln2i+5.e-7));
+  lognb2= (double) ((int) (logf(N)*aln2i+5.e-7));
 
   m=N;
   for (nn=1;nn<=lognb2;nn++) {
@@ -172,7 +172,7 @@ void DSort(int N,int *IndArr,double *SorArr)
           IndArr[i]=IndArr[l];
           IndArr[l]=tempin;
           i=i-m;
-          if (i>=1) 
+          if (i>=1)
             loopva=1;
         }
       }

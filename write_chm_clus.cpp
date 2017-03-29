@@ -5,11 +5,11 @@
 #endif
 
 void write_chm_clus(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
-                    float *Coulo_ro,float *Vande_ro,float *TotEn_ro,
-                    char **FrAtTy,float ***FrCoPo,int *ClusLi_sd,
+                    double *Coulo_ro,double *Vande_ro,double *TotEn_ro,
+                    char **FrAtTy,double ***FrCoPo,int *ClusLi_sd,
                     int *ClusLi_sd_01,int NonAliHy,char **ResN_fr,
                     char **FrFiNa_out)
-/* This function makes a charmm format file containing the representatives of 
+/* This function makes a charmm format file containing the representatives of
    the clusters after the second GSEAL :
    WriPat  the path of the file in which one writes the charmm format
    FrAtTy  fragment atoms types
@@ -41,7 +41,7 @@ void write_chm_clus(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
   for (i1=1;i1<=SFWrNu;i1++)
     NumRep=NumRep+ClusLi_sd_01[i1];
 
-/* Decide the number of fragment which will be written in the output file 
+/* Decide the number of fragment which will be written in the output file
    and write the total number of written atoms */
   if (NumRep>999)
     LiFrNu=999;
@@ -60,7 +60,7 @@ void write_chm_clus(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
 
 /* Write the "first" lines */
       sprintf(SegIde,"%d%s",ToNuCR,"A\0");
-        
+
       InAtFr=1;
 
       while (!(AliHyd[InAtFr]))
@@ -68,7 +68,7 @@ void write_chm_clus(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
       ToNuAt=ToNuAt+1;
       fprintf(FilePa_1,"%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
               ToNuAt,ToNuCR,FraNam,&FrAtTy[InAtFr][1],
-              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2], 
+              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2],
               FrCoPo[ClusLi_sd[i1]][InAtFr][3],SegIde,ToNuCR,
               TotEn_ro[ClusLi_sd[i1]]);
 
@@ -78,7 +78,7 @@ void write_chm_clus(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
       ToNuAt=ToNuAt+1;
       fprintf(FilePa_1,"%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
               ToNuAt,ToNuCR,FraNam,&FrAtTy[InAtFr][1],
-              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2], 
+              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2],
               FrCoPo[ClusLi_sd[i1]][InAtFr][3],SegIde,ToNuCR,
               Vande_ro[ClusLi_sd[i1]]);
 
@@ -88,7 +88,7 @@ void write_chm_clus(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
       ToNuAt=ToNuAt+1;
       fprintf(FilePa_1,"%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
               ToNuAt,ToNuCR,FraNam,&FrAtTy[InAtFr][1],
-              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2], 
+              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2],
               FrCoPo[ClusLi_sd[i1]][InAtFr][3],SegIde,ToNuCR,
               Coulo_ro[ClusLi_sd[i1]]);
 
@@ -99,7 +99,7 @@ void write_chm_clus(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
         ToNuAt=ToNuAt+1;
         fprintf(FilePa_1,"%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
               ToNuAt,ToNuCR,FraNam,&FrAtTy[InAtFr][1],
-              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2], 
+              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2],
               FrCoPo[ClusLi_sd[i1]][InAtFr][3],SegIde,ToNuCR,0.0);
 
         InAtFr=InAtFr+1;
@@ -108,7 +108,7 @@ void write_chm_clus(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
         ToNuAt=ToNuAt+1;
         fprintf(FilePa_1,"%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
               ToNuAt,ToNuCR,FraNam,&FrAtTy[InAtFr][1],
-              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2], 
+              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2],
               FrCoPo[ClusLi_sd[i1]][InAtFr][3],SegIde,ToNuCR,
               TotEn_ro[ClusLi_sd[i1]]);
       }
@@ -120,7 +120,7 @@ void write_chm_clus(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
           fprintf(FilePa_1,
                   "%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
                   ToNuAt,ToNuCR,FraNam,&FrAtTy[i2][1],
-                  FrCoPo[ClusLi_sd[i1]][i2][1],FrCoPo[ClusLi_sd[i1]][i2][2], 
+                  FrCoPo[ClusLi_sd[i1]][i2][1],FrCoPo[ClusLi_sd[i1]][i2][2],
                   FrCoPo[ClusLi_sd[i1]][i2][3],SegIde,ToNuCR,0.0);
         }
       }
@@ -136,12 +136,12 @@ void write_chm_clus(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
 
 
 void write_chm_clus_reduc(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
-                          float *Coulo_ro,float *Vande_ro,float *TotEn_ro,
-                          char **FrAtTy,float ***FrCoPo,int *ClusLi_sd,
+                          double *Coulo_ro,double *Vande_ro,double *TotEn_ro,
+                          char **FrAtTy,double ***FrCoPo,int *ClusLi_sd,
                           int *ClusLi_sd_01_reduc,int NonAliHy,char **ResN_fr,
                           char **FrFiNa_out)
-/* This function makes a charmm format file containing the representatives of 
-   the clusters after the second GSEAL but keeping only a reduced number of 
+/* This function makes a charmm format file containing the representatives of
+   the clusters after the second GSEAL but keeping only a reduced number of
    representatives :
    WriPat  the path of the file in which one writes the charmm format
    FrAtTy  fragment atoms types
@@ -174,7 +174,7 @@ void write_chm_clus_reduc(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
   for (i1=1;i1<=SFWrNu;i1++)
     NumRep=NumRep+ClusLi_sd_01_reduc[i1];
 
-/* Decide the number of fragment which will be written in the output file 
+/* Decide the number of fragment which will be written in the output file
    and write the total number of written atoms */
   if (NumRep>999)
     LiFrNu=999;
@@ -193,7 +193,7 @@ void write_chm_clus_reduc(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
 
 /* Write the "first" lines */
       sprintf(SegIde,"%d%s",ToNuCR,"A\0");
-        
+
       InAtFr=1;
 
       while (!(AliHyd[InAtFr]))
@@ -201,7 +201,7 @@ void write_chm_clus_reduc(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
       ToNuAt=ToNuAt+1;
       fprintf(FilePa_1,"%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
               ToNuAt,ToNuCR,FraNam,&FrAtTy[InAtFr][1],
-              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2], 
+              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2],
               FrCoPo[ClusLi_sd[i1]][InAtFr][3],SegIde,ToNuCR,
               TotEn_ro[ClusLi_sd[i1]]);
 
@@ -211,7 +211,7 @@ void write_chm_clus_reduc(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
       ToNuAt=ToNuAt+1;
       fprintf(FilePa_1,"%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
               ToNuAt,ToNuCR,FraNam,&FrAtTy[InAtFr][1],
-              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2], 
+              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2],
               FrCoPo[ClusLi_sd[i1]][InAtFr][3],SegIde,ToNuCR,
               Vande_ro[ClusLi_sd[i1]]);
 
@@ -221,7 +221,7 @@ void write_chm_clus_reduc(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
       ToNuAt=ToNuAt+1;
       fprintf(FilePa_1,"%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
               ToNuAt,ToNuCR,FraNam,&FrAtTy[InAtFr][1],
-              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2], 
+              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2],
               FrCoPo[ClusLi_sd[i1]][InAtFr][3],SegIde,ToNuCR,
               Coulo_ro[ClusLi_sd[i1]]);
 
@@ -232,7 +232,7 @@ void write_chm_clus_reduc(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
         ToNuAt=ToNuAt+1;
         fprintf(FilePa_1,"%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
               ToNuAt,ToNuCR,FraNam,&FrAtTy[InAtFr][1],
-              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2], 
+              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2],
               FrCoPo[ClusLi_sd[i1]][InAtFr][3],SegIde,ToNuCR,0.0);
 
         InAtFr=InAtFr+1;
@@ -241,7 +241,7 @@ void write_chm_clus_reduc(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
         ToNuAt=ToNuAt+1;
         fprintf(FilePa_1,"%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
               ToNuAt,ToNuCR,FraNam,&FrAtTy[InAtFr][1],
-              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2], 
+              FrCoPo[ClusLi_sd[i1]][InAtFr][1],FrCoPo[ClusLi_sd[i1]][InAtFr][2],
               FrCoPo[ClusLi_sd[i1]][InAtFr][3],SegIde,ToNuCR,
               TotEn_ro[ClusLi_sd[i1]]);
       }
@@ -253,7 +253,7 @@ void write_chm_clus_reduc(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
           fprintf(FilePa_1,
                   "%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
                   ToNuAt,ToNuCR,FraNam,&FrAtTy[i2][1],
-                  FrCoPo[ClusLi_sd[i1]][i2][1],FrCoPo[ClusLi_sd[i1]][i2][2], 
+                  FrCoPo[ClusLi_sd[i1]][i2][1],FrCoPo[ClusLi_sd[i1]][i2][2],
                   FrCoPo[ClusLi_sd[i1]][i2][3],SegIde,ToNuCR,0.0);
         }
       }
@@ -269,10 +269,10 @@ void write_chm_clus_reduc(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
 
 
 void write_chm_clus_pproc(int CurFra,int NuPosSdCl,int FrAtNu,int *AliHyd,
-                          float *In_s_ro,float *VW_s_ro,float *To_s_ro,
-                          char **FrAtTy,float ***FrCoPo,int *FrPosAr_sort,
+                          double *In_s_ro,double *VW_s_ro,double *To_s_ro,
+                          char **FrAtTy,double ***FrCoPo,int *FrPosAr_sort,
                           int NonAliHy,char **ResN_fr,char **FrFiNa_out)
-/* This function makes a charmm format file containing the postprocessed 
+/* This function makes a charmm format file containing the postprocessed
    positions (of the conserved second clusters) :
    WriPat  the path of the file in which one writes the charmm format
    FrAtTy  fragment atoms types
@@ -303,7 +303,7 @@ void write_chm_clus_pproc(int CurFra,int NuPosSdCl,int FrAtNu,int *AliHyd,
 /* Number of cluster representatives */
   NumRep=NuPosSdCl;
 
-/* Decide the number of fragment which will be written in the output file 
+/* Decide the number of fragment which will be written in the output file
    and write the total number of written atoms */
   if (NumRep>999)
     LiFrNu=999;
@@ -322,7 +322,7 @@ void write_chm_clus_pproc(int CurFra,int NuPosSdCl,int FrAtNu,int *AliHyd,
 
 /* Write the "first" lines */
       sprintf(SegIde,"%d%s",ToNuCR,"A\0");
-        
+
       InAtFr=1;
 
       while (!(AliHyd[InAtFr]))
@@ -331,7 +331,7 @@ void write_chm_clus_pproc(int CurFra,int NuPosSdCl,int FrAtNu,int *AliHyd,
       fprintf(FilePa_1,"%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
               ToNuAt,ToNuCR,FraNam,&FrAtTy[InAtFr][1],
               FrCoPo[FrPosAr_sort[i1]][InAtFr][1],
-              FrCoPo[FrPosAr_sort[i1]][InAtFr][2], 
+              FrCoPo[FrPosAr_sort[i1]][InAtFr][2],
               FrCoPo[FrPosAr_sort[i1]][InAtFr][3],SegIde,ToNuCR,
               To_s_ro[FrPosAr_sort[i1]]);
 
@@ -342,7 +342,7 @@ void write_chm_clus_pproc(int CurFra,int NuPosSdCl,int FrAtNu,int *AliHyd,
       fprintf(FilePa_1,"%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
               ToNuAt,ToNuCR,FraNam,&FrAtTy[InAtFr][1],
               FrCoPo[FrPosAr_sort[i1]][InAtFr][1],
-              FrCoPo[FrPosAr_sort[i1]][InAtFr][2], 
+              FrCoPo[FrPosAr_sort[i1]][InAtFr][2],
               FrCoPo[FrPosAr_sort[i1]][InAtFr][3],SegIde,ToNuCR,
               VW_s_ro[FrPosAr_sort[i1]]);
 
@@ -353,7 +353,7 @@ void write_chm_clus_pproc(int CurFra,int NuPosSdCl,int FrAtNu,int *AliHyd,
       fprintf(FilePa_1,"%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
               ToNuAt,ToNuCR,FraNam,&FrAtTy[InAtFr][1],
               FrCoPo[FrPosAr_sort[i1]][InAtFr][1],
-              FrCoPo[FrPosAr_sort[i1]][InAtFr][2], 
+              FrCoPo[FrPosAr_sort[i1]][InAtFr][2],
               FrCoPo[FrPosAr_sort[i1]][InAtFr][3],SegIde,ToNuCR,
               In_s_ro[FrPosAr_sort[i1]]);
 
@@ -365,7 +365,7 @@ void write_chm_clus_pproc(int CurFra,int NuPosSdCl,int FrAtNu,int *AliHyd,
         fprintf(FilePa_1,"%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
               ToNuAt,ToNuCR,FraNam,&FrAtTy[InAtFr][1],
               FrCoPo[FrPosAr_sort[i1]][InAtFr][1],
-              FrCoPo[FrPosAr_sort[i1]][InAtFr][2], 
+              FrCoPo[FrPosAr_sort[i1]][InAtFr][2],
               FrCoPo[FrPosAr_sort[i1]][InAtFr][3],SegIde,ToNuCR,0.0);
 
         InAtFr=InAtFr+1;
@@ -375,7 +375,7 @@ void write_chm_clus_pproc(int CurFra,int NuPosSdCl,int FrAtNu,int *AliHyd,
         fprintf(FilePa_1,"%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
               ToNuAt,ToNuCR,FraNam,&FrAtTy[InAtFr][1],
               FrCoPo[FrPosAr_sort[i1]][InAtFr][1],
-              FrCoPo[FrPosAr_sort[i1]][InAtFr][2], 
+              FrCoPo[FrPosAr_sort[i1]][InAtFr][2],
               FrCoPo[FrPosAr_sort[i1]][InAtFr][3],SegIde,ToNuCR,
               To_s_ro[FrPosAr_sort[i1]]);
       }
@@ -388,7 +388,7 @@ void write_chm_clus_pproc(int CurFra,int NuPosSdCl,int FrAtNu,int *AliHyd,
                   "%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
                   ToNuAt,ToNuCR,FraNam,&FrAtTy[i2][1],
                   FrCoPo[FrPosAr_sort[i1]][i2][1],
-                  FrCoPo[FrPosAr_sort[i1]][i2][2], 
+                  FrCoPo[FrPosAr_sort[i1]][i2][2],
                   FrCoPo[FrPosAr_sort[i1]][i2][3],SegIde,ToNuCR,0.0);
         }
       }
@@ -404,9 +404,9 @@ void write_chm_clus_pproc(int CurFra,int NuPosSdCl,int FrAtNu,int *AliHyd,
 
 
 void write_chm_clus_pprocr(int CurFra,int NuSdClKe,int FrAtNu,char **FrAtTy,
-                           float ***FrCoPo,char **ResN_fr,char **FrFiNa_out,
+                           double ***FrCoPo,char **ResN_fr,char **FrFiNa_out,
                            int *ReprSdClAr)
-/* This function makes a charmm format file containing the postprocessed 
+/* This function makes a charmm format file containing the postprocessed
    representative positions (of the conserved second clusters) :
    WriPat  the path of the file in which one writes the charmm format
    FrAtTy  fragment atoms types
@@ -436,7 +436,7 @@ void write_chm_clus_pprocr(int CurFra,int NuSdClKe,int FrAtNu,char **FrAtTy,
 /* Number of cluster representatives */
   NumRep=NuSdClKe;
 
-/* Decide the number of fragment which will be written in the output file 
+/* Decide the number of fragment which will be written in the output file
    and write the total number of written atoms */
   if (NumRep>999)
     LiFrNu=999;
@@ -462,7 +462,7 @@ void write_chm_clus_pprocr(int CurFra,int NuSdClKe,int FrAtNu,char **FrAtTy,
                 "%5d%5d %-4s %-4s%10.5f%10.5f%10.5f %-4s %-4d%10.5f\n",
                 ToNuAt,ToNuCR,FraNam,&FrAtTy[i2][1],
                 FrCoPo[ReprSdClAr[i1]][i2][1],
-                FrCoPo[ReprSdClAr[i1]][i2][2], 
+                FrCoPo[ReprSdClAr[i1]][i2][2],
                 FrCoPo[ReprSdClAr[i1]][i2][3],SegIde,ToNuCR,0.0);
       }
 

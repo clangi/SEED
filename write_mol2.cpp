@@ -8,7 +8,7 @@
 #endif
 
 void write_mol2(char *WriPat,char *WriNam,int xxAtNu,int xxBdNu,char **xxAtEl,
-                float **xxCoor,char **xxAtTy,float *xxPaCh,int **xxBdAr,
+                double **xxCoor,char **xxAtTy,double *xxPaCh,int **xxBdAr,
                 char **xxBdTy,char *FrSubN,char *FrSubC,char **ResN_fr,
                 int CurFra)
         /* This function writes an output file in the mol2 format */
@@ -57,10 +57,10 @@ void write_mol2(char *WriPat,char *WriNam,int xxAtNu,int xxBdNu,char **xxAtEl,
 
 
 void write_mol2_clus_pproc(int CurFra,int NuPosSdCl,int FrAtNu,char **FrAtTy,
-                float ***FrCoPo,int *FrPosAr_sort,char **ResN_fr,
+                double ***FrCoPo,int *FrPosAr_sort,char **ResN_fr,
                 char **FrFiNa_out,int FrBdNu,char **FrAtEl,
-                float *FrPaCh,int **FrBdAr,char **FrBdTy,
-                char *FragNa,int *SdClusAr_sort,float *To_s_ro)
+                double *FrPaCh,int **FrBdAr,char **FrBdTy,
+                char *FragNa,int *SdClusAr_sort,double *To_s_ro)
         /* This function makes a mol2 format file containing the postprocessed
            positions (of the conserved second clusters) :
            WriPat  the path of the file in which one writes the mol2 format
@@ -130,10 +130,10 @@ void write_mol2_clus_pproc(int CurFra,int NuPosSdCl,int FrAtNu,char **FrAtTy,
 
 /*  C.LANGINI 23-09-2016 START*/
 void write_mol2_clus_pproc_syb(int CurFra,int NuPosSdCl,int FrAtNu,char **FrAtTy, char **FrSyAtTy,
-                float ***FrCoPo,int *FrPosAr_sort,char **ResN_fr,
+                double ***FrCoPo,int *FrPosAr_sort,char **ResN_fr,
                 char **FrFiNa_out,int FrBdNu,char **FrAtEl,
-                float *FrPaCh,int **FrBdAr,char **FrBdTy,
-                char *FragNa,int *SdClusAr_sort,float *To_s_ro)
+                double *FrPaCh,int **FrBdAr,char **FrBdTy,
+                char *FragNa,int *SdClusAr_sort,double *To_s_ro)
         /* Same as write_mol2_clus_pproc(...) but uses SYBYL atom types
            and write CHARMM ones in the @<TRIPOS>ALT_TYPE record.
            This function makes a mol2 format file containing the postprocessed
@@ -214,9 +214,9 @@ void write_mol2_clus_pproc_syb(int CurFra,int NuPosSdCl,int FrAtNu,char **FrAtTy
 }
 
 void append_pose_to_mol2_old(FILE *FilePa,char *FragNa,int FrAtNu,int FrBdNu,int imol,
-                char **FrAtEl,float ***FrCoPo,int *FrPosAr_sort,char **FrSyAtTy,
+                char **FrAtEl,double ***FrCoPo,int *FrPosAr_sort,char **FrSyAtTy,
                 int CurFra,char **ResN_fr,int **FrBdAr,char **FrBdTy,
-                int *SdClusAr_sort,float *To_s_ro,float *FrPaCh)
+                int *SdClusAr_sort,double *To_s_ro,double *FrPaCh)
         //Older version of the function as used previously. clangini
         /* This function appends a single pose as a new molecule
            to a mol2 file.
@@ -262,10 +262,10 @@ void append_pose_to_mol2_old(FILE *FilePa,char *FragNa,int FrAtNu,int FrBdNu,int
 
 
 void write_mol2_clus_pproc_separate(int CurFra,int NuPosSdCl,int FrAtNu,char **FrAtTy,
-                char **FrSyAtTy,float ***FrCoPo,int *FrPosAr_sort,
+                char **FrSyAtTy,double ***FrCoPo,int *FrPosAr_sort,
                 char **ResN_fr,char **FrFiNa_out,int FrBdNu,char **FrAtEl,
-                float *FrPaCh,int **FrBdAr,char **FrBdTy,
-                char *FragNa,int *SdClusAr_sort,float *To_s_ro)
+                double *FrPaCh,int **FrBdAr,char **FrBdTy,
+                char *FragNa,int *SdClusAr_sort,double *To_s_ro)
         /* Same as write_mol2_clus_pproc_syb(...) but writes different poses
            as different molecules.
            This function makes a mol2 format file containing the postprocessed
@@ -334,10 +334,10 @@ void write_mol2_clus_pproc_separate(int CurFra,int NuPosSdCl,int FrAtNu,char **F
 
 /* This function appends the new fragment/pose to the output mol2 file */
 void append_to_mol2(int CurFra,int NuPosSdCl,int FrAtNu,char **FrAtTy,
-                    char **FrSyAtTy,float ***FrCoPo,int *FrPosAr_sort,
+                    char **FrSyAtTy,double ***FrCoPo,int *FrPosAr_sort,
                     char **SubNa,char *FrFiNa_out,int FrBdNu,char **FrAtEl,
-                    float *FrPaCh,int **FrBdAr,char **FrBdTy,
-                    char *FragNa,int *SdClusAr_sort,float *To_s_ro,char *WriPat)
+                    double *FrPaCh,int **FrBdAr,char **FrBdTy,
+                    char *FragNa,int *SdClusAr_sort,double *To_s_ro,char *WriPat)
         /* This function appends a single fragment/pose as a new molecule
            to to the mol2 output file.
          */
@@ -414,9 +414,9 @@ void append_to_mol2(int CurFra,int NuPosSdCl,int FrAtNu,char **FrAtTy,
 
 void append_pose_to_mol2(FILE *FilePa,char *FragNa,/*int FragNa_count,*/
                 int FrAtNu,int FrBdNu,int imol,
-                char **FrAtEl,float ***FrCoPo,int Fr_nu,char **FrSyAtTy,
+                char **FrAtEl,double ***FrCoPo,int Fr_nu,char **FrSyAtTy,
                 char **FrAtTy,int CurFra,int **FrBdAr,char **FrBdTy,
-                int SdClu,float To_s_ro,float *FrPaCh,char **SubNa,
+                int SdClu,double To_s_ro,double *FrPaCh,char **SubNa,
                 std::string const&AlTySp)
         /* This function appends a single pose as a new molecule
            to a mol2 file. */
@@ -470,14 +470,14 @@ void append_pose_to_mol2(FILE *FilePa,char *FragNa,/*int FragNa_count,*/
 }
 
 void append_pose_to_mol2(FILE *FilePa,char *FragNa,int FrAtNu,int FrBdNu,int imol,
-                char **FrAtEl,float **FrCoPo,int Fr_nu,char **FrSyAtTy,
+                char **FrAtEl,double **FrCoPo,int Fr_nu,char **FrSyAtTy,
                 char **FrAtTy,int CurFra,int **FrBdAr,char **FrBdTy,
-                int SdClu,float To_s_ro,float *FrPaCh,char **SubNa,
+                int SdClu,double To_s_ro,double *FrPaCh,char **SubNa,
                 std::string const&AlTySp)
         /* This function appends a single pose as a new molecule
            to a mol2 file.
            ATTENTION: This is an overloaded function where
-           FrCoPo is passed as **float and not as ***float
+           FrCoPo is passed as **double and not as ***double
            At the moment this is used in the debugging */
 {
   int ii; /*ii=general counter(atom,bond, ...)*/
@@ -536,12 +536,12 @@ void append_pose_to_mol2(FILE *FilePa,char *FragNa,int FrAtNu,int FrBdNu,int imo
 void append_pose_to_mol2_double(FILE *FilePa,char *FragNa,int FrAtNu,int FrBdNu,int imol,
                 char **FrAtEl,double **FrCoPo,int Fr_nu,char **FrSyAtTy,
                 char **FrAtTy,int CurFra,int **FrBdAr,char **FrBdTy,
-                int SdClu,float To_s_ro,float *FrPaCh,char **SubNa,
+                int SdClu,double To_s_ro,double *FrPaCh,char **SubNa,
                 std::string const&AlTySp)
         /* This function appends a single pose as a new molecule
            to a mol2 file.
            ATTENTION: This is an overloaded function where
-           FrCoPo is passed as **float and not as ***float
+           FrCoPo is passed as **double and not as ***double
            At the moment this is used in the debugging */
 {
   int ii; /*ii=general counter(atom,bond, ...)*/

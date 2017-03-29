@@ -3,8 +3,8 @@
 #include <math.h>
 #include "funct.h"
 
-int AssiRE(int NumbAT,char **AtTyAr,float *VdWRad,float *VdWEne,int xxAtNu,
-            char **xxAtTy,float *xxVdWR,float *xxVdWE,FILE *FPaOut,
+int AssiRE(int NumbAT,char **AtTyAr,double *VdWRad,double *VdWEne,int xxAtNu,
+            char **xxAtTy,double *xxVdWR,double *xxVdWE,FILE *FPaOut,
             int *AtENAr,int *xxAtEl_nu,int *xxAtoTyp_nu)
 /* This function assigns the van der Waals radii, energies and atom element
    numbers :
@@ -44,7 +44,7 @@ int AssiRE(int NumbAT,char **AtTyAr,float *VdWRad,float *VdWEne,int xxAtNu,
 
 
 
-void SqRoEn(int xxAtNu,float *xxVdWE,float *xxVdWE_sr)
+void SqRoEn(int xxAtNu,double *xxVdWE,double *xxVdWE_sr)
 /* This function computes the square root of the van der Waals energies :
    xxAtNu     number of atoms
    xxVdWE     van der Waals energies array

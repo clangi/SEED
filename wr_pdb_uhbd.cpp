@@ -1,13 +1,13 @@
 #include <stdio.h>
 
-void Wr_pdb_uhbd(int ReAtNu,float **ReCoor,char *RecFilPDB)
+void Wr_pdb_uhbd(int ReAtNu,double **ReCoor,char *RecFilPDB)
 /* This function writes a kind of PDB format to be used by UHBD :
    RecFilPDB  name of the receptor file (PDB format for UHBD) */
 {
   FILE *FilePa_1;
   int i;
 
-/* Create RecFilPDB */  
+/* Create RecFilPDB */
   sprintf(RecFilPDB,"%s%s","./outputs/","receptor_uhbd.pdb\0");
   FilePa_1=fopen(RecFilPDB,"w");
 

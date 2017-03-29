@@ -24,7 +24,7 @@ void Sort_all(int FragNu,int *SFWrNu_ar,char **ResN_fr,char *Solv_typ)
   FILE *FilePa;
   char StrLin[150],StSeek[150];
   int SFWrNu_to,i,*FraTyp,*FraNumb,j,StLeng,ToNuLi,*IndCol,NuLiWr;
-  float *EneCol_1,*EneCol_2,*EneCol_3,*EneCol_4,*EneCol_5,
+  double *EneCol_1,*EneCol_2,*EneCol_3,*EneCol_4,*EneCol_5,
         *EneCol_6,*EneCol_7,*EneCol_8,*EneCol_9,*EneCol_10,
         *EneCol_co;
 
@@ -37,17 +37,17 @@ void Sort_all(int FragNu,int *SFWrNu_ar,char **ResN_fr,char *Solv_typ)
   FraTyp=ivector(1,SFWrNu_to);
   FraNumb=ivector(1,SFWrNu_to);
   IndCol=ivector(1,SFWrNu_to);
-  EneCol_1=vector(1,SFWrNu_to);
-  EneCol_2=vector(1,SFWrNu_to);
-  EneCol_3=vector(1,SFWrNu_to);
-  EneCol_4=vector(1,SFWrNu_to);
-  EneCol_5=vector(1,SFWrNu_to);
-  EneCol_6=vector(1,SFWrNu_to);
-  EneCol_7=vector(1,SFWrNu_to);
-  EneCol_8=vector(1,SFWrNu_to);
-  EneCol_9=vector(1,SFWrNu_to);
-  EneCol_10=vector(1,SFWrNu_to);
-  EneCol_co=vector(1,SFWrNu_to);
+  EneCol_1=dvector(1,SFWrNu_to);
+  EneCol_2=dvector(1,SFWrNu_to);
+  EneCol_3=dvector(1,SFWrNu_to);
+  EneCol_4=dvector(1,SFWrNu_to);
+  EneCol_5=dvector(1,SFWrNu_to);
+  EneCol_6=dvector(1,SFWrNu_to);
+  EneCol_7=dvector(1,SFWrNu_to);
+  EneCol_8=dvector(1,SFWrNu_to);
+  EneCol_9=dvector(1,SFWrNu_to);
+  EneCol_10=dvector(1,SFWrNu_to);
+  EneCol_co=dvector(1,SFWrNu_to);
 
 /* Read the needed informations of all the fragment types */
   FilePa=fopen("./outputs/do_not_touch_ener","r");
@@ -68,7 +68,7 @@ void Sort_all(int FragNu,int *SFWrNu_ar,char **ResN_fr,char *Solv_typ)
       for (j=1;j<=SFWrNu_ar[i];j++) {
         fgets_wrapper(StrLin,150,FilePa);
         ToNuLi=ToNuLi+1;
-        sscanf(StrLin,"%d%f%f%f%f%f%f%f%f%f%f",&FraNumb[ToNuLi],
+        sscanf(StrLin,"%d%lf%lf%lf%lf%lf%lf%lf%lf%lf%lf",&FraNumb[ToNuLi],
                &EneCol_1[ToNuLi],&EneCol_2[ToNuLi],&EneCol_3[ToNuLi],
                &EneCol_4[ToNuLi],&EneCol_5[ToNuLi],&EneCol_6[ToNuLi],
                &EneCol_7[ToNuLi],&EneCol_8[ToNuLi],&EneCol_9[ToNuLi],
@@ -127,16 +127,16 @@ void Sort_all(int FragNu,int *SFWrNu_ar,char **ResN_fr,char *Solv_typ)
   free_ivector(FraTyp,1,SFWrNu_to);
   free_ivector(FraNumb,1,SFWrNu_to);
   free_ivector(IndCol,1,SFWrNu_to);
-  free_vector(EneCol_1,1,SFWrNu_to);
-  free_vector(EneCol_2,1,SFWrNu_to);
-  free_vector(EneCol_3,1,SFWrNu_to);
-  free_vector(EneCol_4,1,SFWrNu_to);
-  free_vector(EneCol_5,1,SFWrNu_to);
-  free_vector(EneCol_6,1,SFWrNu_to);
-  free_vector(EneCol_7,1,SFWrNu_to);
-  free_vector(EneCol_8,1,SFWrNu_to);
-  free_vector(EneCol_9,1,SFWrNu_to);
-  free_vector(EneCol_10,1,SFWrNu_to);
-  free_vector(EneCol_co,1,SFWrNu_to);
+  free_dvector(EneCol_1,1,SFWrNu_to);
+  free_dvector(EneCol_2,1,SFWrNu_to);
+  free_dvector(EneCol_3,1,SFWrNu_to);
+  free_dvector(EneCol_4,1,SFWrNu_to);
+  free_dvector(EneCol_5,1,SFWrNu_to);
+  free_dvector(EneCol_6,1,SFWrNu_to);
+  free_dvector(EneCol_7,1,SFWrNu_to);
+  free_dvector(EneCol_8,1,SFWrNu_to);
+  free_dvector(EneCol_9,1,SFWrNu_to);
+  free_dvector(EneCol_10,1,SFWrNu_to);
+  free_dvector(EneCol_co,1,SFWrNu_to);
 
 }

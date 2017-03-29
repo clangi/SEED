@@ -57,6 +57,10 @@ double **dmatrix(long nrl, long nrh, long ncl, long nch);
 int **imatrix(long nrl, long nrh, long ncl, long nch);
 float **submatrix(float **a, long oldrl, long oldrh, long oldcl, long oldch,
 	long newrl, long newcl);
+/*clangini start*/
+double **subdmatrix(double **a, long oldrl, long oldrh, long oldcl, long oldch,
+		  long newrl, long newcl);
+/*clangini end*/
 float **convert_matrix(float *a, long nrl, long nrh, long ncl, long nch);
 float ***f3tensor(long nrl, long nrh, long ncl, long nch, long ndl, long ndh);
 void free_vector(float *v, long nl, long nh);
@@ -82,6 +86,11 @@ void free_i3tensor(int ***t, long nrl, long nrh, long ncl, long nch,
 	           long ndl, long ndh);
 /* ------------------------- */
 
+/*clangini start*/
+double ***ppdvector(long nl, long nh);
+void free_ppdvector(double ***v, long nl, long nh);
+/*clangini end*/
+
 /* ------ added by MS ------ */
 struct point *structpointvect(long nl, long nh);
 char ***c3tensor(long nrl, long nrh, long ncl, long nch, long ndl, long ndh);
@@ -97,7 +106,9 @@ void free_d3tensor(double ***t, long nrl, long nrh, long ncl, long nch,
 float * fvecresize(float *,int newsize);
 int   * ivecresize(int   *,int newsize);
 /* ... */
-
+/*clangini START*/
+double * dvecresize(double *,int newsize);
+/*clangini END*/
 /* ------ added by clangini ------ */
 double **zero_dmatrix(int rl,int rh,int cl,int ch);
 void dmm_prod(int m1,int n1,int m2,int n2,double **A,double **B,double **P);

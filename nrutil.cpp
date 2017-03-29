@@ -193,6 +193,28 @@ float **submatrix(float **a, long oldrl, long oldrh, long oldcl, long oldch,
   return m;
 }
 
+/*clangini start*/
+double **subdmatrix(double **a, long oldrl, long oldrh, long oldcl, long oldch,
+		  long newrl, long newcl)
+/* point a submatrix [newrl..][newcl..] to a[oldrl..oldrh][oldcl..oldch] */
+{
+  long i,j,nrow=oldrh-oldrl+1,ncol=oldcl-newcl;
+  double **m;
+
+  /* allocate array of pointers to rows */
+  m=(double **) malloc((size_t) ((nrow+NR_END)*sizeof(double*)));
+  if (!m) nrerror("allocation failure in submatrix()");
+  m += NR_END;
+  m -= newrl;
+
+  /* set pointers to rows */
+  for(i=oldrl,j=newrl;i<=oldrh;i++,j++) m[j]=a[i]+ncol;
+
+  /* return pointer to array of pointers to rows */
+  return m;
+}
+/*clangini end*/
+
 float **convert_matrix(float *a, long nrl, long nrh, long ncl, long nch)
 /* allocate a float matrix m[nrl..nrh][ncl..nch] that points to the matrix
    declared in the standard C manner as a[nrow][ncol], where nrow=nrh-nrl+1
@@ -358,6 +380,18 @@ float ***ppfvector(long nl, long nh)
   return v-nl+NR_END;
 }
 
+/* clangini start */
+double ***ppdvector(long nl, long nh)
+/* allocate a vector of pointer to pointer of double with subscript
+   range v[nl..nh] */
+{
+  double ***v;
+
+  v=(double ***)malloc((size_t) ((nh-nl+1+NR_END)*sizeof(double**)));
+  if (!v) nrerror("allocation failure in vector()");
+  return v-nl+NR_END;
+}
+/* clangini end */
 char **cmatrix(long nrl, long nrh, long ncl, long nch)
 /* allocate a character matrix with subscript range m[nrl..nrh][ncl..nch] */
 {
@@ -422,6 +456,14 @@ void free_ppfvector(float ***v, long nl, long nh)
 {
   free((FREE_ARG) (v+nl-NR_END));
 }
+
+/* clangini start */
+void free_ppdvector(double ***v, long nl, long nh)
+/* free a vector of pointer to pointer of double allocated with vector() */
+{
+  free((FREE_ARG) (v+nl-NR_END));
+}
+/* clangini end */
 
 void free_cmatrix(char **m, long nrl, long nrh, long ncl, long nch)
 /* free a character matrix allocated by cmatrix() */
@@ -546,7 +588,7 @@ void free_c3tensor(char ***t, long nrl, long nrh, long ncl, long nch,
 
 void free_d3tensor(double ***t, long nrl, long nrh, long ncl, long nch,
 		   long ndl, long ndh)
-/* free a float 3tensor allocated by d3tensor() */
+/* free a double 3tensor allocated by d3tensor() */
 {
   free((FREE_ARG) (t[nrl][ncl]+ndl-NR_END));
   free((FREE_ARG) (t[nrl]+ncl-NR_END));
@@ -571,7 +613,25 @@ float * fvecresize(float * vec, int newsize)
   exit(13);
   return NULL;
 }
+/*clangini START*/
+double * dvecresize(double * vec, int newsize)
+{
+  double * tmp;
+  /* fprintf(stderr,"FVEC-RESIZE %d\n",newsize); */
+  /*tmp = realloc(vec,(newsize * sizeof(double)) ); clangini */
+  tmp = (double *) realloc(vec,(newsize * sizeof(double)) ); /* clangini */
 
+  if(tmp != NULL)
+    { /* vec = tmp;  */
+      return tmp;
+    }
+
+  printf("Memory allocation error while increasing memory usage\n");
+  nrerror("allocation failure in dvector()");
+  exit(13);
+  return NULL;
+}
+/*clangini END*/
 int * ivecresize(int * vec, int newsize)
 {
   int * tmp;

@@ -4,20 +4,20 @@
 #include "funct.h"
 #include <stdlib.h> /*dey for gcc 4.0 compatibility*/
 
-void Reduc_polvectre(int ReAtNu,float **ReCoor,float *ReVdWR,float *ReVdWE_sr,
+void Reduc_polvectre(int ReAtNu,double **ReCoor,double *ReVdWR,double *ReVdWE_sr,
                      int ReAcNu,int ReDoNu,int *ReDATy,int *ReDAAt,int *ReHydN,
-                     float **ReVeCo,float RedRPV_rp,float RedRPV_nkvRatio, /*new float RedRPV_nkvRatio,*/
+                     double **ReVeCo,double RedRPV_rp,double RedRPV_nkvRatio, /*new double RedRPV_nkvRatio,*/
                      int *PolVect_rec_01,FILE *FPaOut,
-		     int distrPointBSNumb,float **distrPointBS,float angle_rmin,
-		     float angle_rmax,float mult_fact_rmin,float mult_fact_rmax,
+		     int distrPointBSNumb,double **distrPointBS,double angle_rmin,
+		     double angle_rmax,double mult_fact_rmin,double mult_fact_rmax,
 		     double Sphere_apol)
-/* This function reduces the number of polar vectors of the receptor by 
+/* This function reduces the number of polar vectors of the receptor by
    evaluating van der Waals energies of a probe located on these vectors :
    RedRPV_rp  van der Waals radius of the probe
    RedRPV_nkv  number of kept vectors (maximal number given by the user)
    RedRPV_nkvRatio ratio of kept vectors (maximal number given by the user)
                    after the angle criterion is applied
-   PolVect_rec_01  polar vectors of the receptor (0 if it is rejected, 1 if it 
+   PolVect_rec_01  polar vectors of the receptor (0 if it is rejected, 1 if it
                    is kept)
    ProbCoor  coordinates of the probe
    VdWEn_prob  van der Waals energy of the probe
@@ -28,12 +28,12 @@ void Reduc_polvectre(int ReAtNu,float **ReCoor,float *ReVdWR,float *ReVdWE_sr,
    RPSqDi  squared distance between a receptor atom and the probe atom
    SumRad  sum of the van der Waals radii
    RedRPV_ep_sr  square root of the van der Waals energy parameter of the probe
-   SortArray  array used in the sorting step 
+   SortArray  array used in the sorting step
    NumKeVe  actual number of kept vectors after the algorithm
-   distrPointBSNumb  number of points in the binding site used for the 
-                     reduction of rec polar and apolar vectors using an 
+   distrPointBSNumb  number of points in the binding site used for the
+                     reduction of rec polar and apolar vectors using an
 		     angle criterion
-   distrPointBS  distribution of points in the binding site used for 
+   distrPointBS  distribution of points in the binding site used for
                  the reduction of rec polar and apolar vectors using an
 		 angle criterion
    angle_rmin  angle cutoff for the reduction of vectors
@@ -42,18 +42,18 @@ void Reduc_polvectre(int ReAtNu,float **ReCoor,float *ReVdWR,float *ReVdWE_sr,
    angle_rmax_rad  angle cutoff for the reduction of vectors in radian
    mult_fact_rmin  multiplicative factor for the reduction of vectors
    mult_fact_rmax  multiplicative factor for the reduction of vectors
-   keptVect_angle  polar vectors on receptor (0 if rejected, 1 if kept) 
+   keptVect_angle  polar vectors on receptor (0 if rejected, 1 if kept)
                    in case of angle cutoff criterion
-   keptVect_angle_numb  number of rec polar vectors kept after angle 
+   keptVect_angle_numb  number of rec polar vectors kept after angle
                         cutoff criterion applied
    vect_angle_stored  array for storing angle for each vector
-   ReVeCo_elongated  in such a way the rec polar vectors are on a kind 
+   ReVeCo_elongated  in such a way the rec polar vectors are on a kind
                      of SAS */
 {
   FILE *FilePa;
   int i,j,*SortArray,NumKeVe,closestPoint,*keptVect_angle,
       keptVect_angle_numb,helpCount,maxCount,RedRPV_nkv; /*new RedRPV_nkv == internal variable*/
-  float ProbCoor[4],VdWEn_prob,RPSqDi,RPSqDi_p3,SumRad,SumRad_p6,
+  double ProbCoor[4],VdWEn_prob,RPSqDi,RPSqDi_p3,SumRad,SumRad_p6,
         *VdWEn_prob_arr,RedRPV_ep_sr,/*unused variable : ScaleFac,*/*VdWEn_prob_arr_in,
         *VdWEn_prob_arr_in2,minSqDist,maxSqDist,vecPointSqDist,
 	distSqClosest,vecPointAngle,minSqDistCutoff,maxSqDistCutoff,
@@ -63,7 +63,7 @@ void Reduc_polvectre(int ReAtNu,float **ReCoor,float *ReVdWR,float *ReVdWE_sr,
 
 
 /* Initialisation */
-  vect_angle_stored=vector(1,ReAcNu+ReDoNu);
+  vect_angle_stored=dvector(1,ReAcNu+ReDoNu);
   keptVect_angle=ivector(1,ReAcNu+ReDoNu);
   if (distrPointBSNumb>0)
   {
@@ -89,31 +89,31 @@ void Reduc_polvectre(int ReAtNu,float **ReCoor,float *ReVdWR,float *ReVdWE_sr,
 /*  angle criterion                       */
 /* -------------------------------------- */
 /*
-   The minimal (minDist) and maximal (maxDist) distances 
-   between the vectors and the points in the binding site 
-   (as defined in the SEED input file) are evaluated. 
-   A vector is discarded if the angle between the vector 
-   and its closest point in the binding site is larger than 
+   The minimal (minDist) and maximal (maxDist) distances
+   between the vectors and the points in the binding site
+   (as defined in the SEED input file) are evaluated.
+   A vector is discarded if the angle between the vector
+   and its closest point in the binding site is larger than
    a cutoff angle value.
    The cutoff angle value follows the following distribution:
    -  angle_rmin  if distance <= (mult_fact_rmin*minDist)
    -  angle_rmax  if distance >= (mult_fact_rmax*maxDist)
-   -  linear dependence (range between angle_rmin and angle_rmax) 
+   -  linear dependence (range between angle_rmin and angle_rmax)
       for other distances
 */
 
 
-/* find minimal and maximal distances between vectors and 
+/* find minimal and maximal distances between vectors and
    points in the binding site */
     minSqDist=1000000.0;
     maxSqDist=0.0;
 
     for (i=1;i<=(ReAcNu+ReDoNu);i++)
     {
-    
+
       for (j=1;j<=distrPointBSNumb;j++)
       {
-         
+
         if (ReDATy[i]==0)
 	  PoCoVe(ReVeCo[i][1],ReVeCo[i][2],ReVeCo[i][3],
 	         ReVeCo[i][4],ReVeCo[i][5],ReVeCo[i][6],
@@ -128,7 +128,7 @@ void Reduc_polvectre(int ReAtNu,float **ReCoor,float *ReVdWR,float *ReVdWE_sr,
 		 &(ReVeCo_elongated[1]),
 		 &(ReVeCo_elongated[2]),
 		 &(ReVeCo_elongated[3]));
-	
+
 	vecPointSqDist=DistSq(ReVeCo_elongated[1],
 	                      ReVeCo_elongated[2],
 			      ReVeCo_elongated[3],
@@ -139,7 +139,7 @@ void Reduc_polvectre(int ReAtNu,float **ReCoor,float *ReVdWR,float *ReVdWE_sr,
 	  minSqDist=vecPointSqDist;
   	if (vecPointSqDist>maxSqDist)
           maxSqDist=vecPointSqDist;
-        
+
       }
 
     }
@@ -161,7 +161,7 @@ void Reduc_polvectre(int ReAtNu,float **ReCoor,float *ReVdWR,float *ReVdWE_sr,
     }
 
 
-/* compute angle for each vector with its closest point and 
+/* compute angle for each vector with its closest point and
    discard vector if angle cutoff criterion not satisfied */
     for (i=1;i<=(ReAcNu+ReDoNu);i++)
     {
@@ -187,7 +187,7 @@ void Reduc_polvectre(int ReAtNu,float **ReCoor,float *ReVdWR,float *ReVdWE_sr,
 		 &(ReVeCo_elongated[1]),
 		 &(ReVeCo_elongated[2]),
 		 &(ReVeCo_elongated[3]));
-	
+
 	vecPointSqDist=DistSq(ReVeCo_elongated[1],
 	                      ReVeCo_elongated[2],
 			      ReVeCo_elongated[3],
@@ -270,7 +270,7 @@ void Reduc_polvectre(int ReAtNu,float **ReCoor,float *ReVdWR,float *ReVdWE_sr,
           fprintf(FilePa,"%-5d %-3d%11.4f%11.4f%11.4f ***** 1    ****  %11.4f\n",
                   j,j,ReVeCo[i][1],ReVeCo[i][2],ReVeCo[i][3],
 		  vect_angle_stored[i]);
-      } 
+      }
     }
     fclose(FilePa);
 
@@ -288,14 +288,14 @@ void Reduc_polvectre(int ReAtNu,float **ReCoor,float *ReVdWR,float *ReVdWE_sr,
 
 /* Allocate the memory and initialization */
   SortArray=ivector(1,ReAcNu+ReDoNu);
-  VdWEn_prob_arr=vector(1,ReAcNu+ReDoNu);
-  VdWEn_prob_arr_in=vector(1,ReAcNu+ReDoNu);
-  VdWEn_prob_arr_in2=vector(1,ReAcNu+ReDoNu);
+  VdWEn_prob_arr=dvector(1,ReAcNu+ReDoNu);
+  VdWEn_prob_arr_in=dvector(1,ReAcNu+ReDoNu);
+  VdWEn_prob_arr_in2=dvector(1,ReAcNu+ReDoNu);
   RedRPV_ep_sr=sqrtf(0.09);
   for (i=1;i<=(ReAcNu+ReDoNu);i++)
     PolVect_rec_01[i]=0;
 
-/* Compute the van der Waals energy of the probe for each polar vector 
+/* Compute the van der Waals energy of the probe for each polar vector
    position */
   for (i=1;i<=(ReAcNu+ReDoNu);i++) {
 
@@ -309,7 +309,7 @@ void Reduc_polvectre(int ReAtNu,float **ReCoor,float *ReVdWR,float *ReVdWE_sr,
              ReVeCo[i][3],ReVdWR[ReDAAt[i]]+RedRPV_rp,&ProbCoor[1],
              &ProbCoor[2],&ProbCoor[3]);
 
-/* Compute the van der Waals energy of this probe. One doesn't take into 
+/* Compute the van der Waals energy of this probe. One doesn't take into
    account the receptor H involved in the current polar vector */
     VdWEn_prob=0.0;
     for (j=1;j<=ReAtNu;j++) {
@@ -354,7 +354,7 @@ void Reduc_polvectre(int ReAtNu,float **ReCoor,float *ReVdWR,float *ReVdWE_sr,
   else
       RedRPV_nkv=(RedRPV_nkvRatio*(ReAcNu+ReDoNu)); /* new */
 
-/* Keep only the polar vectors with the best van der Waals probe energies 
+/* Keep only the polar vectors with the best van der Waals probe energies
    taking into account the angle cutoff criterion selection */
   if (((ReAcNu+ReDoNu)>=RedRPV_nkv)&&
       (keptVect_angle_numb>=RedRPV_nkv))
@@ -419,13 +419,13 @@ void Reduc_polvectre(int ReAtNu,float **ReCoor,float *ReVdWR,float *ReVdWE_sr,
       else
         fprintf(FilePa,"%-5d %-3d%11.4f%11.4f%11.4f ***** 1    ****  0.000\n",
                 j,j,ReVeCo[i][1],ReVeCo[i][2],ReVeCo[i][3]);
-    } 
+    }
   }
   fclose(FilePa);
 
 
 
-/* Print a file containing all the polar vectors (only the vector point which 
+/* Print a file containing all the polar vectors (only the vector point which
    is not on the atom) with the corresponding van der Waals probe energy.
    The van der Waals energies which are larger than 100.0 are set to 100.0 */
 
@@ -468,10 +468,10 @@ void Reduc_polvectre(int ReAtNu,float **ReCoor,float *ReVdWR,float *ReVdWE_sr,
 
 /* Desallocate the memory */
   free_ivector(SortArray,1,ReAcNu+ReDoNu);
-  free_vector(VdWEn_prob_arr,1,ReAcNu+ReDoNu);
-  free_vector(VdWEn_prob_arr_in,1,ReAcNu+ReDoNu);
-  free_vector(VdWEn_prob_arr_in2,1,ReAcNu+ReDoNu);
+  free_dvector(VdWEn_prob_arr,1,ReAcNu+ReDoNu);
+  free_dvector(VdWEn_prob_arr_in,1,ReAcNu+ReDoNu);
+  free_dvector(VdWEn_prob_arr_in2,1,ReAcNu+ReDoNu);
   free_ivector(keptVect_angle,1,ReAcNu+ReDoNu);
-  free_vector(vect_angle_stored,1,ReAcNu+ReDoNu);
+  free_dvector(vect_angle_stored,1,ReAcNu+ReDoNu);
 
 }

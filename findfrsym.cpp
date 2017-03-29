@@ -3,34 +3,34 @@
 #include "nrutil.h"
 #include "funct.h"
 
-void FindFrSym(int FrAtNu,float **FrCoor,char **FrAtTy,int *UndisAt_fr)
-/* This function finds the undistinguishable fragment atoms (or symmetries) 
+void FindFrSym(int FrAtNu,double **FrCoor,char **FrAtTy,int *UndisAt_fr)
+/* This function finds the undistinguishable fragment atoms (or symmetries)
    by means of rotation :
-   UndisAt_fr  undistinguishable fragment atoms (0 if the atom is not taken 
+   UndisAt_fr  undistinguishable fragment atoms (0 if the atom is not taken
                into account because of symmetry, 1 if it is taken into account)
    GeomCen_fr  geometrical center of the fragment
    MidPoint  coordinates of the middle point between the two considered atoms
    VectRot  rotation vector
    FrCoor_rot  coordinates of the rotated fragment
    FrAtTy_rot  atom types of the rotated fragment
-   FoundSim  1 if an atom of the rotated fragment was found similar to the 
+   FoundSim  1 if an atom of the rotated fragment was found similar to the
                current original fragment atom, 0 if not
-   TotNumSimAt  total number of similar atoms between the original and rotated 
+   TotNumSimAt  total number of similar atoms between the original and rotated
                 fragments
    PairIdAt  pairs of identical atoms (1->yes,0->no)
    NormVect  norm of the vector
-   SquaredDis  squared distance 
+   SquaredDis  squared distance
    AnglArr  array containing the various rotation angle values */
 {
   int i,j,k,k1,k2,FoundSim,TotNumSimAt,**PairIdAt;
-  float **FrCoor_rot,GeomCen_fr[4],MidPoint[4],VectRot[4],PiT180,SquaredDis,
+  double **FrCoor_rot,GeomCen_fr[4],MidPoint[4],VectRot[4],PiT180,SquaredDis,
         NormVect,AnglArr[12];
   char **FrAtTy_rot;
 
   PiT180=3.1415927/180;
 
 /* Allocate memory */
-  FrCoor_rot=matrix(1,FrAtNu,1,3);
+  FrCoor_rot=dmatrix(1,FrAtNu,1,3);
   FrAtTy_rot=cmatrix(1,FrAtNu,1,7);
   PairIdAt=imatrix(1,FrAtNu,1,FrAtNu);
 
@@ -56,7 +56,7 @@ void FindFrSym(int FrAtNu,float **FrCoor,char **FrAtTy,int *UndisAt_fr)
 /* Compute the geometrical center of the fragment */
   GeomCen_fr[1]=0.0;
   GeomCen_fr[2]=0.0;
-  GeomCen_fr[3]=0.0;  
+  GeomCen_fr[3]=0.0;
   for (i=1;i<=FrAtNu;i++) {
     GeomCen_fr[1]=GeomCen_fr[1]+FrCoor[i][1];
     GeomCen_fr[2]=GeomCen_fr[2]+FrCoor[i][2];
@@ -70,7 +70,7 @@ void FindFrSym(int FrAtNu,float **FrCoor,char **FrAtTy,int *UndisAt_fr)
 /* First algorithm. Rotation through the middle point between atom pairs */
 /* --------------------------------------------------------------------- */
 
-/* Loop over the fragment atom pairs. Each pair (for which the atom types are 
+/* Loop over the fragment atom pairs. Each pair (for which the atom types are
    the same) is taken into account only once */
   for (i=1;i<=FrAtNu;i++) {
     for (j=1;j<=FrAtNu;j++) {
@@ -82,7 +82,7 @@ void FindFrSym(int FrAtNu,float **FrCoor,char **FrAtTy,int *UndisAt_fr)
         MidPoint[2]=0.5*(FrCoor[i][2]+FrCoor[j][2]);
         MidPoint[3]=0.5*(FrCoor[i][3]+FrCoor[j][3]);
 
-/* Compute the rotation vector which joins the middle point with the 
+/* Compute the rotation vector which joins the middle point with the
    geometrical center */
         VectRot[1]=GeomCen_fr[1]-MidPoint[1];
         VectRot[2]=GeomCen_fr[2]-MidPoint[2];
@@ -93,7 +93,7 @@ void FindFrSym(int FrAtNu,float **FrCoor,char **FrAtTy,int *UndisAt_fr)
 
         if (NormVect>0.01) {
 
-/* Compute the rotated image of the fragment around VectRot with an angle of 
+/* Compute the rotated image of the fragment around VectRot with an angle of
    180 */
           for (k=1;k<=FrAtNu;k++) {
             RoArVe(FrCoor[k][1]-MidPoint[1],FrCoor[k][2]-MidPoint[2],
@@ -167,7 +167,7 @@ void FindFrSym(int FrAtNu,float **FrCoor,char **FrAtTy,int *UndisAt_fr)
 /* Loop over the fragment atoms */
   for (i=1;i<=FrAtNu;i++) {
 
-/* Compute the rotation vector which joins the fragment atom with the 
+/* Compute the rotation vector which joins the fragment atom with the
    geometrical center */
     VectRot[1]=GeomCen_fr[1]-FrCoor[i][1];
     VectRot[2]=GeomCen_fr[2]-FrCoor[i][2];
@@ -181,7 +181,7 @@ void FindFrSym(int FrAtNu,float **FrCoor,char **FrAtTy,int *UndisAt_fr)
 /* Loop over the various rotation angle values */
       for (j=1;j<=11;j++) {
 
-/* Compute the rotated image of the fragment around VectRot with an angle of 
+/* Compute the rotated image of the fragment around VectRot with an angle of
    AnglArr[j] */
         for (k=1;k<=FrAtNu;k++) {
           RoArVe(FrCoor[k][1]-FrCoor[i][1],FrCoor[k][2]-FrCoor[i][2],
@@ -248,7 +248,7 @@ void FindFrSym(int FrAtNu,float **FrCoor,char **FrAtTy,int *UndisAt_fr)
   }
 
 /* Desallocate memory */
-  free_matrix(FrCoor_rot,1,FrAtNu,1,3);
+  free_dmatrix(FrCoor_rot,1,FrAtNu,1,3);
   free_cmatrix(FrAtTy_rot,1,FrAtNu,1,7);
   free_imatrix(PairIdAt,1,FrAtNu,1,FrAtNu);
 

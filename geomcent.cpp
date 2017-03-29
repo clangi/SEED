@@ -7,14 +7,14 @@
 #endif
 
 void GeomCenter_FFLD(int CurFra,char **FrFiNa_out,int FrAtNu,int *FrAtEl_nu,
-                     int NuSdClKe,int *ReprSdClAr,float *To_s_ro,
-                     float ***FrCoPo,char **ResN_fr,char *FragNa,
-                     int gc_reprke,float gc_cutclus,float gc_endifclus,
-                     float gc_weighneg,float gc_weighpos,int gc_maxwrite)
-/* This function clusters the geometrical centers of the postprocessed 
-   representative positions (of the conserved second clusters). They 
-   are supposed to be ranked according to increasing energy. The 
-   resulting geometrical centers are written out in a file that can be 
+                     int NuSdClKe,int *ReprSdClAr,double *To_s_ro,
+                     double ***FrCoPo,char **ResN_fr,char *FragNa,
+                     int gc_reprke,double gc_cutclus,double gc_endifclus,
+                     double gc_weighneg,double gc_weighpos,int gc_maxwrite)
+/* This function clusters the geometrical centers of the postprocessed
+   representative positions (of the conserved second clusters). They
+   are supposed to be ranked according to increasing energy. The
+   resulting geometrical centers are written out in a file that can be
    used by the software FFLD :
    GeomCentAr       array of geometrical centers (of the original positions)
    GeomCentList     list of geometrical centers (for FFLD)
@@ -41,7 +41,7 @@ void GeomCenter_FFLD(int CurFra,char **FrFiNa_out,int FrAtNu,int *FrAtEl_nu,
    weightFactPos    weight factor for positive energies
    weightFactNeg    weight factor for negative energies
    sortFloatAr      array of float numbers to be sorted
-   sortIntAr        array of integer numbers for sorting 
+   sortIntAr        array of integer numbers for sorting
    gc_reprke        number of cluster representatives to keep
    gc_cutclus       cutoff for the clustering
    gc_endifclus     allowed energy difference in a cluster
@@ -52,7 +52,7 @@ void GeomCenter_FFLD(int CurFra,char **FrFiNa_out,int FrAtNu,int *FrAtEl_nu,
 
   FILE *FilePath;
   char WriPat[_STRLENGTH],AtomName[50];
-  float **GeomCentAr,sum_x,sum_y,sum_z,distSqu,ClusCutSqDi,**GeomCentList,
+  double **GeomCentAr,sum_x,sum_y,sum_z,distSqu,ClusCutSqDi,**GeomCentList,
         AllowEnerDif,minEn,minEnClus,maxEnClus,totClusEner,multiplFac,
         weightPosEn,weightNegEn,weightFactPos,weightFactNeg,*GeomCentEner,
         *sortFloatAr;
@@ -72,9 +72,9 @@ void GeomCenter_FFLD(int CurFra,char **FrFiNa_out,int FrAtNu,int *FrAtEl_nu,
   weightNegEn = gc_weighneg;
   weightPosEn = gc_weighpos;
 
-/* compute the geometrical center of every position. Hydrogen 
+/* compute the geometrical center of every position. Hydrogen
    atoms are not taken into account */
-  GeomCentAr=matrix(1,NuSdClKe,1,3);
+  GeomCentAr=dmatrix(1,NuSdClKe,1,3);
 
   NumNonHy = 0;
   for (i1=1;i1<=FrAtNu;i1++)
@@ -96,9 +96,9 @@ void GeomCenter_FFLD(int CurFra,char **FrFiNa_out,int FrAtNu,int *FrAtEl_nu,
         sum_z += FrCoPo[ReprSdClAr[i1]][i2][3];
       }
     }
-    GeomCentAr[i1][1] = sum_x/((float) NumNonHy);
-    GeomCentAr[i1][2] = sum_y/((float) NumNonHy);
-    GeomCentAr[i1][3] = sum_z/((float) NumNonHy);
+    GeomCentAr[i1][1] = sum_x/((double) NumNonHy);
+    GeomCentAr[i1][2] = sum_y/((double) NumNonHy);
+    GeomCentAr[i1][3] = sum_z/((double) NumNonHy);
   }
 
 /* cluster the geometrical centers */
@@ -144,17 +144,17 @@ void GeomCenter_FFLD(int CurFra,char **FrFiNa_out,int FrAtNu,int *FrAtEl_nu,
   for (i1=1;i1<=NumClusReprKe;i1++)
   {
     exLoop = 0;
-    for (i2=1;((i2<=NuSdClKe)&&(!exLoop));i2++)    
+    for (i2=1;((i2<=NuSdClKe)&&(!exLoop));i2++)
     {
       if (ClustListLabel[i2] == i1)
       {
         ClustListLabel[i2] = -1;
         exLoop = 1;
       }
-    }  
+    }
   }
 
-/* cluster again the geometrical centers without the first 
+/* cluster again the geometrical centers without the first
    NumClusReprKe cluster representatives */
   for (i1=1;i1<=NuSdClKe;i1++)
   {
@@ -190,8 +190,8 @@ void GeomCenter_FFLD(int CurFra,char **FrFiNa_out,int FrAtNu,int *FrAtEl_nu,
 
   }
 
-/* label (with -2) cluster members with an energy larger than 
-   AllowEnerDif with respect to the best cluster energy. 
+/* label (with -2) cluster members with an energy larger than
+   AllowEnerDif with respect to the best cluster energy.
    Compute the maximal number of cluster members */
   maxNuClusMemb = 0;
 
@@ -234,11 +234,11 @@ void GeomCenter_FFLD(int CurFra,char **FrFiNa_out,int FrAtNu,int *FrAtEl_nu,
   }
 
 /* define GeomCentList and GeomCentEner */
-/* store the geometrical centers and energies of the first 
+/* store the geometrical centers and energies of the first
    NumClusReprKe cluster representatives */
   totNumbGeomCent = NumClusReprKe+clusCount;
-  GeomCentList=matrix(1,totNumbGeomCent,1,3);
-  GeomCentEner=vector(1,totNumbGeomCent);
+  GeomCentList=dmatrix(1,totNumbGeomCent,1,3);
+  GeomCentEner=dvector(1,totNumbGeomCent);
 
   countGeomCent = 0;
   for (i1=1;i1<=NuSdClKe;i1++)
@@ -309,13 +309,13 @@ void GeomCenter_FFLD(int CurFra,char **FrFiNa_out,int FrAtNu,int *FrAtEl_nu,
       multiplFac = To_s_ro[ReprSdClAr[listClustMemb[j]]]/totClusEner;
       multiplFac *= weightFactNeg;
 
-      GeomCentList[countGeomCent][1] += 
+      GeomCentList[countGeomCent][1] +=
                        (multiplFac * GeomCentAr[listClustMemb[j]][1]);
-      GeomCentList[countGeomCent][2] += 
+      GeomCentList[countGeomCent][2] +=
                        (multiplFac * GeomCentAr[listClustMemb[j]][2]);
-      GeomCentList[countGeomCent][3] += 
+      GeomCentList[countGeomCent][3] +=
                        (multiplFac * GeomCentAr[listClustMemb[j]][3]);
-      GeomCentEner[countGeomCent] += 
+      GeomCentEner[countGeomCent] +=
                        (multiplFac * To_s_ro[ReprSdClAr[listClustMemb[j]]]);
     }
 
@@ -339,21 +339,21 @@ void GeomCenter_FFLD(int CurFra,char **FrFiNa_out,int FrAtNu,int *FrAtEl_nu,
                     - (minEnClus + maxEnClus)) / totClusEner;
       multiplFac *= weightFactPos;
 
-      GeomCentList[countGeomCent][1] += 
+      GeomCentList[countGeomCent][1] +=
                        (multiplFac * GeomCentAr[listClustMemb[j]][1]);
-      GeomCentList[countGeomCent][2] += 
+      GeomCentList[countGeomCent][2] +=
                        (multiplFac * GeomCentAr[listClustMemb[j]][2]);
-      GeomCentList[countGeomCent][3] += 
+      GeomCentList[countGeomCent][3] +=
                        (multiplFac * GeomCentAr[listClustMemb[j]][3]);
-      GeomCentEner[countGeomCent] += 
+      GeomCentEner[countGeomCent] +=
                        (multiplFac * To_s_ro[ReprSdClAr[listClustMemb[j]]]);
     }
 
   }
 
-/* sort "geometrical center energies" without the first 
+/* sort "geometrical center energies" without the first
    NumClusReprKe cluster representatives */
-  sortFloatAr=vector(1,clusCount);
+  sortFloatAr=dvector(1,clusCount);
   sortIntAr=ivector(1,clusCount);
   for (i1=1;i1<=clusCount;i1++)
   {
@@ -367,11 +367,11 @@ void GeomCenter_FFLD(int CurFra,char **FrFiNa_out,int FrAtNu,int *FrAtEl_nu,
           "_geomcent.mol2\0");
   FilePath=fopen(WriPat,"w");
 
-/* adjust the number of geometrical centers to write according 
-   to gc_maxwrite; 
-   list1 refers to the list of cluster representatives to keep, 
-         the maximal value would be NumClusReprKe; 
-   list2 refers to the list of following geometrical centers, 
+/* adjust the number of geometrical centers to write according
+   to gc_maxwrite;
+   list1 refers to the list of cluster representatives to keep,
+         the maximal value would be NumClusReprKe;
+   list2 refers to the list of following geometrical centers,
          the maximal value would be (countGeomCent-NumClusReprKe) */
 /* Modification 06.08.2004 NM */
   list1=0;
@@ -381,7 +381,7 @@ void GeomCenter_FFLD(int CurFra,char **FrFiNa_out,int FrAtNu,int *FrAtEl_nu,
     list1=gc_maxwrite;
     list2=0;
   }
-  else if ( (gc_maxwrite>NumClusReprKe) && 
+  else if ( (gc_maxwrite>NumClusReprKe) &&
             (gc_maxwrite<=countGeomCent) )
   {
     list1=NumClusReprKe;
@@ -430,11 +430,11 @@ void GeomCenter_FFLD(int CurFra,char **FrFiNa_out,int FrAtNu,int *FrAtEl_nu,
   fclose(FilePath);
 
   free_ivector(sortIntAr,1,clusCount);
-  free_vector(sortFloatAr,1,clusCount);
+  free_dvector(sortFloatAr,1,clusCount);
   free_ivector(listClustMemb,1,maxNuClusMemb);
-  free_vector(GeomCentEner,1,totNumbGeomCent);
-  free_matrix(GeomCentList,1,totNumbGeomCent,1,3);
+  free_dvector(GeomCentEner,1,totNumbGeomCent);
+  free_dmatrix(GeomCentList,1,totNumbGeomCent,1,3);
   free_ivector(ClustListLabel,1,NuSdClKe);
-  free_matrix(GeomCentAr,1,NuSdClKe,1,3);
+  free_dmatrix(GeomCentAr,1,NuSdClKe,1,3);
 
 }

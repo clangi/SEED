@@ -3,8 +3,8 @@
 #include <quaternion.h> //quaternion class definition
 
 //This may be improved as it seems to be a bottleneck in the computation. clangini
-void RoSeFr(int ReCuVe,int *RexxAt,float **ReCoor,int FrCuVe,int *FrxxAt,
-            int FrAtNu,float **SeFrCo,float AnglRo,float **RoSFCo)
+void RoSeFr(int ReCuVe,int *RexxAt,double **ReCoor,int FrCuVe,int *FrxxAt,
+            int FrAtNu,double **SeFrCo,double AnglRo,double **RoSFCo)
 /* This function rotates the seeded fragment around the axis built with
    the concerned atom of the seeded fragment and the concerned atom of the
    receptor with an angle AnglRo given in radian (in the polar case, the axis
@@ -15,7 +15,7 @@ void RoSeFr(int ReCuVe,int *RexxAt,float **ReCoor,int FrCuVe,int *FrxxAt,
    RotaVe  rotation vector */
 {
   int i;
-  float RotaVe[4];
+  double RotaVe[4];
 
   RotaVe[1]=ReCoor[RexxAt[ReCuVe]][1]-SeFrCo[FrxxAt[FrCuVe]][1];
   RotaVe[2]=ReCoor[RexxAt[ReCuVe]][2]-SeFrCo[FrxxAt[FrCuVe]][2];
@@ -35,14 +35,14 @@ void RoSeFr(int ReCuVe,int *RexxAt,float **ReCoor,int FrCuVe,int *FrxxAt,
 }
 
 //clangini START
-// void RoSeFrQ(int ReCuVe,int *RexxAt,float **ReCoor,int FrCuVe,int *FrxxAt,
-//             int FrAtNu,float **SeFrCo,float AnglRo,float **RoSFCo)
+// void RoSeFrQ(int ReCuVe,int *RexxAt,double **ReCoor,int FrCuVe,int *FrxxAt,
+//             int FrAtNu,double **SeFrCo,double AnglRo,double **RoSFCo)
 // /* This function is equivalent to RoSeFr but uses a quaternion to perform
 //    rotations */
 // {
 //   int i;
-//   float RotaVe[4];
-//   Quaternion<float> q; //This calls default constructor
+//   double RotaVe[4];
+//   Quaternion<double> q; //This calls default constructor
 //
 //   RotaVe[1]=ReCoor[RexxAt[ReCuVe]][1]-SeFrCo[FrxxAt[FrCuVe]][1];
 //   RotaVe[2]=ReCoor[RexxAt[ReCuVe]][2]-SeFrCo[FrxxAt[FrCuVe]][2];

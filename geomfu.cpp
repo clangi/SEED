@@ -2,10 +2,10 @@
 #include <math.h>
 #include "funct.h"
 
-float VeNorm(float a1,float a2,float a3)
+double VeNorm(double a1,double a2,double a3)
 /* This function returns the norm of the vector A */
 {
-  float norm;
+  double norm;
 
   norm=sqrtf(a1*a1+a2*a2+a3*a3);
 
@@ -14,9 +14,9 @@ float VeNorm(float a1,float a2,float a3)
 
 
 
-void NormVe(float *a1,float *a2,float *a3)
+/*void NormVe(float *a1,float *a2,float *a3)*/
 /* This function normalizes the vector A */
-{
+/*{
   float norm;
 
   norm=VeNorm(*a1,*a2,*a3);
@@ -24,7 +24,7 @@ void NormVe(float *a1,float *a2,float *a3)
   *a1=*a1/norm;
   *a2=*a2/norm;
   *a3=*a3/norm;
-}
+}*/
 
 void NormVe(double *a1, double *a2, double *a3)
 /* Overloaded NormVe for doubles. clangini */
@@ -38,12 +38,12 @@ void NormVe(double *a1, double *a2, double *a3)
 }
 
 
-void PoCoVe(float a1,float a2,float a3,float b1,float b2,float b3,float len,
-            float *c1,float *c2,float *c3)
+void PoCoVe(double a1,double a2,double a3,double b1,double b2,double b3,double len,
+            double *c1,double *c2,double *c3)
 /* This function computes the coordinates of C which is along the vector AB
    and at a distance of len from A */
 {
-  float vec1,vec2,vec3;
+  double vec1,vec2,vec3;
 
   vec1=b1-a1;
   vec2=b2-a2;
@@ -58,8 +58,8 @@ void PoCoVe(float a1,float a2,float a3,float b1,float b2,float b3,float len,
 
 
 
-void VectPr(float a1,float a2,float a3,float b1,float b2,float b3,float *c1,
-            float *c2,float *c3)
+void VectPr(double a1,double a2,double a3,double b1,double b2,double b3,double *c1,
+            double *c2,double *c3)
 /* This function computes the vector product C from A and B (C=A^B) */
 {
   *c1=a2*b3-a3*b2;
@@ -69,12 +69,12 @@ void VectPr(float a1,float a2,float a3,float b1,float b2,float b3,float *c1,
 
 
 
-float PlaAng(float o1,float o2,float o3,float a1,float a2,float a3,float b1,
-             float b2,float b3)
+double PlaAng(double o1,double o2,double o3,double a1,double a2,double a3,double b1,
+             double b2,double b3)
 /* This function returns the angle between the vectors OA and OB. The angle
    value ranges from 0 to PI */
 {
-  float vecA1,vecA2,vecA3,vecB1,vecB2,vecB3,normA,normB,ScaPro,StorVa;
+  double vecA1,vecA2,vecA3,vecB1,vecB2,vecB3,normA,normB,ScaPro,StorVa;
 
   vecA1=a1-o1;
   vecA2=a2-o2;
@@ -99,12 +99,12 @@ float PlaAng(float o1,float o2,float o3,float a1,float a2,float a3,float b1,
 
 
 
-void RoArVe(float a1,float a2,float a3,float vec1,float vec2,float vec3,
-            float ang,float *b1,float *b2,float *b3)
+void RoArVe(double a1,double a2,double a3,double vec1,double vec2,double vec3,
+            double ang,double *b1,double *b2,double *b3)
 /* This function rotates the point A around the vector Vec through origin for
    an angle ang in radian. The result is given in B */
 {
-  float v1,v2,v3,rtl1,rtl2,rtl3,sinl,cosl,rl,help1,help2,help3;
+  double v1,v2,v3,rtl1,rtl2,rtl3,sinl,cosl,rl,help1,help2,help3;
 
   NormVe(&vec1,&vec2,&vec3);
   sinl=sinf(ang);
@@ -125,11 +125,11 @@ void RoArVe(float a1,float a2,float a3,float vec1,float vec2,float vec3,
 
 
 
-void AxisVe(float a1,float a2,float a3,float b1,float b2,float b3,
-            float c1,float c2,float c3,float *d1,float *d2,float *d3)
+void AxisVe(double a1,double a2,double a3,double b1,double b2,double b3,
+            double c1,double c2,double c3,double *d1,double *d2,double *d3)
 /* This function computes the normed vector D normal to the plane ABC */
 {
-  float ba1,ba2,ba3,bc1,bc2,bc3; /* ,norm; */
+  double ba1,ba2,ba3,bc1,bc2,bc3; /* ,norm; */
 
   ba1=a1-b1;
   ba2=a2-b2;
@@ -146,12 +146,12 @@ void AxisVe(float a1,float a2,float a3,float b1,float b2,float b3,
 
 
 
-void RotPla(float a1,float a2,float a3,float b1,float b2,float b3,float c1,
-            float c2,float c3,float angl,float *d1,float *d2,float *d3)
+void RotPla(double a1,double a2,double a3,double b1,double b2,double b3,double c1,
+            double c2,double c3,double angl,double *d1,double *d2,double *d3)
 /* This function computes the coordinates of the point D which results from
    the rotation of C with angle angl in radian around B in the ABC plane */
 {
-  float bc1,bc2,bc3,arot1,arot2,arot3,bc1ret,bc2ret,bc3ret;
+  double bc1,bc2,bc3,arot1,arot2,arot3,bc1ret,bc2ret,bc3ret;
 
   AxisVe(a1,a2,a3,b1,b2,b3,c1,c2,c3,&arot1,&arot2,&arot3);
 
@@ -168,12 +168,12 @@ void RotPla(float a1,float a2,float a3,float b1,float b2,float b3,float c1,
 
 
 
-float DihAng(float a1,float a2,float a3,float b1,float b2,float b3,
-             float c1,float c2,float c3,float d1,float d2,float d3)
+double DihAng(double a1,double a2,double a3,double b1,double b2,double b3,
+             double c1,double c2,double c3,double d1,double d2,double d3)
 /* This function returns the dihedral angle between the ABC and BCD planes.
    The dihedral angle ranges from 0 to PI */
 {
-  float ba1,ba2,ba3,bc1,bc2,bc3,VePrA1,VePrA2,VePrA3,cb1,cb2,cb3,cd1,cd2,cd3,
+  double ba1,ba2,ba3,bc1,bc2,bc3,VePrA1,VePrA2,VePrA3,cb1,cb2,cb3,cd1,cd2,cd3,
         VePrB1,VePrB2,VePrB3,ScaPro,normA,normB,StorVa;
 
   ba1=a1-b1;
@@ -224,12 +224,12 @@ float DihAng(float a1,float a2,float a3,float b1,float b2,float b3,
 /*inline function has to be defined in header file-> moved to funct.h clangini*/
 
 
-float TrProd(float ox,float oy,float oz,float ax,float ay,float az,
-             float bx,float by,float bz,float cx,float cy,float cz)
+double TrProd(double ox,double oy,double oz,double ax,double ay,double az,
+             double bx,double by,double bz,double cx,double cy,double cz)
 /* This function returns the triple scalar product of the vectors oa, ob
    and oc */
 {
-  float vec1x,vec1y,vec1z,vec2x,vec2y,vec2z,vec3x,vec3y,vec3z,norm1,norm2,
+  double vec1x,vec1y,vec1z,vec2x,vec2y,vec2z,vec3x,vec3y,vec3z,norm1,norm2,
         norm3,TripPr;
 
   vec1x=ax-ox;

@@ -2,19 +2,19 @@
 #include <math.h>
 #include "funct.h"
 
-void HybStAt(int xxAtNu,int *xxAtEl_nu,float **xxCoor,int xxBdNu,int **xxBdAr,
+void HybStAt(int xxAtNu,int *xxAtEl_nu,double **xxCoor,int xxBdNu,int **xxBdAr,
              int *HybxxAt,FILE *FPaOut)
 /* This function finds the hybridization state of the carbon atoms :
-   HybxxAt  hybridization state (2 -> sp2, 3 -> sp3, 0 -> no hybridization 
-                                 state found) 
-   NumbLA  number of linked atoms 
-   LiAtAr  array of linked atoms 
+   HybxxAt  hybridization state (2 -> sp2, 3 -> sp3, 0 -> no hybridization
+                                 state found)
+   NumbLA  number of linked atoms
+   LiAtAr  array of linked atoms
    Distan  distance between two atoms
    AngPla  planar angle
    TriPro  triple scalar product */
 {
   int i,j,NumbLA,LiAtAr[10];
-  float Distan,AngPla,TriPro,PiT180;
+  double Distan,AngPla,TriPro,PiT180;
 
   PiT180=3.1415927/180;
 
@@ -22,9 +22,9 @@ void HybStAt(int xxAtNu,int *xxAtEl_nu,float **xxCoor,int xxBdNu,int **xxBdAr,
   for (i=1;i<=xxAtNu;i++)
     HybxxAt[i]=0;
 
-/* Loop over the atoms */  
+/* Loop over the atoms */
   for (i=1;i<=xxAtNu;i++) {
- 
+
 /* One tries to find the hybridization state only for the carbon atoms */
     if (xxAtEl_nu[i]==6) {
 

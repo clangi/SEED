@@ -1,22 +1,22 @@
 #include <stdio.h>
 #include "funct.h"
 
-void SeedFr(int ReCuVe,float **ReVeCo,int FrCuVe,float **FrVeCo,int FrAtNu,
-            float **FrCoor,int *ReDATy,float **SeFrCo,int *FrAtoTyp_nu,
-            int *FrDAAt,int *ReAtoTyp_nu,int *ReDAAt,float **BLAtTy,
+void SeedFr(int ReCuVe,double **ReVeCo,int FrCuVe,double **FrVeCo,int FrAtNu,
+            double **FrCoor,int *ReDATy,double **SeFrCo,int *FrAtoTyp_nu,
+            int *FrDAAt,int *ReAtoTyp_nu,int *ReDAAt,double **BLAtTy,
             FILE *FPaOut)
 /* This function seeds the fragment in the binding site of the receptor :
    ReCuVe  receptor current vector
    FrCuVe  fragment current vector
    TranVe  translation vector
    RotAng  rotation angle
-   RotaAx  rotation axis 
+   RotaAx  rotation axis
    HBLeng  hydrogen bond length */
 {
   int i;
-  float TranVe[4],RotAng,RotaAx[4],HBLeng;
+  double TranVe[4],RotAng,RotaAx[4],HBLeng;
 
-/* Translation given by the translation of the fragment donor atom vector 
+/* Translation given by the translation of the fragment donor atom vector
    towards the receptor donor atom vector */
   TranVe[1]=ReVeCo[ReCuVe][1]-FrVeCo[FrCuVe][1];
   TranVe[2]=ReVeCo[ReCuVe][2]-FrVeCo[FrCuVe][2];
@@ -28,9 +28,9 @@ void SeedFr(int ReCuVe,float **ReVeCo,int FrCuVe,float **FrVeCo,int FrAtNu,
     SeFrCo[i][3]=FrCoor[i][3]+TranVe[3];
   }
 
-/* Rotation given by the rotation of the translated fragment acceptor atom 
-   vector towards the receptor acceptor atom vector. The rotation vector is 
-   perpendicular to the plane formed by the translated fragment and receptor 
+/* Rotation given by the rotation of the translated fragment acceptor atom
+   vector towards the receptor acceptor atom vector. The rotation vector is
+   perpendicular to the plane formed by the translated fragment and receptor
    vectors. If the angle is near PI or 0, the vector is built in another way. */
 
   RotAng=PlaAng(ReVeCo[ReCuVe][1],ReVeCo[ReCuVe][2],ReVeCo[ReCuVe][3],
@@ -61,10 +61,10 @@ void SeedFr(int ReCuVe,float **ReVeCo,int FrCuVe,float **FrVeCo,int FrAtNu,
     SeFrCo[i][3]=SeFrCo[i][3]+ReVeCo[ReCuVe][3];
   }
 
-/* Another translation in order to get the desired length between the receptor 
-   donor (acceptor) atom and the fragment acceptor (donor) atom. One has to 
+/* Another translation in order to get the desired length between the receptor
+   donor (acceptor) atom and the fragment acceptor (donor) atom. One has to
    take into account that the vectors have already a length of 1.0 */
-  
+
   if (ReDATy[ReCuVe]==0) {
     TranVe[1]=ReVeCo[ReCuVe][4]-ReVeCo[ReCuVe][1];
     TranVe[2]=ReVeCo[ReCuVe][5]-ReVeCo[ReCuVe][2];

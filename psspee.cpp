@@ -1,15 +1,15 @@
 #include <stdio.h>
 
-void PsSpEE(int FrAtNu,int ReAtNu,float *ReVdWE_sr,float *FrVdWE_sr,
-            float *ReVdWR,float *FrVdWR,float *VWEnEv_ps,float **SDFrRe_ps)
-/* This function evaluates the energy using a pseudo-sphere approach as a 
+void PsSpEE(int FrAtNu,int ReAtNu,double *ReVdWE_sr,double *FrVdWE_sr,
+            double *ReVdWR,double *FrVdWR,double *VWEnEv_ps,double **SDFrRe_ps)
+/* This function evaluates the energy using a pseudo-sphere approach as a
    cutoff :
-   RFSqDi  squared distance between one atom of the receptor and one atom 
+   RFSqDi  squared distance between one atom of the receptor and one atom
            of the fragment
    SumRad  sum of the van der Waals radii */
 {
   int i,j;
-  float SumRad,SumRad_p6,RFSqDi,RFSqDi_p3;
+  double SumRad,SumRad_p6,RFSqDi,RFSqDi_p3;
 
   *VWEnEv_ps=0;
 

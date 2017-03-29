@@ -7,20 +7,20 @@
 /* #include <omp.h> */
 /* #endif */
 
-void VWGReP(const int ReAtNu,float **ReCoor,float *ReVdWR_p3,float *ReVdWE_sr,
-            const float VWGrIn, const float VWGrSi,float *BSMinC,int *VWGPoN,
-            float *ReMaxC,float *ReMinC,
-            float ***VWGrRP_at,float ***VWGrRP_re)
-/* This function computes the receptor part of the van der Waals interaction 
+void VWGReP(const int ReAtNu,double **ReCoor,double *ReVdWR_p3,double *ReVdWE_sr,
+            const double VWGrIn, const double VWGrSi,double *BSMinC,int *VWGPoN,
+            double *ReMaxC,double *ReMinC,
+            double ***VWGrRP_at,double ***VWGrRP_re)
+/* This function computes the receptor part of the van der Waals interaction
    on a grid :
-   VWGPoN     number of points for the grid of the van der Waals interaction 
+   VWGPoN     number of points for the grid of the van der Waals interaction
               (1->x,2->y,3->z)
-   VWGrRP_at  value of the receptor part of the van der Waals attractive 
+   VWGrRP_at  value of the receptor part of the van der Waals attractive
               interaction on the grid
-   VWGrRP_re  value of the receptor part of the van der Waals repulsive  
-              interaction on the grid  
+   VWGrRP_re  value of the receptor part of the van der Waals repulsive
+              interaction on the grid
    VWGCor     coordinates of one point of the vdW grid (1->x,2->y,3->z)
-   GRSqDi     squared distance between two points (of the grid and receptor) 
+   GRSqDi     squared distance between two points (of the grid and receptor)
    SizGr_LRA  size of the grid containing the list of receptor atoms
    CubNum_LRA  the number of cubes along each direction (1->x,2->y,3->z)
    CubFAI_LRA  index of the first atoms in each cube
@@ -31,10 +31,10 @@ void VWGReP(const int ReAtNu,float **ReCoor,float *ReVdWR_p3,float *ReVdWE_sr,
 {
   int i,j,k,m,n,j1,k1,l1,CubNum_LRA[4],***CubFAI_LRA,***CubLAI_LRA,
       *CubLiA_LRA,CubAto_LRA[4];
-  float VWGCor[4],GRSqDi,VWGrRP_at_in,VWGrRP_re_in,TwoPo7,TwoP12,GRSqDi_p3,
+  double VWGCor[4],GRSqDi,VWGrRP_at_in,VWGrRP_re_in,TwoPo7,TwoP12,GRSqDi_p3,
         SizGr_LRA,VWGrCutoff;
 
-/* The size of the grid containing the list of receptor atoms is set as half 
+/* The size of the grid containing the list of receptor atoms is set as half
    the real size of the grid in SizGr_LRA because of ReLAIC function */
   SizGr_LRA=5.0;
   VWGrCutoff=(2.0*SizGr_LRA)*(2.0*SizGr_LRA);
@@ -42,8 +42,8 @@ void VWGReP(const int ReAtNu,float **ReCoor,float *ReVdWR_p3,float *ReVdWE_sr,
 /* Construct the list of receptor atoms which are in the cubes of a grid */
   ReLAIC(ReAtNu,ReCoor,SizGr_LRA,ReMaxC,ReMinC,CubNum_LRA,&CubFAI_LRA,&CubLAI_LRA,&CubLiA_LRA);
 
-/* For each vdW grid point, the contribution for the vdW potential of the 
-   receptor part involves only the receptor atoms which are in the cube to 
+/* For each vdW grid point, the contribution for the vdW potential of the
+   receptor part involves only the receptor atoms which are in the cube to
    which the current vdW grid point belongs and the surrounding cubes */
   TwoPo7=2*2*2*2*2*2*2;
   TwoP12=2*2*2*2*2*2*2*2*2*2*2*2;
@@ -72,8 +72,8 @@ void VWGReP(const int ReAtNu,float **ReCoor,float *ReVdWR_p3,float *ReVdWE_sr,
         VWGrRP_at_in=0.0;
         VWGrRP_re_in=0.0;
 
-/* Find the cube in which the current vdW grid point is or the nearest cube 
-   if this vdW grid point doesn't belong to any cubes of the (list of receptor 
+/* Find the cube in which the current vdW grid point is or the nearest cube
+   if this vdW grid point doesn't belong to any cubes of the (list of receptor
    atoms) grid */
         for (m=1;m<=3;m++) {
           if (VWGCor[m]<ReMinC[m])
@@ -113,7 +113,7 @@ void VWGReP(const int ReAtNu,float **ReCoor,float *ReVdWR_p3,float *ReVdWE_sr,
                                                   (GRSqDi_p3);
                         VWGrRP_re_in=VWGrRP_re_in+ReVdWE_sr[m]*ReVdWR_p3[m]*
                                              ReVdWR_p3[m]/(GRSqDi_p3*GRSqDi_p3);
-                      }            
+                      }
                     }
                     else {
                       VWGrRP_re_in=VWGrRP_re_in+(1.e+12)/TwoP12;
@@ -131,7 +131,7 @@ void VWGReP(const int ReAtNu,float **ReCoor,float *ReVdWR_p3,float *ReVdWE_sr,
 
         VWGrRP_at[i][j][k]=-VWGrRP_at_in*TwoPo7;
         VWGrRP_re[i][j][k]=VWGrRP_re_in*TwoP12;
- 
+
       }
     }
   }

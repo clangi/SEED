@@ -18,8 +18,8 @@
 int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
                 int *SkiFra,int *CurFraTot,char *FragNa,
                 std::string & FragNa_str,int *FrAtNu,int *FrBdNu,
-                char ***FrAtEl,float ***FrCoor,char ***FrAtTy,char ***FrSyAtTy,
-                float **FrPaCh,
+                char ***FrAtEl,double ***FrCoor,char ***FrAtTy,char ***FrSyAtTy,
+                double **FrPaCh,
                 int ***FrBdAr,char ***FrBdTy,char *FrSubN,char *FrSubC,
                 int *FrCoNu, char ***SubNa, std::string &AlTySp )
 /* This function reads the file of the current fragment (CurFra) in the mol2
@@ -55,7 +55,7 @@ int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
 	char **FrAtEl_L,**FrAtTy_L,**FrBdTy_L, **SubNa_L, **FrSyAtTy_L;
   int i,**FrBdAr_L,/*FrAtNu_cn,FrBdNu_cn,*/ AtCount, CuAtNu /*insec isValid*/;
 	bool AtNu_flag;
-  float **FrCoor_L,*FrPaCh_L;
+  double **FrCoor_L,*FrPaCh_L;
 
 	std::string StrLin, /*AlTySp,*/ firstToken;
 	std::size_t found;
@@ -127,10 +127,10 @@ int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
 	  }
     //std::cout << "TRIPOS ATOM tag was found" << std::endl; /* clangini */
 	  FrAtEl_L=cmatrix(1,*FrAtNu,1,5);
-  	FrCoor_L=matrix(1,*FrAtNu,1,3);
+  	FrCoor_L=dmatrix(1,*FrAtNu,1,3);
   	FrSyAtTy_L=cmatrix(1,*FrAtNu,1,7);
     SubNa_L =cmatrix(1,*FrAtNu,1,10);/*can be simplified. same for all fragment atoms*/
-  	FrPaCh_L=vector(1,*FrAtNu);
+  	FrPaCh_L=dvector(1,*FrAtNu);
   	*FrAtEl=FrAtEl_L;
   	*FrCoor=FrCoor_L;
   	*FrSyAtTy=FrSyAtTy_L;
@@ -150,15 +150,15 @@ int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
       strcpy(&FrAtEl_L[i][1],(*itItem).c_str());
   		++itItem;
       //std::cout << "X-coordinate "<<i<<": "<< *itItem << std::endl;
-      FrCoor_L[i][1] = boost::lexical_cast<float> (*itItem);
+      FrCoor_L[i][1] = boost::lexical_cast<double> (*itItem);
       //std::cout << "X-coordinate "<<i<<": "<<FrCoor_L[i][1]<< std::endl;
       ++itItem;
       //std::cout << "Y-coordinate "<<i<<": "<< *itItem << std::endl;
-      FrCoor_L[i][2] = boost::lexical_cast<float> (*itItem);
+      FrCoor_L[i][2] = boost::lexical_cast<double> (*itItem);
       //std::cout << "Y-coordinate "<<i<<": "<<FrCoor_L[i][2]<< std::endl;
       ++itItem;
       //std::cout << "Z-coordinate "<<i<<": "<< *itItem << std::endl;
-      FrCoor_L[i][3] = boost::lexical_cast<float> (*itItem);
+      FrCoor_L[i][3] = boost::lexical_cast<double> (*itItem);
       //std::cout << "Z-coordinate "<<i<<": "<<FrCoor_L[i][3]<< std::endl;
       ++itItem;
       //std::cout << "Sybyl atom type "<<i<<": "<< *itItem << std::endl;
@@ -170,7 +170,7 @@ int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
       strcpy(&SubNa_L[i][1],(*itItem).c_str());
       ++itItem;
       //std::cout << "Partial charge "<<i<<": "<< (*itItem)<<"ebbasta" << std::endl;
-  		FrPaCh_L[i] = boost::lexical_cast<float> (*itItem);
+  		FrPaCh_L[i] = boost::lexical_cast<double> (*itItem);
       //std::cout << "Charge "<<i<<": "<<FrPaCh_L[i]<< std::endl;
 	  }
     //std::cout << "Atom Block was read!" << std::endl; /* clangini */
@@ -183,9 +183,9 @@ int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
 		  std::cerr << "End of file was reached before expected! Last fragment was skipped!\n";
       /* Once we will implement the resizing this part will not be needed any more */
 		  free_cmatrix(*FrAtEl,1,*FrAtNu,1,5);
-      free_matrix(*FrCoor,1,*FrAtNu,1,3);
+      free_dmatrix(*FrCoor,1,*FrAtNu,1,3);
       free_cmatrix(*FrSyAtTy,1,*FrAtNu,1,7);
-      free_vector(*FrPaCh,1,*FrAtNu);
+      free_dvector(*FrPaCh,1,*FrAtNu);
       free_cmatrix(*SubNa,1,*FrAtNu,1,10);
       return 1;
   	}
@@ -197,9 +197,9 @@ int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
       (*CurFraTot)++;
       /* Once we will implement the resizing this part will not be needed any more */
 		  free_cmatrix(*FrAtEl,1,*FrAtNu,1,5);
-      free_matrix(*FrCoor,1,*FrAtNu,1,3);
+      free_dmatrix(*FrCoor,1,*FrAtNu,1,3);
       free_cmatrix(*FrSyAtTy,1,*FrAtNu,1,7);
-      free_vector(*FrPaCh,1,*FrAtNu);
+      free_dvector(*FrPaCh,1,*FrAtNu);
       free_cmatrix(*SubNa,1,*FrAtNu,1,10);
       continue;
 	  }
@@ -240,9 +240,9 @@ int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
 		  std::cerr << "End of file was reached before expected! Last fragment was skipped!\n";
 		  /* Once we will implement the resizing this part will not be needed any more */
 		  free_cmatrix(*FrAtEl,1,*FrAtNu,1,5);
-      free_matrix(*FrCoor,1,*FrAtNu,1,3);
+      free_dmatrix(*FrCoor,1,*FrAtNu,1,3);
       free_cmatrix(*FrSyAtTy,1,*FrAtNu,1,7);
-      free_vector(*FrPaCh,1,*FrAtNu);
+      free_dvector(*FrPaCh,1,*FrAtNu);
       free_cmatrix(*SubNa,1,*FrAtNu,1,10);
       free_imatrix(*FrBdAr,1,*FrBdNu,1,2);
       free_cmatrix(*FrBdTy,1,*FrBdNu,1,4);
@@ -257,9 +257,9 @@ int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
       (*CurFraTot)++;
 		  /* Once we will implement the resizing this part will not be needed any more */
 		  free_cmatrix(*FrAtEl,1,*FrAtNu,1,5);
-      free_matrix(*FrCoor,1,*FrAtNu,1,3);
+      free_dmatrix(*FrCoor,1,*FrAtNu,1,3);
       free_cmatrix(*FrSyAtTy,1,*FrAtNu,1,7);
-      free_vector(*FrPaCh,1,*FrAtNu);
+      free_dvector(*FrPaCh,1,*FrAtNu);
       free_cmatrix(*SubNa,1,*FrAtNu,1,10);
       free_imatrix(*FrBdAr,1,*FrBdNu,1,2);
       free_cmatrix(*FrBdTy,1,*FrBdNu,1,4);
@@ -279,9 +279,9 @@ int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
       (*CurFraTot)++;
       /* Once we will implement the resizing this part will not be needed any more */
 		  free_cmatrix(*FrAtEl,1,*FrAtNu,1,5);
-      free_matrix(*FrCoor,1,*FrAtNu,1,3);
+      free_dmatrix(*FrCoor,1,*FrAtNu,1,3);
       free_cmatrix(*FrSyAtTy,1,*FrAtNu,1,7);
-      free_vector(*FrPaCh,1,*FrAtNu);
+      free_dvector(*FrPaCh,1,*FrAtNu);
       free_cmatrix(*SubNa,1,*FrAtNu,1,10);
       free_imatrix(*FrBdAr,1,*FrBdNu,1,2);
       free_cmatrix(*FrBdTy,1,*FrBdNu,1,4);
@@ -303,9 +303,9 @@ int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
       (*CurFraTot)++;
        /* Once we will implement the resizing this part will not be needed any more */
 		  free_cmatrix(*FrAtEl,1,*FrAtNu,1,5);
-      free_matrix(*FrCoor,1,*FrAtNu,1,3);
+      free_dmatrix(*FrCoor,1,*FrAtNu,1,3);
       free_cmatrix(*FrSyAtTy,1,*FrAtNu,1,7);
-      free_vector(*FrPaCh,1,*FrAtNu);
+      free_dvector(*FrPaCh,1,*FrAtNu);
       free_cmatrix(*SubNa,1,*FrAtNu,1,10);
       free_imatrix(*FrBdAr,1,*FrBdNu,1,2);
       free_cmatrix(*FrBdTy,1,*FrBdNu,1,4);

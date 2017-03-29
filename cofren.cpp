@@ -2,8 +2,8 @@
 #include <math.h>
 #include "funct.h"
 
-float CoFrEn(int FrAtNu,float *FrPaCh,float **RoSFCo,float *BSMinC,
-             float CoGrIn,float CoGrSi,int *CoGPoN,float ***CoGrRP,
+double CoFrEn(int FrAtNu,double *FrPaCh,double **RoSFCo,double *BSMinC,
+             double CoGrIn,double CoGrSi,int *CoGPoN,double ***CoGrRP,
              FILE *FPaOut,
 	     int *print)
 /* This function evaluates the coulombic interaction energy between the current
@@ -20,7 +20,7 @@ float CoFrEn(int FrAtNu,float *FrPaCh,float **RoSFCo,float *BSMinC,
    CoEnEv_gr  evaluation of the coulombic interaction energy on a grid */
 {
   int i,GrCo_i,GrCo_j,GrCo_k;
-  float Weig_t,Weig_u,Weig_v,CoEnEv_gr;
+  double Weig_t,Weig_u,Weig_v,CoEnEv_gr;
 
   CoEnEv_gr=0.0;
 

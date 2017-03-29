@@ -1,22 +1,22 @@
 #include <stdio.h>
 #include "funct.h"
 
-void SeedFr_ap(int ReCuVe,float **apol_Vect_re,int *ReApAt,int FrCuVe,
-               float **apol_Vect_fr,int *FrApAt,float **FrCoor,float *ReVdWR,
-               float *FrVdWR,int FrAtNu,FILE *FPaOut,float **SeFrCo)
-/* This function seeds the fragment in the binding site of the receptor in the 
+void SeedFr_ap(int ReCuVe,double **apol_Vect_re,int *ReApAt,int FrCuVe,
+               double **apol_Vect_fr,int *FrApAt,double **FrCoor,double *ReVdWR,
+               double *FrVdWR,int FrAtNu,FILE *FPaOut,double **SeFrCo)
+/* This function seeds the fragment in the binding site of the receptor in the
    apolar case :
    ReCuVe  receptor current vector
    FrCuVe  fragment current vector
    TranVe  translation vector
    RotAng  rotation angle
-   RotaAx  rotation axis 
+   RotaAx  rotation axis
    ApLeng  apolar bond length */
 {
   int i;
-  float TranVe[4],RotAng,RotaAx[4],ApLeng;
+  double TranVe[4],RotAng,RotaAx[4],ApLeng;
 
-/* Translation given by the translation of the fragment vector origin towards  
+/* Translation given by the translation of the fragment vector origin towards
    the receptor vector origin */
   TranVe[1]=apol_Vect_re[ReCuVe][1]-apol_Vect_fr[FrCuVe][1];
   TranVe[2]=apol_Vect_re[ReCuVe][2]-apol_Vect_fr[FrCuVe][2];
@@ -28,7 +28,7 @@ void SeedFr_ap(int ReCuVe,float **apol_Vect_re,int *ReApAt,int FrCuVe,
     SeFrCo[i][3]=FrCoor[i][3]+TranVe[3];
   }
 
-/* Rotation given by the rotation of the translated fragment vector extremity  
+/* Rotation given by the rotation of the translated fragment vector extremity
    towards the receptor vector extremity. The rotation vector is perpendicular
    to the plane formed by the translated fragment and receptor vectors.
    If the angle is near PI or 0, the vector is built in another way. */
@@ -44,7 +44,7 @@ void SeedFr_ap(int ReCuVe,float **apol_Vect_re,int *ReApAt,int FrCuVe,
     RotaAx[1]=-(apol_Vect_re[ReCuVe][5]-apol_Vect_re[ReCuVe][2]);
     RotaAx[2]=apol_Vect_re[ReCuVe][4]-apol_Vect_re[ReCuVe][1];
     RotaAx[3]=0.0;
-  } 
+  }
   else {
     VectPr(apol_Vect_fr[FrCuVe][4]+TranVe[1]-apol_Vect_re[ReCuVe][1],
            apol_Vect_fr[FrCuVe][5]+TranVe[2]-apol_Vect_re[ReCuVe][2],
@@ -65,10 +65,10 @@ void SeedFr_ap(int ReCuVe,float **apol_Vect_re,int *ReApAt,int FrCuVe,
     SeFrCo[i][3]=SeFrCo[i][3]+apol_Vect_re[ReCuVe][3];
   }
 
-/* Another translation in order to get the desired length between the concerned 
-   receptor and fragment atoms. One has to take into account that the vectors 
+/* Another translation in order to get the desired length between the concerned
+   receptor and fragment atoms. One has to take into account that the vectors
    have already a length of 1.0 */
-  
+
   TranVe[1]=apol_Vect_re[ReCuVe][4]-apol_Vect_re[ReCuVe][1];
   TranVe[2]=apol_Vect_re[ReCuVe][5]-apol_Vect_re[ReCuVe][2];
   TranVe[3]=apol_Vect_re[ReCuVe][6]-apol_Vect_re[ReCuVe][3];

@@ -14,10 +14,10 @@ int count_heavy_atom(int *FrAtEl_nu,int FrAtNu)
 }
 
 /* This function compute the Molecular Weight (MW) clangini*/
-float molecular_weight(int *FrAtEl_nu,int FrAtNu,float *AtWei)
+double molecular_weight(int *FrAtEl_nu,int FrAtNu,double *AtWei)
 {
   int i;
-  float MolWei = 0.0;
+  double MolWei = 0.0;
   for(i = 1; i <= FrAtNu; i++){
     MolWei += AtWei[FrAtEl_nu[i]];
   }

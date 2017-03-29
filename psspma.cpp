@@ -1,17 +1,17 @@
 #include <stdio.h>
 
-void PsSpMa(float PsSpRa,float GrSiCu_en,int PsSpNC,int ***PsSphe)
-/* This function constructs the pseudo-sphere for the evaluation of the 
+void PsSpMa(double PsSpRa,double GrSiCu_en,int PsSpNC,int ***PsSphe)
+/* This function constructs the pseudo-sphere for the evaluation of the
    energy. Here, the center is supposed to be (0,0,0) :
-  PsSpNC  number of cubes along the radius of the pseudo-sphere for the 
+  PsSpNC  number of cubes along the radius of the pseudo-sphere for the
           evaluation of the energy
   PsSphe  pseudo-sphere in a cube (1 <-> inner part of the sphere,
                                    0 <-> outer part of the sphere)
-  DistVa  squared distance from the origin 
+  DistVa  squared distance from the origin
   SqRoot3  square root of 3 */
 {
   int i,j,k;
-  float DistVa,SqRoot3;
+  double DistVa,SqRoot3;
 
   SqRoot3=1.7320508;
 

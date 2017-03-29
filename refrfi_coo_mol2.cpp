@@ -7,7 +7,7 @@
 #endif
 /* This function is no longer needed clangini*/
 void ReFrFi_coo_mol2(int CurFra,int Ind_num_cn,char **FrFiNa,int FrAtNu,
-                     float **FrCoor)
+                     double **FrCoor)
 /* This function reads the coordinates of the current conformation of the
    current fragment type in the mol2 file :
    Ind_num_cn  index of the current conformation number
@@ -36,7 +36,7 @@ void ReFrFi_coo_mol2(int CurFra,int Ind_num_cn,char **FrFiNa,int FrAtNu,
    fragment type CurFra */
   for (i=1;i<=FrAtNu;i++) {
     fgets_wrapper(StrLin,_STRLENGTH,FilePa);
-    sscanf(StrLin,"%d%s%f%f%f",&dummy1,dummy2,&FrCoor[i][1],&FrCoor[i][2],
+    sscanf(StrLin,"%d%s%lf%lf%lf",&dummy1,dummy2,&FrCoor[i][1],&FrCoor[i][2],
            &FrCoor[i][3]);
   }
 

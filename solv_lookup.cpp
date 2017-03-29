@@ -10,9 +10,9 @@
 #define _STRLENGTH 500
 #endif
 
-void Solvation(int ReAtNu,float **ReCoor,float *ReVdWE_sr,float *ReVdWR,
+void Solvation(int ReAtNu,double **ReCoor,double *ReVdWE_sr,double *ReVdWR,
                double *ReRad,double *ReRad2,double *ReRadOut,double *ReRadOut2,
-               float *ReMaxC,float *ReMinC,float *RePaCh,double DielRe,
+               double *ReMaxC,double *ReMinC,double *RePaCh,double DielRe,
                double DielWa,double WaMoRa,double GrSiSo,double GrInSo,
                int NPtSphere,int *ReResN,int ReReNu,int BSResN,
                int *BSReNu,char *ReDesoAlg,char *DesoMapAcc,
@@ -31,14 +31,14 @@ void Solvation(int ReAtNu,float **ReCoor,float *ReVdWE_sr,float *ReVdWR,
                int *PMaxNeigh,int *Pnstep_re,struct point *Pcbmid_re,
                int *Pmidg_re,double *Prslop,double *Prscale,
                double **ReSurf_apol,int *PNsurfpt_re_apol,
-               double ReSurfDens_apol,double Sphere_apol,float NCutapolRatio,/*int NCutapol,*/
+               double ReSurfDens_apol,double Sphere_apol,double NCutapolRatio,/*int NCutapol,*/
                double ScaleDeso,double ScaleVDW,
-               float ***apol_Vect_re,int **ReApAt,int *Nsurfpt_re_apol_BS,
+               double ***apol_Vect_re,int **ReApAt,int *Nsurfpt_re_apol_BS,
                int *PNapol_Vect_re,double **SelfVol,
                double *PKelec,double *PKsolv,double *PUnitVol,double pi4,
                double corr_re_desoco,double corr_re_desofd,double corr_fast_deso,
-	       int distrPointBSNumb,float **distrPointBS,float angle_rmin,
-	       float angle_rmax,float mult_fact_rmin,float mult_fact_rmax,
+	       int distrPointBSNumb,double **distrPointBS,double angle_rmin,
+	       double angle_rmax,double mult_fact_rmin,double mult_fact_rmax,
 	       FILE *FPaOut,double **SelfVol_corrB,char *EmpCorrB)
 
 /*#####################################################################################
@@ -48,16 +48,16 @@ that will be used in the loops over the fragments
 
 /*####################################################################################
 int ReAtNu -------------- Tot # rec atoms
-float **ReCoor ---------- Rec Coordinates
-float *ReVdWE_sr -------- Rec vdW energies
-float *ReVdWR ----------- Rec vdW radii
+double **ReCoor ---------- Rec Coordinates
+double *ReVdWE_sr -------- Rec vdW energies
+double *ReVdWR ----------- Rec vdW radii
 double *ReRad ----------- Rec charge radii (=vdW radii apart "enclosed" H)
 double *ReRad2 ---------- (Rec charge radii)^2
 double *ReRadOut -------- Rec charge radii + WaMoRa
 double *ReRadOut2 ------- (Rec charge radii + WaMoRa)^2
-float *ReMaxC ----------- Max (along x,y,z) of ReCoor
-float *ReMinC ----------- Min (along x,y,z) of ReCoor
-float *RePaCh ----------- Rec partial charges
+double *ReMaxC ----------- Max (along x,y,z) of ReCoor
+double *ReMinC ----------- Min (along x,y,z) of ReCoor
+double *RePaCh ----------- Rec partial charges
 double DielRe ----------- Dielectric constant of the rec (and of the fragments)
 double DielWa ----------- Dielectric constant of the water
 double WaMoRa ----------- Radius of the water molecule
@@ -155,7 +155,7 @@ double ScaleDeso ------- Scaling factor for vdW interactions in the calculation
                          of ReSurf_apol[n]
 double ScaleVDW -------- Scaling factor for elec desolvation in the calculation
                          of ReSurf_apol[n]
-float ***apol_Vect_re -- most hydrophobic rec points used to seed
+double ***apol_Vect_re -- most hydrophobic rec points used to seed
                          apolar fragments
 int **ReApAt ----------- ReApAt[n] = number of the atom that has generated
                          the nth most hydrophobic point
@@ -177,7 +177,7 @@ double corr_re_desofd -- Correction factor for slow rec elec desolvation
 double corr_fast_deso -- Correction factor for fast elec desolvation
 ###########################################################################*/
 {
-  float **apol_Vect_re_loc;
+  double **apol_Vect_re_loc;
   double *EffRad,*SelfEn,*ReSurf_apol_loc,*vdWSurfPt,SelfEnTot,IntEnTot,
       Rmin,Rmax,rmax,slen;
   int i,j,k,ix,iy,iz,iat,NGrid,NGridx,NGridy,NGridz,*ResFirstAtom,
@@ -187,7 +187,7 @@ double corr_fast_deso -- Correction factor for fast elec desolvation
   char FD[3],CO[3];
 
 /*##########################################################################
-float **apol_Vect_re_loc --- most hydrophobic rec points used to seed
+double **apol_Vect_re_loc --- most hydrophobic rec points used to seed
                              apolar fragments (local)
 double *EffRad ------------- EffRad[n] = effective radius of rec atom n
 double *SelfEn ------------- SelfEn[n] = self energy of rec atom n
@@ -502,15 +502,15 @@ struct point len ----------- ReMaxC - ReMinC
 
 /* Creation of vectors for the placement of apolar fragments */
   printf("\n\tCreate vectors for the placement of apolar fragments\n");
-  apol_Vect_re_loc = matrix(1,*PNapol_Vect_re,1,6);
+  apol_Vect_re_loc = dmatrix(1,*PNapol_Vect_re,1,6);
   *apol_Vect_re = apol_Vect_re_loc;
   *ReApAt=ivector(1,*PNapol_Vect_re);
   for (i=1;i<=*PNapol_Vect_re;i++) {
     for (j=1;j<=3;j++)
       apol_Vect_re_loc[i][j]=ReCoor[iatsrf_re_apol[isurf_More_apol[i]]][j];
-    apol_Vect_re_loc[i][4] = (float) surfpt_re_apol[isurf_More_apol[i]].x;
-    apol_Vect_re_loc[i][5] = (float) surfpt_re_apol[isurf_More_apol[i]].y;
-    apol_Vect_re_loc[i][6] = (float) surfpt_re_apol[isurf_More_apol[i]].z;
+    apol_Vect_re_loc[i][4] = (double) surfpt_re_apol[isurf_More_apol[i]].x;
+    apol_Vect_re_loc[i][5] = (double) surfpt_re_apol[isurf_More_apol[i]].y;
+    apol_Vect_re_loc[i][6] = (double) surfpt_re_apol[isurf_More_apol[i]].z;
     (*ReApAt)[i]=iatsrf_re_apol[isurf_More_apol[i]];
   }
 
@@ -530,7 +530,7 @@ struct point len ----------- ReMaxC - ReMinC
   printf("End Solv\n");
 }
 
-int get_Grid_Dim(int ReAtNu,float **ReCoor,float *ReVdWR,double WaMoRa,
+int get_Grid_Dim(int ReAtNu,double **ReCoor,double *ReVdWR,double WaMoRa,
                  double GrSiSo,double GrInSo,int *PNGridx,int *PNGridy,
                  int *PNGridz,int *PNGrid,struct point *PMin,
                  struct point *PMax,double *PUnitVol)
@@ -542,8 +542,8 @@ then calculate the volume occupied by a grid pt (UnitVol)
 
 /*#####################################################################
 int ReAtNu -------------- Tot # rec (frag) atoms
-float **ReCoor ---------- Rec (frag) Coordinates
-float *ReVdWR ----------- Rec (frag) vdW radii
+double **ReCoor ---------- Rec (frag) Coordinates
+double *ReVdWR ----------- Rec (frag) vdW radii
 double WaMoRa ----------- Radius of the water molecule
 double GrSiSo ----------- Size of the 3D grid used for cont. electrostatics
 double GrInSo ----------- Margin left along each dimension (positive and
@@ -636,7 +636,7 @@ double *ZGriz ----------- Z coor of the grid points
     return 0;
 }
 
-int get_Ch_Rad(int ReAtNu,float **ReCoor,float *ReVdWR,double WaMoRa,
+int get_Ch_Rad(int ReAtNu,double **ReCoor,double *ReVdWR,double WaMoRa,
                double *ReRad,double *ReRad2,double *ReRadOut,
                double *ReRadOut2,double *PRmin,double *PRmax)
 /*##########################################
@@ -645,8 +645,8 @@ Calculate the charge radii for the receptor
 
 /*##########################################
 int ReAtNu -------------- Tot # rec atoms
-float **ReCoor ---------- Rec Coordinates
-float *ReVdWR ----------- Rec vdW radii
+double **ReCoor ---------- Rec Coordinates
+double *ReVdWR ----------- Rec vdW radii
 double WaMoRa ----------- Radius of the water molecule
 double *ReRad ----------- Rec charge radii (=vdW radii apart "enclosed" H)
 double *ReRad2 ---------- (Rec charge radii)^2
@@ -657,7 +657,7 @@ double *PRmax ----------- Largest rec charge radius
 ###########################################*/
 {
   int i,j;
-  float d,d2;
+  double d,d2;
 
   for (i=1;i<=ReAtNu;i++)
     ReRad[i] =  ReVdWR[i];
@@ -687,9 +687,9 @@ double *PRmax ----------- Largest rec charge radius
     return 0;
 }
 
-int get_Ch_Rad_Fr(int ReAtNu,float **ReCoor,float *ReVdWR,double WaMoRa,
+int get_Ch_Rad_Fr(int ReAtNu,double **ReCoor,double *ReVdWR,double WaMoRa,
                   double *ReRad,double *ReRad2,double *ReRadOut,
-                  double *ReRadOut2,float **dist2,double *PRmin,double *PRmax)
+                  double *ReRadOut2,double **dist2,double *PRmin,double *PRmax)
 /*##########################################
 Calculate the charge radii for the fragment (the diff. with get_Ch_Rad
 is that the interatomic distances are transmitted out).
@@ -700,20 +700,20 @@ is that the interatomic distances are transmitted out).
 
 /*##########################################
 int ReAtNu -------------- Tot # atoms
-float **ReCoor ---------- Coordinates
-float *ReVdWR ----------- vdW radii
+double **ReCoor ---------- Coordinates
+double *ReVdWR ----------- vdW radii
 double WaMoRa ----------- Radius of the water molecule
 double *ReRad ----------- Charge radii (=vdW radii apart "enclosed" H)
 double *ReRad2 ---------- (Charge radii)^2
 double *ReRadOut -------- Charge radii + WaMoRa
 double *ReRadOut2 ------- (Charge radii + WaMoRa)^2
-float **dist2 ----------- squared interatomic distances
+double **dist2 ----------- squared interatomic distances
 double *PRmin ----------- Smallest charge radius
 double *PRmax ----------- Largest charge radius
 ###########################################*/
 {
   int i,j;
-  float d;
+  double d;
 
   for (i=1;i<=ReAtNu;i++)
     ReRad[i] =  ReVdWR[i];
@@ -744,7 +744,7 @@ double *PRmax ----------- Largest charge radius
     return 0;
 }
 
-int SAS_Volume(int ReAtNu,float **ReCoor,double *ReRadOut,
+int SAS_Volume(int ReAtNu,double **ReCoor,double *ReRadOut,
                double *ReRadOut2,struct point Min,
                double GrSiSo,int NStartGridx,int NStartGridy,
                int NStartGridz,int NGridx,int NGridy,int NGridz,
@@ -755,7 +755,7 @@ Get the volume enclosed by the SAS
 
 /*##########################################
 int ReAtNu -------------- Tot # rec (frag) atoms
-float **ReCoor ---------- Rec (frag) coordinates
+double **ReCoor ---------- Rec (frag) coordinates
 double *ReRadOut -------- Rec (frag) charge radii + WaMoRa
 double *ReRadOut2 ------- (Rec (frag) charge radii + WaMoRa)^2
 struct point Min -------- Min coor of the grid box
@@ -818,7 +818,7 @@ char ****GridMat -------- Matrix telling if a grid point is occupied (o),
     return 0;
 }
 
-int Surf_Grid_unif_dens(int ReAtNu,float **ReCoor,float *ReMaxC,float *ReMinC,
+int Surf_Grid_unif_dens(int ReAtNu,double **ReCoor,double *ReMaxC,double *ReMinC,
                         double *ReRad,double *ReRadOut2,double WaMoRa,
                         double ReSurfDens_apol,double pi4,int *PNsurfpt,
                         struct point *surfpt,int *iatsrf,int *nsurf,
@@ -829,9 +829,9 @@ Place points over the SAS assuming a uniform surface density
 
 /*##########################################
 int ReAtNu -------------- Tot # atoms
-float **ReCoor ---------- Coordinates
-float *ReMaxC ----------- Max (along x,y,z) of ReCoor
-float *ReMinC ----------- Min (along x,y,z) of ReCoor
+double **ReCoor ---------- Coordinates
+double *ReMaxC ----------- Max (along x,y,z) of ReCoor
+double *ReMinC ----------- Min (along x,y,z) of ReCoor
 double *ReRad ----------- Charge radii (=vdW radii apart "enclosed" H)
 double *ReRadOut2 ------- (Charge radii + WaMoRa)^2
 double WaMoRa ----------- Radius of the water molecule
@@ -1092,7 +1092,7 @@ newpoint:
     return 0;
 }
 
-int Surf_Grid_unif_dens_neighlist(int ReAtNu,float **ReCoor,float *ReMinC,
+int Surf_Grid_unif_dens_neighlist(int ReAtNu,double **ReCoor,double *ReMinC,
                                   double *ReRad,double *ReRadOut2,
                                   double WaMoRa,double ReSurfDens_deso,
                                   double pi4,int *PNsurfpt,
@@ -1108,8 +1108,8 @@ atom-to-grid neighbour list
 
 /*##########################################
 int ReAtNu -------------- Tot # atoms
-float **ReCoor ---------- Coordinates
-float *ReMinC ----------- Min (along x,y,z) of ReCoor
+double **ReCoor ---------- Coordinates
+double *ReMinC ----------- Min (along x,y,z) of ReCoor
 double *ReRad ----------- Charge radii (=vdW radii apart "enclosed" H)
 double *ReRadOut2 ------- (Charge radii + WaMoRa)^2
 double WaMoRa ----------- Radius of the water molecule
@@ -1324,7 +1324,7 @@ newpoint:
     return 0;
 }
 
-int Surf_Grid(int ReAtNu,float **ReCoor,float *ReMaxC,float *ReMinC,
+int Surf_Grid(int ReAtNu,double **ReCoor,double *ReMaxC,double *ReMinC,
                double *ReRad,double WaMoRa,int NPtSphere,int *PNsurfpt,
                struct point *surfpt,int *iatsrf,int *nsurf,int *pointsrf)
 /*##########################################
@@ -1333,9 +1333,9 @@ Place points over the SAS assuming a given # of points per atom (NPtSphere)
 
 /*##########################################
 int ReAtNu -------------- Tot # atoms
-float **ReCoor ---------- Coordinates
-float *ReMaxC ----------- Max (along x,y,z) of ReCoor
-float *ReMinC ----------- Min (along x,y,z) of ReCoor
+double **ReCoor ---------- Coordinates
+double *ReMaxC ----------- Max (along x,y,z) of ReCoor
+double *ReMinC ----------- Min (along x,y,z) of ReCoor
 double *ReRad ----------- Charge radii (=vdW radii apart "enclosed" H)
 double WaMoRa ----------- Radius of the water molecule
 int NPtSphere ----------- # of points per atom
@@ -1612,7 +1612,7 @@ the new *PNPtSphere value)
   return SphCoor;
 }
 
-int Excl_Grid(int ReAtNu,float **ReCoor,struct point Min,double *ReRadOut,
+int Excl_Grid(int ReAtNu,double **ReCoor,struct point Min,double *ReRadOut,
               double *ReRadOut2,double WaMoRa,double GrSiSo,
               int NStartGridx,int NStartGridy,int NStartGridz,
               int NGridx,int NGridy,int NGridz,
@@ -1626,7 +1626,7 @@ Place a sphere (WaMoRa) over each SAS point (surfpt) and set to empty
 
 /*##########################################
 int ReAtNu -------------- Tot # rec (frag) atoms
-float **ReCoor ---------- Rec (frag) coordinates
+double **ReCoor ---------- Rec (frag) coordinates
 struct point Min -------- Min coor of the grid box
 double *ReRadOut -------- Rec (frag)  charge radii + WaMoRa
 double *ReRadOut2 ------- (Rec (frag)  charge radii + WaMoRa)^2
@@ -1758,7 +1758,7 @@ double *SelfVol --------- SelfVol[iat] = integral of 1/r^4 over the solute
     return 0;
 }
 
-int Get_Self_Vol(int ReAtNu,float **ReCoor,double *ReRadOut2,
+int Get_Self_Vol(int ReAtNu,double **ReCoor,double *ReRadOut2,
                  double GrSiSo,double *XGrid,double *YGrid,double *ZGrid,
                  int NStartGridx,int NStartGridy,int NStartGridz,
                  int NGridx,int NGridy,int NGridz,
@@ -1771,7 +1771,7 @@ solute volume defined by GridMat
 
 /*##########################################
 int ReAtNu -------------- Tot # atoms
-float **ReCoor ---------- Coordinates
+double **ReCoor ---------- Coordinates
 double *ReRadOut2 ------- (Rec charge radii + WaMoRa)^2
 double GrSiSo ----------- Size of the 3D grid used for cont. electrostatics
 double *XGrid ----------- X coor of the grid points
@@ -1914,7 +1914,7 @@ to the integral of 1/r^4 */
     return 0;
 }
 
-int GB_int(int ReAtNu,float **ReCoor,float *RePaCh,double *EffRad,
+int GB_int(int ReAtNu,double **ReCoor,double *RePaCh,double *EffRad,
            double Ksolv,double *PIntEnTot)
 /*##########################################
 Calculate the interaction energy according to the GB formula
@@ -1922,7 +1922,7 @@ Calculate the interaction energy according to the GB formula
 
 /*##########################################
 int ReAtNu -------------- Tot # atoms
-float **ReCoor ---------- Coordinates
+double **ReCoor ---------- Coordinates
 double *RePaCh ---------- partial charges
 double *EffRad ---------- Effective radii
 double Ksolv ------------ Constant
@@ -1957,7 +1957,7 @@ double *PIntEnTot ------- Tot interaction energy
     return 0;
 }
 
-int Get_BS_Info(int ReAtNu,float **ReCoor,double *ReRadOut,
+int Get_BS_Info(int ReAtNu,double **ReCoor,double *ReRadOut,
                 struct point Min,double GrSiSo,double GrInSo,int *ReResN,
                 int BSResN,int *BSReNu,int NGridx,
                 int NGridy,int NGridz,int *PnxminBS,int *PnyminBS,
@@ -1969,7 +1969,7 @@ Get informations about the size and the location of the Binding Site
 
 /*##########################################
 int ReAtNu -------------- Tot # rec atoms
-float **ReCoor ---------- Rec coordinates
+double **ReCoor ---------- Rec coordinates
 double *ReRadOut -------- Rec charge radii + WaMoRa
 struct point Min -------- Min coor of the grid box
 double GrSiSo ----------- Size of the 3D grid used for cont. electrostatics
@@ -2067,7 +2067,7 @@ int *NAtom_per_Res --------- NAtom_per_Res[n] = # of atoms of residue n
     return 0;
 }
 
-int vdW_Surf(int ReAtNu,float **ReCoor,float *ReVdWE_sr,float *ReVdWR,
+int vdW_Surf(int ReAtNu,double **ReCoor,double *ReVdWE_sr,double *ReVdWR,
              double Sphere_apol,int BSResN,int *BSReNu,int *NAtom_per_Res,
              int *ResFirstAtom,struct point *surfpt_re,int *nsurf_re,
              int *pointsrf_re,double *vdWSurfPt)
@@ -2078,9 +2078,9 @@ with the rec itself
 
 /*##########################################
 int ReAtNu -------------- Tot # rec atoms
-float **ReCoor ---------- Rec coordinates
-float *ReVdWE_sr -------- Rec vdW energies
-float *ReVdWR ----------- Rec vdW radii
+double **ReCoor ---------- Rec coordinates
+double *ReVdWE_sr -------- Rec vdW energies
+double *ReVdWR ----------- Rec vdW radii
 double Sphere_apol ------ Dimension of the probe sphere used to generate SAS3
 int BSResN -------------- Tot number of rec residues in the Binding Site
 int *BSReNu ------------- # rec residue in the Binding Site
@@ -2136,12 +2136,12 @@ int Desol_Surf(int ReAtNu,struct point Min,double Sphere_apol,
                double GrSiSo,int NGridx,int NGridy,int NGridz,int BSResN,
                int *BSReNu,int *NAtom_per_Res,int *ResFirstAtom,
                struct point *surfpt_re,int *nsurf_re,int *pointsrf_re,
-               double ***DeltaPrDeso,double *ReSurf_apol,float NCutapolRatio,/*int NCutapol,*/
+               double ***DeltaPrDeso,double *ReSurf_apol,double NCutapolRatio,/*int NCutapol,*/
                double ScaleDeso,int *isurf_More_apol,
                int *PNapol_Vect_re,int *Nsurfpt_re_apol_BS,
-	       int *iatsrf_re_apol,int distrPointBSNumb,float **distrPointBS,
-	       float angle_rmin,float angle_rmax,float mult_fact_rmin,
-	       float mult_fact_rmax,float **ReCoor,FILE *FPaOut)
+	       int *iatsrf_re_apol,int distrPointBSNumb,double **distrPointBS,
+	       double angle_rmin,double angle_rmax,double mult_fact_rmin,
+	       double mult_fact_rmax,double **ReCoor,FILE *FPaOut)
 /*##########################################
 Calculate the desolvation operated by a sphere rolled over the rec surface
 ###########################################*/
@@ -2205,7 +2205,7 @@ int *Nsurfpt_re_apol_BS - Tot # of points over the rec SAS3
       helpCount,maxCount,NCutapol;/*new NCutapol == internal variable*/
   double Sphere_apol2,xtemp,x2temp,ytemp,xy2temp,ztemp,r2,DesoMin,
          DesoMax,DesoMid,scale,*ReSurf_apolBS,deso;
-  float minSqDist,maxSqDist,vecPointSqDist,
+  double minSqDist,maxSqDist,vecPointSqDist,
 	distSqClosest,vecPointAngle,minSqDistCutoff,maxSqDistCutoff,
 	angleCutoff,angle_rmin_rad,angle_rmax_rad,*vect_angle_stored;
   FILE *FilePa;
@@ -2319,7 +2319,7 @@ int *Nsurfpt_re_apol_BS - Tot # of points over the rec SAS3
         numbApolVectBS++;
 
 /* Initialisation */
-  vect_angle_stored=vector(1,numbApolVectBS);
+  vect_angle_stored=dvector(1,numbApolVectBS);
   keptVect_angle=ivector(1,numbApolVectBS);
   if (distrPointBSNumb>0)
   {
@@ -2620,7 +2620,7 @@ int *Nsurfpt_re_apol_BS - Tot # of points over the rec SAS3
   free_dvector(ReSurf_apolBS,1,*Nsurfpt_re_apol_BS);
   free_ivector(RankArr,1,*Nsurfpt_re_apol_BS);
 
-  free_vector(vect_angle_stored,1,numbApolVectBS);
+  free_dvector(vect_angle_stored,1,numbApolVectBS);
   free_ivector(keptVect_angle,1,numbApolVectBS);
 
   if (ires == BSResN+1 )
@@ -2630,7 +2630,7 @@ int *Nsurfpt_re_apol_BS - Tot # of points over the rec SAS3
 }
 
 int Calc_D_uhbd(int ReAtNu,double *ReRad,struct point Min,
-                struct point Max,float *RePaCh,double WaMoRa,int NPtSphere,
+                struct point Max,double *RePaCh,double WaMoRa,int NPtSphere,
                 double DielRe,double DielWa,double GrSiSo,double GrInSo,
                 double pi4,int NGridx,int NGridy,int NGridz,int nxminBS,
                 int nyminBS,int nzminBS,int nxmaxBS,int nymaxBS,
@@ -2647,7 +2647,7 @@ int ReAtNu -------------- Tot # rec atoms
 double *ReRad ----------- Rec charge radii
 struct point Min -------- Min coor of the grid box
 struct point Max -------- Max coor of the grid box
-float *RePaCh ----------- Rec partial charges
+double *RePaCh ----------- Rec partial charges
 double WaMoRa ----------- Radius of the water molecule
 int NPtSphere ----------- Amount of points placed over each atom to generate
                           the SAS (built in order to obtain the volume
@@ -2688,7 +2688,7 @@ double ***DeltaPrDeso --- Elec rec desolvation due to the occupation of a grid p
 {
   int ix,iy,iz,iat,nxcoarse,nycoarse,nzcoarse,nxfine,nyfine,nzfine;
   double xcen,ycen,zcen,Kdesol,Dx,Dy,Dz;
-  float ***phi,***eps;
+  double ***phi,***eps;
   char UxStr[300];
   FILE *FilChk,*FileOut;
   int dummy = 0; //clangini
@@ -2881,8 +2881,8 @@ double ***DeltaPrDeso --- Elec rec desolvation due to the occupation of a grid p
     dummy = system(UxStr);
 
 /*------------Read the x-shifted potential and dielectric maps--------*/
-    phi = f3tensor(nxminBS-1,nxmaxBS+1,nyminBS-1,nymaxBS+1,nzminBS-1,nzmaxBS+1);
-    eps = f3tensor(nxminBS-1,nxmaxBS+1,nyminBS-1,nymaxBS+1,nzminBS-1,nzmaxBS+1);
+    phi = d3tensor(nxminBS-1,nxmaxBS+1,nyminBS-1,nymaxBS+1,nzminBS-1,nzmaxBS+1);
+    eps = d3tensor(nxminBS-1,nxmaxBS+1,nyminBS-1,nymaxBS+1,nzminBS-1,nzmaxBS+1);
 
 /*-----------Read the x-shifted potential-----------*/
     printf("phii\n");
@@ -2982,9 +2982,9 @@ double ***DeltaPrDeso --- Elec rec desolvation due to the occupation of a grid p
     dummy = system(UxStr);
 
 
-    free_f3tensor(phi,nxminBS-1,nxmaxBS+1,nyminBS-1,nymaxBS+1,
+    free_d3tensor(phi,nxminBS-1,nxmaxBS+1,nyminBS-1,nymaxBS+1,
                   nzminBS-1,nzmaxBS+1);
-    free_f3tensor(eps,nxminBS-1,nxmaxBS+1,nyminBS-1,nymaxBS+1,
+    free_d3tensor(eps,nxminBS-1,nxmaxBS+1,nyminBS-1,nymaxBS+1,
                   nzminBS-1,nzmaxBS+1);
 
 
@@ -2995,7 +2995,7 @@ double ***DeltaPrDeso --- Elec rec desolvation due to the occupation of a grid p
 }
 
 int Read_uhbd_map(char *MapFile,int ibeginx,int ibeginy,int ibeginz,
-                  int iendx,int iendy,int iendz,float ***arr)
+                  int iendx,int iendy,int iendz,double ***arr)
 /*#####################################################################
 Read a map (eps or phi) created by UHBD (peculiar format...)
 #######################################################################*/
@@ -3008,7 +3008,7 @@ int ibeginzS -------- grid point (along z) where the BS starts
 int iendx  S -------- grid point (along x) where the BS ends
 int iendy  S -------- grid point (along y) where the BS ends
 int iendz  S -------- grid point (along z) where the BS ends
-float ***arr -------- quantity that is read (eps or phi)
+double ***arr -------- quantity that is read (eps or phi)
 ######################################################################*/
 {
   int ix,iy,iz,nleft;
@@ -3029,67 +3029,67 @@ float ***arr -------- quantity that is read (eps or phi)
         fgets_wrapper(StrLin,_STRLENGTH,ReaFile);
         if (ix+5 <= iendx+1) {
           nleft = ibeginx-1;
-          sscanf(StrLin,"%f%f%f%f%f%f",&arr[ix][iy][iz],&arr[ix+1][iy][iz],
+          sscanf(StrLin,"%lf%lf%lf%lf%lf%lf",&arr[ix][iy][iz],&arr[ix+1][iy][iz],
                                        &arr[ix+2][iy][iz],&arr[ix+3][iy][iz],
                                        &arr[ix+4][iy][iz],&arr[ix+5][iy][iz]);
         }
         else if ( iendx+1 == ix+4 ) {
           nleft = ibeginx;
           if ( iy < iendy+1)
-            sscanf(StrLin,"%f%f%f%f%f%f",&arr[ix][iy][iz],&arr[ix+1][iy][iz],
+            sscanf(StrLin,"%lf%lf%lf%lf%lf%lf",&arr[ix][iy][iz],&arr[ix+1][iy][iz],
                                        &arr[ix+2][iy][iz],&arr[ix+3][iy][iz],
                                        &arr[ix+4][iy][iz],
                                        &arr[ibeginx-1][iy+1][iz]);
           else
-            sscanf(StrLin,"%f%f%f%f%f",&arr[ix][iy][iz],&arr[ix+1][iy][iz],
+            sscanf(StrLin,"%lf%lf%lf%lf%lf",&arr[ix][iy][iz],&arr[ix+1][iy][iz],
                                        &arr[ix+2][iy][iz],&arr[ix+3][iy][iz],
                                        &arr[ix+4][iy][iz]);
         }
         else if ( iendx+1 == ix+3 ) {
           nleft = ibeginx+1;
           if ( iy < iendy+1)
-            sscanf(StrLin,"%f%f%f%f%f%f",&arr[ix][iy][iz],&arr[ix+1][iy][iz],
+            sscanf(StrLin,"%lf%lf%lf%lf%lf%lf",&arr[ix][iy][iz],&arr[ix+1][iy][iz],
                                        &arr[ix+2][iy][iz],&arr[ix+3][iy][iz],
                                        &arr[ibeginx-1][iy+1][iz],
                                        &arr[ibeginx][iy+1][iz]);
           else
-            sscanf(StrLin,"%f%f%f%f",&arr[ix][iy][iz],&arr[ix+1][iy][iz],
+            sscanf(StrLin,"%lf%lf%lf%lf",&arr[ix][iy][iz],&arr[ix+1][iy][iz],
                                        &arr[ix+2][iy][iz],&arr[ix+3][iy][iz]);
         }
         else if ( iendx+1 == ix+2 )  {
           nleft = ibeginx+2;
           if ( iy < iendy+1)
-            sscanf(StrLin,"%f%f%f%f%f%f",&arr[ix][iy][iz],&arr[ix+1][iy][iz],
+            sscanf(StrLin,"%lf%lf%lf%lf%lf%lf",&arr[ix][iy][iz],&arr[ix+1][iy][iz],
                                        &arr[ix+2][iy][iz],
                                        &arr[ibeginx-1][iy+1][iz],
                                        &arr[ibeginx][iy+1][iz],
                                        &arr[ibeginx+1][iy+1][iz]);
           else
-            sscanf(StrLin,"%f%f%f",&arr[ix][iy][iz],&arr[ix+1][iy][iz],
+            sscanf(StrLin,"%lf%lf%lf",&arr[ix][iy][iz],&arr[ix+1][iy][iz],
                                        &arr[ix+2][iy][iz]);
         }
         else if ( iendx+1 == ix+1 ) {
           nleft = ibeginx+3;
           if ( iy < iendy+1)
-            sscanf(StrLin,"%f%f%f%f%f%f",&arr[ix][iy][iz],&arr[ix+1][iy][iz],
+            sscanf(StrLin,"%lf%lf%lf%lf%lf%lf",&arr[ix][iy][iz],&arr[ix+1][iy][iz],
                                        &arr[ibeginx-1][iy+1][iz],
                                        &arr[ibeginx][iy+1][iz],
                                        &arr[ibeginx+1][iy+1][iz],
                                        &arr[ibeginx+2][iy+1][iz]);
           else
-            sscanf(StrLin,"%f%f",&arr[ix][iy][iz],&arr[ix+1][iy][iz]);
+            sscanf(StrLin,"%lf%lf",&arr[ix][iy][iz],&arr[ix+1][iy][iz]);
         }
         else if ( iendx+1 == ix ) {
           nleft = ibeginx+4;
           if ( iy < iendy+1)
-            sscanf(StrLin,"%f%f%f%f%f%f",&arr[ix][iy][iz],
+            sscanf(StrLin,"%lf%lf%lf%lf%lf%lf",&arr[ix][iy][iz],
                                        &arr[ibeginx-1][iy+1][iz],
                                        &arr[ibeginx][iy+1][iz],
                                        &arr[ibeginx+1][iy+1][iz],
                                        &arr[ibeginx+2][iy+1][iz],
                                        &arr[ibeginx+3][iy+1][iz]);
           else
-            sscanf(StrLin,"%f",&arr[ix][iy][iz]);
+            sscanf(StrLin,"%lf",&arr[ix][iy][iz]);
         }
       }
     }
@@ -3099,8 +3099,8 @@ float ***arr -------- quantity that is read (eps or phi)
   return 1;
 }
 
-int Calc_D_Coul(int ReAtNu,float **ReCoor,double *ReRad2,struct point Min,
-                struct point Max,float *RePaCh,double DielRe,double DielWa,
+int Calc_D_Coul(int ReAtNu,double **ReCoor,double *ReRad2,struct point Min,
+                struct point Max,double *RePaCh,double DielRe,double DielWa,
                 double GrSiSo,double pi4,int nxminBS,int nyminBS,
                 int nzminBS,int nxmaxBS,int nymaxBS,int nzmaxBS,
                 double *XGrid,double *YGrid,double *ZGrid,char ***GridMat,
@@ -3111,11 +3111,11 @@ Calculate the electric displacement with the Coulomb approximation
 
 /*##########################################
 int ReAtNu -------------- Tot # rec (frag) atoms
-float **ReCoor ---------- Rec (frag) coordinates
+double **ReCoor ---------- Rec (frag) coordinates
 double *ReRad2 ---------- (Rec (frag) charge radii)^2
 struct point Min -------- Min coor of the grid box
 struct point Max -------- Max coor of the grid box
-float *RePaCh ----------- Rec (frag) partial charges
+double *RePaCh ----------- Rec (frag) partial charges
 double DielRe ----------- Dielectric constant of the rec (and of the fragments)
 double DielWa ----------- Dielectric constant of the water
 double GrSiSo ----------- Size of the 3D grid used for cont. electrostatics

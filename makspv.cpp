@@ -2,40 +2,40 @@
 #include <math.h>
 #include "funct.h"
 
-void MakSpV(int DAType,int DoAcAt,int HyOrZe,float SphAng,int SphPoN,
+void MakSpV(int DAType,int DoAcAt,int HyOrZe,double SphAng,int SphPoN,
             int *DANumb,int *ReDATy_L,int *ReDAAt_L,int *ReHydN_L,
-            float **ReVeCo_L)
-/* This function makes the acceptor or donor vectors on the sphere part, 
+            double **ReVeCo_L)
+/* This function makes the acceptor or donor vectors on the sphere part,
    the sphere top vector excepted (already made in the calling function) :
   DAType  donor or acceptor type (0 for donor,1 for acceptor)
   DoAcAt  current donor or acceptor atom on which one puts the vectors
-  HyOrZe  hydrogen number in the vector or 0 if no hydrogen involved  
+  HyOrZe  hydrogen number in the vector or 0 if no hydrogen involved
   NumAnT  total number of theta angles
   NumAnP  number of phi angles for each theta angle
   IntPar  integer part
-  ReaPar  real part 
+  ReaPar  real part
   TheSte  theta step
-  PhiSte  phi step 
-  TopVec  top vector number (top of the sphere part) 
+  PhiSte  phi step
+  TopVec  top vector number (top of the sphere part)
   TranVe  translation vector
   RotAng  rotation angle
   RotaAx  rotation axis */
 {
   int i,j,NumAnT,NumAnP,TopVec;
-  float IntPar,ReaPar,PiT180,TheSte,PhiSte,TranVe[4],RotAng,RotaAx[4];
+  double IntPar,ReaPar,PiT180,TheSte,PhiSte,TranVe[4],RotAng,RotaAx[4];
   double DIntPar;
 
   PiT180=3.1415927/180;
   TopVec=*DANumb;
 
   if (DAType==0) {
-/* Translation given by the translation of the z axis origin towards the top 
+/* Translation given by the translation of the z axis origin towards the top
    vector origin */
     TranVe[1]=ReVeCo_L[TopVec][1];
     TranVe[2]=ReVeCo_L[TopVec][2];
     TranVe[3]=ReVeCo_L[TopVec][3];
-/* Rotation given by the rotation of the translated z axis extremity towards 
-   the top vector extremity. The rotation vector is perpendicular to the plane 
+/* Rotation given by the rotation of the translated z axis extremity towards
+   the top vector extremity. The rotation vector is perpendicular to the plane
    formed by the translated z axis and the top vector. */
     RotAng=PlaAng(ReVeCo_L[TopVec][1],ReVeCo_L[TopVec][2],ReVeCo_L[TopVec][3],
                   ReVeCo_L[TopVec][4],ReVeCo_L[TopVec][5],ReVeCo_L[TopVec][6],
@@ -45,13 +45,13 @@ void MakSpV(int DAType,int DoAcAt,int HyOrZe,float SphAng,int SphPoN,
            &RotaAx[1],&RotaAx[2],&RotaAx[3]);
   }
   else {
-/* Translation given by the translation of the z axis origin towards the top 
+/* Translation given by the translation of the z axis origin towards the top
    vector extremity */
     TranVe[1]=ReVeCo_L[TopVec][4];
     TranVe[2]=ReVeCo_L[TopVec][5];
     TranVe[3]=ReVeCo_L[TopVec][6];
-/* Rotation given by the rotation of the translated z axis extremity towards 
-   the top vector origin. The rotation vector is perpendicular to the plane 
+/* Rotation given by the rotation of the translated z axis extremity towards
+   the top vector origin. The rotation vector is perpendicular to the plane
    formed by the translated z axis and the top vector. */
     RotAng=PlaAng(ReVeCo_L[TopVec][4],ReVeCo_L[TopVec][5],ReVeCo_L[TopVec][6],
                   ReVeCo_L[TopVec][1],ReVeCo_L[TopVec][2],ReVeCo_L[TopVec][3],
@@ -88,10 +88,10 @@ void MakSpV(int DAType,int DoAcAt,int HyOrZe,float SphAng,int SphPoN,
           ReVeCo_L[*DANumb][1]=ReVeCo_L[TopVec][1];
           ReVeCo_L[*DANumb][2]=ReVeCo_L[TopVec][2];
           ReVeCo_L[*DANumb][3]=ReVeCo_L[TopVec][3];
-          
+
           ReVeCo_L[*DANumb][4]=1.0*sinf(i*TheSte)*cosf(j*PhiSte);
           ReVeCo_L[*DANumb][5]=1.0*sinf(i*TheSte)*sinf(j*PhiSte);
-          ReVeCo_L[*DANumb][6]=1.0*cosf(i*TheSte);       
+          ReVeCo_L[*DANumb][6]=1.0*cosf(i*TheSte);
 
           RoArVe(ReVeCo_L[*DANumb][4],ReVeCo_L[*DANumb][5],ReVeCo_L[*DANumb][6],
                  RotaAx[1],RotaAx[2],RotaAx[3],RotAng,&ReVeCo_L[*DANumb][4],
@@ -105,10 +105,10 @@ void MakSpV(int DAType,int DoAcAt,int HyOrZe,float SphAng,int SphPoN,
           ReVeCo_L[*DANumb][4]=ReVeCo_L[TopVec][4];
           ReVeCo_L[*DANumb][5]=ReVeCo_L[TopVec][5];
           ReVeCo_L[*DANumb][6]=ReVeCo_L[TopVec][6];
-          
+
           ReVeCo_L[*DANumb][1]=1.0*sinf(i*TheSte)*cosf(j*PhiSte);
           ReVeCo_L[*DANumb][2]=1.0*sinf(i*TheSte)*sinf(j*PhiSte);
-          ReVeCo_L[*DANumb][3]=1.0*cosf(i*TheSte);       
+          ReVeCo_L[*DANumb][3]=1.0*cosf(i*TheSte);
 
           RoArVe(ReVeCo_L[*DANumb][1],ReVeCo_L[*DANumb][2],ReVeCo_L[*DANumb][3],
                  RotaAx[1],RotaAx[2],RotaAx[3],RotAng,&ReVeCo_L[*DANumb][1],

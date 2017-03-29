@@ -3,32 +3,32 @@
 #include "funct.h"
 #include "nrutil.h"
 
-void SqDisFrRe_ps(int FrAtNu,float **RoSFCo,float **ReCoor,float *ReMinC,
-            float GrSiCu_en,int *CubNum_en,int ***CubFAI_en,int ***CubLAI_en,
-            int *CubLiA_en,int PsSpNC,int ***PsSphe,float **SDFrRe_ps,
-            int ReAtNu,float PsSpRa,float *RePaCh,int ReReNu,int *AtReprRes,
-            int *FiAtRes,int *LaAtRes,float *TotChaRes,int NuChResEn,
-            int *LiChResEn,float **SDFrRe_ps_elec,float **ChFrRe_ps_elec)
-/* This function computes the squared distances between the fragment atoms and 
-   the corresponding receptor atoms of the pseudo-sphere procedure, one list 
+void SqDisFrRe_ps(int FrAtNu,double **RoSFCo,double **ReCoor,double *ReMinC,
+            double GrSiCu_en,int *CubNum_en,int ***CubFAI_en,int ***CubLAI_en,
+            int *CubLiA_en,int PsSpNC,int ***PsSphe,double **SDFrRe_ps,
+            int ReAtNu,double PsSpRa,double *RePaCh,int ReReNu,int *AtReprRes,
+            int *FiAtRes,int *LaAtRes,double *TotChaRes,int NuChResEn,
+            int *LiChResEn,double **SDFrRe_ps_elec,double **ChFrRe_ps_elec)
+/* This function computes the squared distances between the fragment atoms and
+   the corresponding receptor atoms of the pseudo-sphere procedure, one list
    for the vdW energy and another for the electrostatic interaction energy.
-   In the case of the electrostatic interaction energy, it also provides the 
+   In the case of the electrostatic interaction energy, it also provides the
    corresponding partial or total charges :
-   SDFrRe_ps  array of squared distances between the fragment atoms and the 
+   SDFrRe_ps  array of squared distances between the fragment atoms and the
               corresponding receptor atoms of the pseudo-sphere procedure
               for the evaluation of the vdW energy
-   SDFrRe_ps_elec  same as above but for the evaluation of the electrostatic 
+   SDFrRe_ps_elec  same as above but for the evaluation of the electrostatic
                    interaction energy
-   ChFrRe_ps_elec  receptor partial or total charges for the electrostatic 
+   ChFrRe_ps_elec  receptor partial or total charges for the electrostatic
                    interaction energy
    ResFlag  residue flag (1 if taken into account, 0 if not)
    CubAto  cube number in which the current atom is (1->along x,2->y,3->z)
-   RFSqDi  squared distance between one atom of the receptor and one atom 
-           of the fragment 
+   RFSqDi  squared distance between one atom of the receptor and one atom
+           of the fragment
    PsSpRa_sq  squared pseudo-sphere radius */
 {
   int i,j,k,m,n,CubAto[4],p,*ResFlag;
-  float RFSqDi,PsSpRa_sq;
+  double RFSqDi,PsSpRa_sq;
 
   PsSpRa_sq=PsSpRa*PsSpRa;
   ResFlag=ivector(1,ReReNu);
@@ -57,7 +57,7 @@ void SqDisFrRe_ps(int FrAtNu,float **RoSFCo,float **ReCoor,float *ReMinC,
     for (j=1;j<=ReReNu;j++)
       ResFlag[j]=0;
 
-/* Find the cube or pseudo-cube (negative assignation) in which the current 
+/* Find the cube or pseudo-cube (negative assignation) in which the current
    fragment atom is */
     for (j=1;j<=3;j++)
       CubAto[j]=ffloor((RoSFCo[i][j]-ReMinC[j])/GrSiCu_en)+1;
@@ -75,7 +75,7 @@ void SqDisFrRe_ps(int FrAtNu,float **RoSFCo,float **ReCoor,float *ReMinC,
                 ((CubAto[2]+k)>=1)&&((CubAto[2]+k)<=CubNum_en[2])&&
                 ((CubAto[3]+m)>=1)&&((CubAto[3]+m)<=CubNum_en[3])) {
 
-/* Check whether the list of residue-representative atoms cube contains at 
+/* Check whether the list of residue-representative atoms cube contains at
    least one residue-representative atom */
               if (CubFAI_en[CubAto[1]+j][CubAto[2]+k][CubAto[3]+m]!=0) {
 
@@ -87,8 +87,8 @@ void SqDisFrRe_ps(int FrAtNu,float **RoSFCo,float **ReCoor,float *ReMinC,
                                 ReCoor[AtReprRes[CubLiA_en[n]]][2],
                                 ReCoor[AtReprRes[CubLiA_en[n]]][3]);
 
-/* Take the residue into account only if this distance (between the current 
-   fragment atom and the current residue-representative atom) is smaller or 
+/* Take the residue into account only if this distance (between the current
+   fragment atom and the current residue-representative atom) is smaller or
    equal to the pseudo-sphere radius */
                   if (RFSqDi<=PsSpRa_sq) {
                     ResFlag[CubLiA_en[n]]=1;
@@ -113,13 +113,13 @@ void SqDisFrRe_ps(int FrAtNu,float **RoSFCo,float **ReCoor,float *ReMinC,
       }
     }
 
-/* Determine which charged residues still have to be taken into account as  
-   monopoles (not explicitly but only the residue-representative atom with 
-   the total charge of the residue on it). These monopole residues are added 
+/* Determine which charged residues still have to be taken into account as
+   monopoles (not explicitly but only the residue-representative atom with
+   the total charge of the residue on it). These monopole residues are added
    only to the list for the electrostatic interaction energy */
     for (j=1;j<=NuChResEn;j++) {
       if (!ResFlag[LiChResEn[j]]) {
-        RFSqDi=DistSq(RoSFCo[i][1],RoSFCo[i][2],RoSFCo[i][3], 
+        RFSqDi=DistSq(RoSFCo[i][1],RoSFCo[i][2],RoSFCo[i][3],
                       ReCoor[AtReprRes[LiChResEn[j]]][1],
                       ReCoor[AtReprRes[LiChResEn[j]]][2],
                       ReCoor[AtReprRes[LiChResEn[j]]][3]);

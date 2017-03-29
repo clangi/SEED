@@ -3,8 +3,8 @@
 
 using namespace std;
 
-float **convert2pp_return(int irl, int irh,int icl, int ich,float *first,
-                            float *mat_pp_rows[]){
+double **convert2pp_return(int irl, int irh,int icl, int ich,double *first,
+                            double *mat_pp_rows[]){
   int i,ncol,nrow;
   ncol = ich - icl + 1;
   nrow = irh - irl + 1;
@@ -15,7 +15,7 @@ float **convert2pp_return(int irl, int irh,int icl, int ich,float *first,
   return (mat_pp_rows - 1);
 }
 
-void print_pp(int irl, int irh,int icl, int ich,float **mat){
+void print_pp(int irl, int irh,int icl, int ich,double **mat){
   int i,j;
   for (i = irl;i<=irh; i++){
     for (j = icl;j<=ich; j++){

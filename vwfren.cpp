@@ -3,9 +3,9 @@
 #include "funct.h"
 //#include <iomanip> //clangini
 
-float VWFrEn(int FrAtNu,float **RoSFCo,float *BSMinC,float VWGrIn,float VWGrSi,
-             float *FrVdWR_p3,float *FrVdWE_sr,int *VWGPoN,float ***VWGrRP_at,
-             float ***VWGrRP_re,FILE *FPaOut,
+double VWFrEn(int FrAtNu,double **RoSFCo,double *BSMinC,double VWGrIn,double VWGrSi,
+             double *FrVdWR_p3,double *FrVdWE_sr,int *VWGPoN,double ***VWGrRP_at,
+             double ***VWGrRP_re,FILE *FPaOut,
 	     int *print)
 /* This function evaluates the van der Waals interaction energy between the
    current fragment and the receptor whose effect is precalculated in a grid :
@@ -21,9 +21,9 @@ float VWFrEn(int FrAtNu,float **RoSFCo,float *BSMinC,float VWGrIn,float VWGrSi,
    VWEnEv  evaluation of the van der Waals interaction energy */
 {
   int i,GrCo_i,GrCo_j,GrCo_k;
-  float Weig_t,Weig_u,Weig_v,VWEnEv,hlp1,hlp2,hlp3;
+  double Weig_t,Weig_u,Weig_v,VWEnEv,hlp1,hlp2,hlp3;
 
-  //float at_term, rep_term;//clangini
+  //double at_term, rep_term;//clangini
   //at_term = 0.0; //clangini
   //rep_term = 0.0; //clangini
   //double Weig_t_double, Weig_u_double, Weig_v_double; // clangini
@@ -46,9 +46,9 @@ float VWFrEn(int FrAtNu,float **RoSFCo,float *BSMinC,float VWGrIn,float VWGrSi,
       //Weig_t=(RoSFCo[i][1]-(BSMinC[1]-VWGrIn+(GrCo_i-1)*VWGrSi))/VWGrSi;
       //Weig_u=(RoSFCo[i][2]-(BSMinC[2]-VWGrIn+(GrCo_j-1)*VWGrSi))/VWGrSi;
       //Weig_v=(RoSFCo[i][3]-(BSMinC[3]-VWGrIn+(GrCo_k-1)*VWGrSi))/VWGrSi;
-      Weig_t=hlp1 - float(GrCo_i-1);
-      Weig_u=hlp2 - float(GrCo_j-1);
-      Weig_v=hlp3 - float(GrCo_k-1);
+      Weig_t=hlp1 - double(GrCo_i-1);
+      Weig_u=hlp2 - double(GrCo_j-1);
+      Weig_v=hlp3 - double(GrCo_k-1);
 
       //clangini START
       if((Weig_t>1)||(Weig_u>1)||(Weig_v>1)){

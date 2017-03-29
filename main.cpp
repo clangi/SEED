@@ -15,7 +15,11 @@
 #include <quaternion.h>
 #endif
 
+#if  __cplusplus > 199711L
 #include <unordered_map> //C++11 feature. Implemented as hash table
+#else
+#include <map>
+#endif
 /* CLANGINI 2016 END */
 #include "funct.h"
 
@@ -201,7 +205,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
        *SdClusAr_pproc,IntVar1,IntVar2,*Index_pproc,*FrPosAr_sort,
        *SdClusAr_sort,*FlagAr,*ReprSdClAr,MaxPosClus,SFWrNu_init,PrintLev,
        ToNFrP_ap,ij,distrPointBSNumb,gc_reprke,gc_maxwrite,ChkInGrid; /*,CorrFiNumb; clangini*/
-      /*float **FrCoor,*FrPaCh,**ReCoor,*RePaCh,**ReVeCo,**FrVeCo,**SeFrCo,PiT180,
+      /*double **FrCoor,*FrPaCh,**ReCoor,*RePaCh,**ReVeCo,**FrVeCo,**SeFrCo,PiT180,
       AnglRo,**RoSFCo,*VdWRad,*VdWEne,*ReVdWR,*ReVdWE,*FrVdWR,*FrVdWE,
       LaVdWR,ReMaxC[4],ReMinC[4],SphAng,VdWFaB,BSMaxC[4],BSMinC[4],CoDieV,
       CoGrIn,CoGrSi,***CoGrRP,BuEvFa,*ReVdWE_sr,*FrVdWE_sr,
@@ -220,7 +224,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
                                                 *TotEnSdClus_pproc,**distrPointBS,angle_rmin,angle_rmax,
                                                 mult_fact_rmin,mult_fact_rmax,gc_cutclus,gc_endifclus,gc_weighneg,
                                                 gc_weighpos,MaxGrIn,RedRPV_nkvRatio,NCutapolRatio;*/
-      float **FrCoor,*FrPaCh,**ReCoor,*RePaCh,**ReVeCo,**FrVeCo,**SeFrCo,
+      double **FrCoor,*FrPaCh,**ReCoor,*RePaCh,**ReVeCo,**FrVeCo,**SeFrCo,
       /*AnglRo,*/**RoSFCo,*VdWRad,*VdWEne,*ReVdWR,*ReVdWE,*FrVdWR,*FrVdWE,
       LaVdWR,ReMaxC[4],ReMinC[4],SphAng,VdWFaB,BSMaxC[4],BSMinC[4],CoDieV,
       CoGrIn,CoGrSi,***CoGrRP,BuEvFa,*ReVdWE_sr,*FrVdWE_sr,
@@ -258,7 +262,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       Nsurfpt_re_apol_BS,/*NCutapol,*/NPtSphereMax_Fr,***nlist_re,
       **list_re,MaxNeigh,nstep_re,midg_re,nn,
       vdwErr,clbErr;
-  float FrMinC[4],FrMaxC[4],**Frdist2,**apol_Vect_re,**apol_Vect_fr,ReRmax;
+  double FrMinC[4],FrMaxC[4],**Frdist2,**apol_Vect_re,**apol_Vect_fr,ReRmax;
   double *ReRad,*ReRadOut,*ReRad2,*ReRadOut2,*FrRad,*FrRadOut,*FrRad2,
          *ReSelfVol,***DeltaPrDeso,GrSiSo,GrInSo,WaMoRa,Sphere_apol,
          DielWa,DielRe,*ReSurf_apol,*ReSurf_deso,*FrSurf_deso,*FrRadOut2,
@@ -277,15 +281,19 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   char TabLin[_STRLENGTH]; //clangini
   std::ofstream TabOutStream; //clangini
   int HeAtCo = 0; // HeAtCo = Heavy Atom Count clangini
-  float *AtWei; // list of atomic weights clangini
-  float MolWei = 0.0; // Molecular Weight clangini
+  double *AtWei; // list of atomic weights clangini
+  double MolWei = 0.0; // Molecular Weight clangini
   int *CluIndex_sort; // Array Clu index number -> sorted Clu index number clangini
   std::string AlTySp;
   std::string FragNa_str; //C++ string equivalent to FragNa
+#if  __cplusplus > 199711L
   std::unordered_map<std::string, int> FragNa_map;
+#else
+  std::map<std::string, int> FragNa_map;
+#endif
   char buff[12]; // buffer for string manipulation
   bool align_flag; //align fragment
-  float FrAlRef_m[3][3], *FrAlRef_rows[3], **FrAlRef,
+  double FrAlRef_m[3][3], *FrAlRef_rows[3], **FrAlRef,
         FrAlSet_m[3][3], *FrAlSet_rows[3], **FrAlSet;
   double AnglRo; //before it was a float. clangini
 #ifdef USE_QUATERNION_ROTATION //clangini
@@ -365,7 +373,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   CheckFile(InpFil,'r');
 
   //SimWei=matrix(1,150,1,150); clangini
-  SimWei=matrix(0,150,0,150); //Want to use atom element 0 for lone pair. clangini
+  SimWei=dmatrix(0,150,0,150); //Want to use atom element 0 for lone pair. clangini
   //ReInFi(InpFil,RecFil,&BSResN,&BSReNu,&FrFiNa,TREFiP,
   //    &SphAng,&SphPoN,&NuRoAx,&VdWFaB,&CoDieV,&CoDieP,&CoGrIn,&CoGrSi,
   //    OutFil,&BuEvFa,&FrMaEn,&PsSpRa,&GrSiCu_en,&FiNuMa,&GrInSo,
@@ -676,7 +684,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   FiAtRes=ivector(1,ReReNu);
   LaAtRes=ivector(1,ReReNu);
   AtReprRes=ivector(1,ReReNu);
-  TotChaRes=vector(1,ReReNu);
+  TotChaRes=dvector(1,ReReNu);
   FeatRes(ReAtNu,ReCoor,ReReNu,ReResN,RePaCh,FiAtRes,LaAtRes,AtReprRes,
       TotChaRes,FPaOut);
 
@@ -690,8 +698,8 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 
   /* Assign the atom element numbers, van der Waals radii and energies
      for the receptor */
-  ReVdWR=vector(1,ReAtNu);
-  ReVdWE=vector(1,ReAtNu);
+  ReVdWR=dvector(1,ReAtNu);
+  ReVdWE=dvector(1,ReAtNu);
   ReAtEl_nu=ivector(1,ReAtNu);
   ReAtoTyp_nu=ivector(1,ReAtNu);
   if(! AssiRE(NumbAT,AtTyAr,VdWRad,VdWEne,ReAtNu,ReAtTy,ReVdWR,ReVdWE,FPaOut,
@@ -708,9 +716,9 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 
   /* Compute the square root of the van der Waals receptor energies
      and the power of 3 of the receptor van der Waals radii */
-  ReVdWE_sr=vector(1,ReAtNu);
+  ReVdWE_sr=dvector(1,ReAtNu);
   SqRoEn(ReAtNu,ReVdWE,ReVdWE_sr);
-  ReVdWR_p3=vector(1,ReAtNu);
+  ReVdWR_p3=dvector(1,ReAtNu);
   for (i=1;i<=ReAtNu;i++)
     ReVdWR_p3[i]=ReVdWR[i]*ReVdWR[i]*ReVdWR[i];
 
@@ -778,7 +786,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       CoGPoN[i]=ffloor((BSMaxC[i]+CoGrIn-(BSMinC[i]-CoGrIn))/CoGrSi)+2;
     fprintf(FPaOut,"Number of points of the coulombic grid : %d\n\n",
         CoGPoN[1]*CoGPoN[2]*CoGPoN[3]);
-    CoGrRP=f3tensor(1,CoGPoN[1],1,CoGPoN[2],1,CoGPoN[3]);
+    CoGrRP=d3tensor(1,CoGPoN[1],1,CoGPoN[2],1,CoGPoN[3]);
     if (CoGrAcc[0]=='r') {
       FilePa=fopen(CoGrFile,"r");
       fgets_wrapper(StrLin,_STRLENGTH,FilePa);
@@ -797,10 +805,10 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       for (i1=1;i1<=CoGPoN[1];i1++) {
         for (i2=1;i2<=CoGPoN[2];i2++) {
           for (i3=1;i3<=CoGPoN[3];i3++) {
-            /* fread(&(CoGrRP[i1][i2][i3]),1,sizeof(float),FilePa); to do binary */
+            /* fread(&(CoGrRP[i1][i2][i3]),1,sizeof(double),FilePa); to do binary */
 
             fgets_wrapper(StrLin,_STRLENGTH,FilePa);
-            sscanf(StrLin,"%f",&(CoGrRP[i1][i2][i3]));
+            sscanf(StrLin,"%lf",&(CoGrRP[i1][i2][i3]));
 
           }
         }
@@ -824,7 +832,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
           for (i2=1;i2<=CoGPoN[2];i2++) {
             for (i3=1;i3<=CoGPoN[3];i3++) {
               fprintf(FilePa,"%.12f\n",CoGrRP[i1][i2][i3]);
-              /* fwrite(&CoGrRP[i1][i2][i3],sizeof(float),1,FilePa); /\*  ->fixed size writing to do binary file writing*\/ */
+              /* fwrite(&CoGrRP[i1][i2][i3],sizeof(double),1,FilePa); /\*  ->fixed size writing to do binary file writing*\/ */
             }
           }
         }
@@ -846,8 +854,8 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       VWGPoN[i]=ffloor((BSMaxC[i]+VWGrIn-(BSMinC[i]-VWGrIn))/VWGrSi)+2;
     fprintf(FPaOut,"Number of points of the van der Waals grid : %d\n\n",
         VWGPoN[1]*VWGPoN[2]*VWGPoN[3]);
-    VWGrRP_at=f3tensor(1,VWGPoN[1],1,VWGPoN[2],1,VWGPoN[3]);
-    VWGrRP_re=f3tensor(1,VWGPoN[1],1,VWGPoN[2],1,VWGPoN[3]);
+    VWGrRP_at=d3tensor(1,VWGPoN[1],1,VWGPoN[2],1,VWGPoN[3]);
+    VWGrRP_re=d3tensor(1,VWGPoN[1],1,VWGPoN[2],1,VWGPoN[3]);
     if (VWGrAcc[0]=='r') {
       FilePa=fopen(VWGrFile,"r");
       fgets_wrapper(StrLin,_STRLENGTH,FilePa);
@@ -862,7 +870,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
         for (i2=1;i2<=VWGPoN[2];i2++) {
           for (i3=1;i3<=VWGPoN[3];i3++) {
             fgets_wrapper(StrLin,_STRLENGTH,FilePa);
-            sscanf(StrLin,"%f%f",&(VWGrRP_at[i1][i2][i3]),&(VWGrRP_re[i1][i2][i3]));
+            sscanf(StrLin,"%lf%lf",&(VWGrRP_at[i1][i2][i3]),&(VWGrRP_re[i1][i2][i3]));
           }
         }
       }
@@ -1186,16 +1194,16 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 
   /* dey new: memory allocation of arrays handled dynamically -> realloc(..) resizing */
   Index_ro=ivector(1,currentsize); /* up to now it is not clear to me what they are for. clangini */
-  VW_f_ro=vector(1,currentsize);
-  VW_s_ro=vector(1,currentsize);
-  In_f_ro=vector(1,currentsize);
-  In_s_ro=vector(1,currentsize);
-  Dr_f_ro=vector(1,currentsize);
-  Dr_s_ro=vector(1,currentsize);
-  Df_f_ro=vector(1,currentsize);
-  Df_s_ro=vector(1,currentsize);
-  To_f_ro=vector(1,currentsize);
-  To_s_ro=vector(1,currentsize);
+  VW_f_ro=dvector(1,currentsize);
+  VW_s_ro=dvector(1,currentsize);
+  In_f_ro=dvector(1,currentsize);
+  In_s_ro=dvector(1,currentsize);
+  Dr_f_ro=dvector(1,currentsize);
+  Dr_s_ro=dvector(1,currentsize);
+  Df_f_ro=dvector(1,currentsize);
+  Df_s_ro=dvector(1,currentsize);
+  To_f_ro=dvector(1,currentsize);
+  To_s_ro=dvector(1,currentsize);
 
   /* clangini 2016 */
   /* Setting up the table summary file */
@@ -1405,14 +1413,14 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       fprintf(FPaOut,"\nFragment name is: %s\n", FragNa);
 
       /* Compute the maximal number of tolerated bumps */
-      BumpMa=ffloor(ScMaBump*((float) FrAtNu));
+      BumpMa=ffloor(ScMaBump*((double) FrAtNu));
       if ((EvalEn[0]=='n')&&((Solv_typ[0]=='s')||(Solv_typ[0]=='b')))
         fprintf(FPaOut,"\nMaximal number of tolerated bumps : %d\n\n",BumpMa);
 
       /* Assign the atom element numbers, van der Waals radii and energies
          for the current fragment */
-      FrVdWR=vector(1,FrAtNu);
-      FrVdWE=vector(1,FrAtNu);
+      FrVdWR=dvector(1,FrAtNu);
+      FrVdWE=dvector(1,FrAtNu);
       if (Ind_num_cn==1)
         FrAtEl_nu=ivector(1,FrAtNu);
       FrAtoTyp_nu=ivector(1,FrAtNu);
@@ -1440,10 +1448,10 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       FrRad2=dvector(1,FrAtNu);
       FrRadOut=dvector(1,FrAtNu);
       FrRadOut2=dvector(1,FrAtNu);
-      Frdist2=matrix(1,FrAtNu,1,FrAtNu);
+      Frdist2=dmatrix(1,FrAtNu,1,FrAtNu);
       nn = get_Ch_Rad_Fr(FrAtNu,FrCoor,FrVdWR,WaMoRa,FrRad,FrRad2,FrRadOut,
           FrRadOut2,Frdist2,&Rmin,&FrRmax);
-          //Frdist2 is passed as **float and not as ***float as it is
+          //Frdist2 is passed as **double and not as ***double as it is
           //allocated in the main and not in get_Ch_Rad_Fr. clangini
 
       /* Get the extremes of frag coor */
@@ -1545,9 +1553,9 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 
       /* Compute the square root of the van der Waals current fragment energies
          and the power of 3 of the fragment van der Waals radii */
-      FrVdWE_sr=vector(1,FrAtNu);
+      FrVdWE_sr=dvector(1,FrAtNu);
       SqRoEn(FrAtNu,FrVdWE,FrVdWE_sr);
-      FrVdWR_p3=vector(1,FrAtNu);
+      FrVdWR_p3=dvector(1,FrAtNu);
       for (j=1;j<=FrAtNu;j++)
         FrVdWR_p3[j]=FrVdWR[j]*FrVdWR[j]*FrVdWR[j];
 
@@ -1573,11 +1581,11 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 
       FPaOut=fopen(OutFil,"a");
 
-      SeFrCo=matrix(1,FrAtNu,1,3);
-      RoSFCo=matrix(1,FrAtNu,1,3);
-      SDFrRe_ps=matrix(1,FrAtNu,1,ReAtNu);
-      SDFrRe_ps_elec=matrix(1,FrAtNu,1,ReAtNu);
-      ChFrRe_ps_elec=matrix(1,FrAtNu,1,ReAtNu);
+      SeFrCo=dmatrix(1,FrAtNu,1,3);
+      RoSFCo=dmatrix(1,FrAtNu,1,3);
+      SDFrRe_ps=dmatrix(1,FrAtNu,1,ReAtNu);
+      SDFrRe_ps_elec=dmatrix(1,FrAtNu,1,ReAtNu);
+      ChFrRe_ps_elec=dmatrix(1,FrAtNu,1,ReAtNu);
 
       if (Ind_num_cn==1)
         FrNuVdW_ap=-1;
@@ -1604,7 +1612,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
         ToNFrP=ToNFrP*NuRoAx*FrCoNu;
 
         if (Ind_num_cn==1) {
-          FrCoPo=ppfvector(1,ToNFrP);
+          FrCoPo=ppdvector(1,ToNFrP);
           ConfArr=ivector(1,ToNFrP);
         }
 
@@ -1801,7 +1809,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 
                         SFWrNu=SFWrNu+1;
 
-                        FrCoPo[SFWrNu]=matrix(1,FrAtNu,1,3);
+                        FrCoPo[SFWrNu]=dmatrix(1,FrAtNu,1,3);
                         for (i1=1;i1<=FrAtNu;i1++) {
                           for (i2=1;i2<=3;i2++) {
                             FrCoPo[SFWrNu][i1][i2]=RoSFCo[i1][i2];
@@ -1849,16 +1857,16 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
                           /* #pragma omp critical */
                           /* #endif */
                           currentsize += _ALLOCSIZE;
-                          VW_f_ro = fvecresize(VW_f_ro,currentsize+1); /* seed starts counting at 1 */
-                          VW_s_ro = fvecresize(VW_s_ro,currentsize+1);
-                          In_f_ro = fvecresize(In_f_ro,currentsize+1);
-                          In_s_ro = fvecresize(In_s_ro,currentsize+1);
-                          Dr_f_ro = fvecresize(Dr_f_ro,currentsize+1);
-                          Dr_s_ro = fvecresize(Dr_s_ro,currentsize+1);
-                          Df_f_ro = fvecresize(Df_f_ro,currentsize+1);
-                          Df_s_ro = fvecresize(Df_s_ro,currentsize+1);
-                          To_f_ro = fvecresize(To_f_ro,currentsize+1);
-                          To_s_ro = fvecresize(To_s_ro,currentsize+1);
+                          VW_f_ro = dvecresize(VW_f_ro,currentsize+1); /* seed starts counting at 1 */
+                          VW_s_ro = dvecresize(VW_s_ro,currentsize+1);
+                          In_f_ro = dvecresize(In_f_ro,currentsize+1);
+                          In_s_ro = dvecresize(In_s_ro,currentsize+1);
+                          Dr_f_ro = dvecresize(Dr_f_ro,currentsize+1);
+                          Dr_s_ro = dvecresize(Dr_s_ro,currentsize+1);
+                          Df_f_ro = dvecresize(Df_f_ro,currentsize+1);
+                          Df_s_ro = dvecresize(Df_s_ro,currentsize+1);
+                          To_f_ro = dvecresize(To_f_ro,currentsize+1);
+                          To_s_ro = dvecresize(To_s_ro,currentsize+1);
                           Index_ro = ivecresize(Index_ro,currentsize+1);
 
                         }
@@ -1966,7 +1974,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 
                         SFWrNu=SFWrNu+1;
 
-                        FrCoPo[SFWrNu]=matrix(1,FrAtNu,1,3);
+                        FrCoPo[SFWrNu]=dmatrix(1,FrAtNu,1,3);
                         for (i1=1;i1<=FrAtNu;i1++) {
                           for (i2=1;i2<=3;i2++) {
                             FrCoPo[SFWrNu][i1][i2]=RoSFCo[i1][i2];
@@ -1983,16 +1991,16 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
                           /* #pragma omp critical */
                           /* #endif */
                           currentsize += _ALLOCSIZE;
-                          VW_f_ro = fvecresize(VW_f_ro,currentsize+1);
-                          VW_s_ro = fvecresize(VW_s_ro,currentsize+1);
-                          In_f_ro = fvecresize(In_f_ro,currentsize+1);
-                          In_s_ro = fvecresize(In_s_ro,currentsize+1);
-                          Dr_f_ro = fvecresize(Dr_f_ro,currentsize+1);
-                          Dr_s_ro = fvecresize(Dr_s_ro,currentsize+1);
-                          Df_f_ro = fvecresize(Df_f_ro,currentsize+1);
-                          Df_s_ro = fvecresize(Df_s_ro,currentsize+1);
-                          To_f_ro = fvecresize(To_f_ro,currentsize+1);
-                          To_s_ro = fvecresize(To_s_ro,currentsize+1);
+                          VW_f_ro = dvecresize(VW_f_ro,currentsize+1);
+                          VW_s_ro = dvecresize(VW_s_ro,currentsize+1);
+                          In_f_ro = dvecresize(In_f_ro,currentsize+1);
+                          In_s_ro = dvecresize(In_s_ro,currentsize+1);
+                          Dr_f_ro = dvecresize(Dr_f_ro,currentsize+1);
+                          Dr_s_ro = dvecresize(Dr_s_ro,currentsize+1);
+                          Df_f_ro = dvecresize(Df_f_ro,currentsize+1);
+                          Df_s_ro = dvecresize(Df_s_ro,currentsize+1);
+                          To_f_ro = dvecresize(To_f_ro,currentsize+1);
+                          To_s_ro = dvecresize(To_s_ro,currentsize+1);
                           Index_ro = ivecresize(Index_ro,currentsize+1);
                         }
 
@@ -2073,15 +2081,15 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
             surfpt_fr_apol,iatsrf_fr_apol,
             nsurf_fr_apol,pointsrf_fr_apol);
 
-        apol_Vect_fr = matrix(1,Nsurfpt_fr_apol,1,6);
+        apol_Vect_fr = dmatrix(1,Nsurfpt_fr_apol,1,6);
         FrApAt=ivector(1,Nsurfpt_fr_apol);
         for (isph=1;isph<=Nsurfpt_fr_apol;isph++) {
           for (j=1;j<=3;j++)
             apol_Vect_fr[isph][j+3]=FrCoor[iatsrf_fr_apol[isph]][j];//one end of
             //the apolar vector is the position of the atom generating the vector. clangini
-          apol_Vect_fr[isph][1] = (float) surfpt_fr_apol[isph].x;
-          apol_Vect_fr[isph][2] = (float) surfpt_fr_apol[isph].y;
-          apol_Vect_fr[isph][3] = (float) surfpt_fr_apol[isph].z;
+          apol_Vect_fr[isph][1] = (double) surfpt_fr_apol[isph].x;
+          apol_Vect_fr[isph][2] = (double) surfpt_fr_apol[isph].y;
+          apol_Vect_fr[isph][3] = (double) surfpt_fr_apol[isph].z;
           FrApAt[isph]=iatsrf_fr_apol[isph];
         }
 
@@ -2130,7 +2138,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
         /* ------------------------------------------------------------------*/
 
 
-        VdWCoff_ap=MuFaVdWCoff_ap*((float) FrAtNu);
+        VdWCoff_ap=MuFaVdWCoff_ap*((double) FrAtNu);
 
         /* Compute the total number of fragment positions */
         ToNFrP=0;
@@ -2144,7 +2152,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
         ToNFrP=ToNFrP*NuRoAx*FrCoNu;
 
         if (Ind_num_cn==1) {
-          FrCoPo=ppfvector(1,ToNFrP);
+          FrCoPo=ppdvector(1,ToNFrP);
           ConfArr=ivector(1,ToNFrP);
         }
 
@@ -2303,7 +2311,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
                           SFWrNu=SFWrNu+1;
 
-                          FrCoPo[SFWrNu]=matrix(1,FrAtNu,1,3);
+                          FrCoPo[SFWrNu]=dmatrix(1,FrAtNu,1,3);
                           for (i1=1;i1<=FrAtNu;i1++) {
                             for (i2=1;i2<=3;i2++) {
                               FrCoPo[SFWrNu][i1][i2]=RoSFCo[i1][i2];
@@ -2351,16 +2359,16 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                             /* #pragma omp critical */
                             /* #endif */
                             currentsize += _ALLOCSIZE;
-                            VW_f_ro = fvecresize(VW_f_ro,currentsize+1);
-                            VW_s_ro = fvecresize(VW_s_ro,currentsize+1);
-                            In_f_ro = fvecresize(In_f_ro,currentsize+1);
-                            In_s_ro = fvecresize(In_s_ro,currentsize+1);
-                            Dr_f_ro = fvecresize(Dr_f_ro,currentsize+1);
-                            Dr_s_ro = fvecresize(Dr_s_ro,currentsize+1);
-                            Df_f_ro = fvecresize(Df_f_ro,currentsize+1);
-                            Df_s_ro = fvecresize(Df_s_ro,currentsize+1);
-                            To_f_ro = fvecresize(To_f_ro,currentsize+1);
-                            To_s_ro = fvecresize(To_s_ro,currentsize+1);
+                            VW_f_ro = dvecresize(VW_f_ro,currentsize+1);
+                            VW_s_ro = dvecresize(VW_s_ro,currentsize+1);
+                            In_f_ro = dvecresize(In_f_ro,currentsize+1);
+                            In_s_ro = dvecresize(In_s_ro,currentsize+1);
+                            Dr_f_ro = dvecresize(Dr_f_ro,currentsize+1);
+                            Dr_s_ro = dvecresize(Dr_s_ro,currentsize+1);
+                            Df_f_ro = dvecresize(Df_f_ro,currentsize+1);
+                            Df_s_ro = dvecresize(Df_s_ro,currentsize+1);
+                            To_f_ro = dvecresize(To_f_ro,currentsize+1);
+                            To_s_ro = dvecresize(To_s_ro,currentsize+1);
                             Index_ro = ivecresize(Index_ro,currentsize+1);
                           }
 
@@ -2478,7 +2486,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
                           SFWrNu=SFWrNu+1;
 
-                          FrCoPo[SFWrNu]=matrix(1,FrAtNu,1,3);
+                          FrCoPo[SFWrNu]=dmatrix(1,FrAtNu,1,3);
                           for (i1=1;i1<=FrAtNu;i1++) {
                             for (i2=1;i2<=3;i2++) {
                               FrCoPo[SFWrNu][i1][i2]=RoSFCo[i1][i2];
@@ -2495,16 +2503,16 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                             /* #pragma omp critical */
                             /* #endif */
                             currentsize += _ALLOCSIZE;
-                            VW_f_ro = fvecresize(VW_f_ro,currentsize+1);
-                            VW_s_ro = fvecresize(VW_s_ro,currentsize+1);
-                            In_f_ro = fvecresize(In_f_ro,currentsize+1);
-                            In_s_ro = fvecresize(In_s_ro,currentsize+1);
-                            Dr_f_ro = fvecresize(Dr_f_ro,currentsize+1);
-                            Dr_s_ro = fvecresize(Dr_s_ro,currentsize+1);
-                            Df_f_ro = fvecresize(Df_f_ro,currentsize+1);
-                            Df_s_ro = fvecresize(Df_s_ro,currentsize+1);
-                            To_f_ro = fvecresize(To_f_ro,currentsize+1);
-                            To_s_ro = fvecresize(To_s_ro,currentsize+1);
+                            VW_f_ro = dvecresize(VW_f_ro,currentsize+1);
+                            VW_s_ro = dvecresize(VW_s_ro,currentsize+1);
+                            In_f_ro = dvecresize(In_f_ro,currentsize+1);
+                            In_s_ro = dvecresize(In_s_ro,currentsize+1);
+                            Dr_f_ro = dvecresize(Dr_f_ro,currentsize+1);
+                            Dr_s_ro = dvecresize(Dr_s_ro,currentsize+1);
+                            Df_f_ro = dvecresize(Df_f_ro,currentsize+1);
+                            Df_s_ro = dvecresize(Df_s_ro,currentsize+1);
+                            To_f_ro = dvecresize(To_f_ro,currentsize+1);
+                            To_s_ro = dvecresize(To_s_ro,currentsize+1);
                             Index_ro = ivecresize(Index_ro,currentsize+1);
                           }
 
@@ -2538,7 +2546,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
           }
         }
 
-        free_matrix(apol_Vect_fr,1,Nsurfpt_fr_apol,1,6);
+        free_dmatrix(apol_Vect_fr,1,Nsurfpt_fr_apol,1,6);
         free_ivector(FrApAt,1,Nsurfpt_fr_apol);
 
       }
@@ -2586,14 +2594,14 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
             surfpt_fr_apol,iatsrf_fr_apol,
             nsurf_fr_apol,pointsrf_fr_apol);
 
-        apol_Vect_fr = matrix(1,Nsurfpt_fr_apol,1,6);
+        apol_Vect_fr = dmatrix(1,Nsurfpt_fr_apol,1,6);
         FrApAt=ivector(1,Nsurfpt_fr_apol);
         for (isph=1;isph<=Nsurfpt_fr_apol;isph++) {
           for (j=1;j<=3;j++)
             apol_Vect_fr[isph][j+3]=FrCoor[iatsrf_fr_apol[isph]][j];
-          apol_Vect_fr[isph][1] = (float) surfpt_fr_apol[isph].x;
-          apol_Vect_fr[isph][2] = (float) surfpt_fr_apol[isph].y;
-          apol_Vect_fr[isph][3] = (float) surfpt_fr_apol[isph].z;
+          apol_Vect_fr[isph][1] = (double) surfpt_fr_apol[isph].x;
+          apol_Vect_fr[isph][2] = (double) surfpt_fr_apol[isph].y;
+          apol_Vect_fr[isph][3] = (double) surfpt_fr_apol[isph].z;
           FrApAt[isph]=iatsrf_fr_apol[isph];
         }
 
@@ -2641,7 +2649,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
         /* End of the part needed to generate VECTOR FOR APOLAR FRAGMENTS !! */
         /* ------------------------------------------------------------------*/
 
-        VdWCoff_ap=MuFaVdWCoff_ap*((float) FrAtNu);
+        VdWCoff_ap=MuFaVdWCoff_ap*((double) FrAtNu);
 
         /* Compute the total number of fragment positions for the apolar seeding */
         ToNFrP_ap=0;
@@ -2656,7 +2664,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
         ToNFrP=ToNFrP+ToNFrP_ap;
 
         if (Ind_num_cn==1) {
-          FrCoPo=ppfvector(1,ToNFrP);
+          FrCoPo=ppdvector(1,ToNFrP);
           ConfArr=ivector(1,ToNFrP);
         }
 
@@ -2821,7 +2829,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
                         SFWrNu=SFWrNu+1;
 
-                        FrCoPo[SFWrNu]=matrix(1,FrAtNu,1,3);
+                        FrCoPo[SFWrNu]=dmatrix(1,FrAtNu,1,3);
                         for (i1=1;i1<=FrAtNu;i1++) {
                           for (i2=1;i2<=3;i2++) {
                             FrCoPo[SFWrNu][i1][i2]=RoSFCo[i1][i2];
@@ -2869,16 +2877,16 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                           /* #pragma omp critical */
                           /* #endif */
                           currentsize += _ALLOCSIZE;
-                          VW_f_ro = fvecresize(VW_f_ro,currentsize+1);
-                          VW_s_ro = fvecresize(VW_s_ro,currentsize+1);
-                          In_f_ro = fvecresize(In_f_ro,currentsize+1);
-                          In_s_ro = fvecresize(In_s_ro,currentsize+1);
-                          Dr_f_ro = fvecresize(Dr_f_ro,currentsize+1);
-                          Dr_s_ro = fvecresize(Dr_s_ro,currentsize+1);
-                          Df_f_ro = fvecresize(Df_f_ro,currentsize+1);
-                          Df_s_ro = fvecresize(Df_s_ro,currentsize+1);
-                          To_f_ro = fvecresize(To_f_ro,currentsize+1);
-                          To_s_ro = fvecresize(To_s_ro,currentsize+1);
+                          VW_f_ro = dvecresize(VW_f_ro,currentsize+1);
+                          VW_s_ro = dvecresize(VW_s_ro,currentsize+1);
+                          In_f_ro = dvecresize(In_f_ro,currentsize+1);
+                          In_s_ro = dvecresize(In_s_ro,currentsize+1);
+                          Dr_f_ro = dvecresize(Dr_f_ro,currentsize+1);
+                          Dr_s_ro = dvecresize(Dr_s_ro,currentsize+1);
+                          Df_f_ro = dvecresize(Df_f_ro,currentsize+1);
+                          Df_s_ro = dvecresize(Df_s_ro,currentsize+1);
+                          To_f_ro = dvecresize(To_f_ro,currentsize+1);
+                          To_s_ro = dvecresize(To_s_ro,currentsize+1);
                           Index_ro = ivecresize(Index_ro,currentsize+1);
                         }
 
@@ -2977,7 +2985,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
                         SFWrNu=SFWrNu+1;
 
-                        FrCoPo[SFWrNu]=matrix(1,FrAtNu,1,3);
+                        FrCoPo[SFWrNu]=dmatrix(1,FrAtNu,1,3);
                         for (i1=1;i1<=FrAtNu;i1++) {
                           for (i2=1;i2<=3;i2++) {
                             FrCoPo[SFWrNu][i1][i2]=RoSFCo[i1][i2];
@@ -2994,16 +3002,16 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                           /* #pragma omp critical */
                           /* #endif */
                           currentsize += _ALLOCSIZE;
-                          VW_f_ro = fvecresize(VW_f_ro,currentsize+1);
-                          VW_s_ro = fvecresize(VW_s_ro,currentsize+1);
-                          In_f_ro = fvecresize(In_f_ro,currentsize+1);
-                          In_s_ro = fvecresize(In_s_ro,currentsize+1);
-                          Dr_f_ro = fvecresize(Dr_f_ro,currentsize+1);
-                          Dr_s_ro = fvecresize(Dr_s_ro,currentsize+1);
-                          Df_f_ro = fvecresize(Df_f_ro,currentsize+1);
-                          Df_s_ro = fvecresize(Df_s_ro,currentsize+1);
-                          To_f_ro = fvecresize(To_f_ro,currentsize+1);
-                          To_s_ro = fvecresize(To_s_ro,currentsize+1);
+                          VW_f_ro = dvecresize(VW_f_ro,currentsize+1);
+                          VW_s_ro = dvecresize(VW_s_ro,currentsize+1);
+                          In_f_ro = dvecresize(In_f_ro,currentsize+1);
+                          In_s_ro = dvecresize(In_s_ro,currentsize+1);
+                          Dr_f_ro = dvecresize(Dr_f_ro,currentsize+1);
+                          Dr_s_ro = dvecresize(Dr_s_ro,currentsize+1);
+                          Df_f_ro = dvecresize(Df_f_ro,currentsize+1);
+                          Df_s_ro = dvecresize(Df_s_ro,currentsize+1);
+                          To_f_ro = dvecresize(To_f_ro,currentsize+1);
+                          To_s_ro = dvecresize(To_s_ro,currentsize+1);
                           Index_ro = ivecresize(Index_ro,currentsize+1);
                         }
 
@@ -3187,7 +3195,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
                           SFWrNu=SFWrNu+1;
 
-                          FrCoPo[SFWrNu]=matrix(1,FrAtNu,1,3);
+                          FrCoPo[SFWrNu]=dmatrix(1,FrAtNu,1,3);
                           for (i1=1;i1<=FrAtNu;i1++) {
                             for (i2=1;i2<=3;i2++) {
                               FrCoPo[SFWrNu][i1][i2]=RoSFCo[i1][i2];
@@ -3235,16 +3243,16 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                             /* #pragma omp critical */
                             /* #endif */
                             currentsize += _ALLOCSIZE;
-                            VW_f_ro = fvecresize(VW_f_ro,currentsize+1);
-                            VW_s_ro = fvecresize(VW_s_ro,currentsize+1);
-                            In_f_ro = fvecresize(In_f_ro,currentsize+1);
-                            In_s_ro = fvecresize(In_s_ro,currentsize+1);
-                            Dr_f_ro = fvecresize(Dr_f_ro,currentsize+1);
-                            Dr_s_ro = fvecresize(Dr_s_ro,currentsize+1);
-                            Df_f_ro = fvecresize(Df_f_ro,currentsize+1);
-                            Df_s_ro = fvecresize(Df_s_ro,currentsize+1);
-                            To_f_ro = fvecresize(To_f_ro,currentsize+1);
-                            To_s_ro = fvecresize(To_s_ro,currentsize+1);
+                            VW_f_ro = dvecresize(VW_f_ro,currentsize+1);
+                            VW_s_ro = dvecresize(VW_s_ro,currentsize+1);
+                            In_f_ro = dvecresize(In_f_ro,currentsize+1);
+                            In_s_ro = dvecresize(In_s_ro,currentsize+1);
+                            Dr_f_ro = dvecresize(Dr_f_ro,currentsize+1);
+                            Dr_s_ro = dvecresize(Dr_s_ro,currentsize+1);
+                            Df_f_ro = dvecresize(Df_f_ro,currentsize+1);
+                            Df_s_ro = dvecresize(Df_s_ro,currentsize+1);
+                            To_f_ro = dvecresize(To_f_ro,currentsize+1);
+                            To_s_ro = dvecresize(To_s_ro,currentsize+1);
                             Index_ro = ivecresize(Index_ro,currentsize+1);
                           }
 
@@ -3362,7 +3370,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
                           SFWrNu=SFWrNu+1;
 
-                          FrCoPo[SFWrNu]=matrix(1,FrAtNu,1,3);
+                          FrCoPo[SFWrNu]=dmatrix(1,FrAtNu,1,3);
                           for (i1=1;i1<=FrAtNu;i1++) {
                             for (i2=1;i2<=3;i2++) {
                               FrCoPo[SFWrNu][i1][i2]=RoSFCo[i1][i2];
@@ -3378,16 +3386,16 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                             /* #pragma omp critical */
                             /* #endif */
                             currentsize += _ALLOCSIZE;
-                            VW_f_ro = fvecresize(VW_f_ro,currentsize+1);
-                            VW_s_ro = fvecresize(VW_s_ro,currentsize+1);
-                            In_f_ro = fvecresize(In_f_ro,currentsize+1);
-                            In_s_ro = fvecresize(In_s_ro,currentsize+1);
-                            Dr_f_ro = fvecresize(Dr_f_ro,currentsize+1);
-                            Dr_s_ro = fvecresize(Dr_s_ro,currentsize+1);
-                            Df_f_ro = fvecresize(Df_f_ro,currentsize+1);
-                            Df_s_ro = fvecresize(Df_s_ro,currentsize+1);
-                            To_f_ro = fvecresize(To_f_ro,currentsize+1);
-                            To_s_ro = fvecresize(To_s_ro,currentsize+1);
+                            VW_f_ro = dvecresize(VW_f_ro,currentsize+1);
+                            VW_s_ro = dvecresize(VW_s_ro,currentsize+1);
+                            In_f_ro = dvecresize(In_f_ro,currentsize+1);
+                            In_s_ro = dvecresize(In_s_ro,currentsize+1);
+                            Dr_f_ro = dvecresize(Dr_f_ro,currentsize+1);
+                            Dr_s_ro = dvecresize(Dr_s_ro,currentsize+1);
+                            Df_f_ro = dvecresize(Df_f_ro,currentsize+1);
+                            Df_s_ro = dvecresize(Df_s_ro,currentsize+1);
+                            To_f_ro = dvecresize(To_f_ro,currentsize+1);
+                            To_s_ro = dvecresize(To_s_ro,currentsize+1);
                             Index_ro = ivecresize(Index_ro,currentsize+1);
                           }
 
@@ -3421,7 +3429,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
           }
         }
 
-        free_matrix(apol_Vect_fr,1,Nsurfpt_fr_apol,1,6);
+        free_dmatrix(apol_Vect_fr,1,Nsurfpt_fr_apol,1,6);
         free_ivector(FrApAt,1,Nsurfpt_fr_apol);
 
         //std::cout << "End of seeding" << std::endl; //clangini OK
@@ -3434,7 +3442,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
         /* Artificial memory allocation */
         ToNFrP=0;
         if (Ind_num_cn==1) {
-          FrCoPo=ppfvector(1,ToNFrP);
+          FrCoPo=ppdvector(1,ToNFrP);
           ConfArr=ivector(1,ToNFrP);
         }
 
@@ -3612,7 +3620,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
         /* Artificial memory allocation */
         ToNFrP=0;
         if (Ind_num_cn==1) {
-          FrCoPo=ppfvector(1,ToNFrP);
+          FrCoPo=ppdvector(1,ToNFrP);
           ConfArr=ivector(1,ToNFrP);
         }
 
@@ -3625,13 +3633,13 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
       }
 
 
-      free_matrix(SeFrCo,1,FrAtNu,1,3);
-      free_matrix(RoSFCo,1,FrAtNu,1,3);
-      free_matrix(SDFrRe_ps,1,FrAtNu,1,ReAtNu);
-      free_matrix(SDFrRe_ps_elec,1,FrAtNu,1,ReAtNu);
-      free_matrix(ChFrRe_ps_elec,1,FrAtNu,1,ReAtNu);
+      free_dmatrix(SeFrCo,1,FrAtNu,1,3);
+      free_dmatrix(RoSFCo,1,FrAtNu,1,3);
+      free_dmatrix(SDFrRe_ps,1,FrAtNu,1,ReAtNu);
+      free_dmatrix(SDFrRe_ps_elec,1,FrAtNu,1,ReAtNu);
+      free_dmatrix(ChFrRe_ps_elec,1,FrAtNu,1,ReAtNu);
 
-      free_matrix(Frdist2,1,FrAtNu,1,FrAtNu);
+      free_dmatrix(Frdist2,1,FrAtNu,1,FrAtNu);
       free_dvector(FrRadOut2,1,FrAtNu);
       free_dvector(FrRadOut,1,FrAtNu);
       free_dvector(FrRad2,1,FrAtNu);
@@ -3658,11 +3666,11 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
       free_ivector(FrDATy,1,FrAcNu+FrDoNu);
       free_ivector(FrDAAt,1,FrAcNu+FrDoNu);
       free_ivector(FrHydN,1,FrAcNu+FrDoNu);
-      free_matrix(FrVeCo,1,FrAcNu+FrDoNu,1,6);
-      free_vector(FrVdWR,1,FrAtNu);
-      free_vector(FrVdWE,1,FrAtNu);
-      free_vector(FrVdWE_sr,1,FrAtNu);
-      free_vector(FrVdWR_p3,1,FrAtNu);
+      free_dmatrix(FrVeCo,1,FrAcNu+FrDoNu,1,6);
+      free_dvector(FrVdWR,1,FrAtNu);
+      free_dvector(FrVdWE,1,FrAtNu);
+      free_dvector(FrVdWE_sr,1,FrAtNu);
+      free_dvector(FrVdWR_p3,1,FrAtNu);
       free_ivector(HybFrAt,1,FrAtNu);
       free_ivector(UndisAt_fr,1,FrAtNu);
       free_ivector(FrAtoTyp_nu,1,FrAtNu);
@@ -3723,10 +3731,10 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
       /* time_9=timevar.tms_utime+timevar.tms_stime; */
       gettimeofday(&time_9,NULL);
 
-      Coulo_ro=vector(1,SFWrNu_init);
-      Vande_ro=vector(1,SFWrNu_init);
-      TotEn_ro=vector(1,SFWrNu_init);
-      TotEn_ro_cp=vector(1,SFWrNu_init);
+      Coulo_ro=dvector(1,SFWrNu_init);
+      Vande_ro=dvector(1,SFWrNu_init);
+      TotEn_ro=dvector(1,SFWrNu_init);
+      TotEn_ro_cp=dvector(1,SFWrNu_init);
 
       /* REMOVED  -> reading of energies from "do_not_touch_ener" */
       /* ReaOut(CurFra,SFWrNu_init,Index_ro,VW_f_ro,VW_s_ro,In_f_ro,In_s_ro,  */
@@ -3870,7 +3878,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
       /* Clustering with the GSEAL method in two steps */
 
-      FrCoor_clus=matrix(1,FrAtNu,1,3);
+      FrCoor_clus=dmatrix(1,FrAtNu,1,3);
 
       /* First clustering */
 
@@ -3879,7 +3887,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
          because the translation and rotation are done with a fragment which is
          kept rigid */ //Normalization is max(S_AA,S_BB) clangini
       /* clangini START */
-      FraSim_no=vector(1,FrCoNu); // Different conformer (not poses!) of the same molecule can have different similarities! clangini
+      FraSim_no=dvector(1,FrCoNu); // Different conformer (not poses!) of the same molecule can have different similarities! clangini
                                   // In the case of the new seed this is always 1 as different conformers are treated as
                                   // different fragments. clangini
       for (j=1;j<=FrCoNu;j++) { /*Now FrCoNu is always 1*/
@@ -3996,7 +4004,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
       /* Compute the normalization for the similarity number */
       /* clangini START */
-      FraSim_no_sd=vector(1,FrCoNu);
+      FraSim_no_sd=dvector(1,FrCoNu);
       for (j=1;j<=FrCoNu;j++) {
         /*ReFrFi_coo_mol2(CurFra,j,FrFiNa,FrAtNu,FrCoor_clus);*/
         for (i1 = 1; i1 <= FrAtNu; i1++){ /*copy matrix (is it really necessary??)*/
@@ -4216,8 +4224,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
           /* Assign the atom element numbers, van der Waals radii and energies
              for the current fragment */
-          FrVdWR=vector(1,FrAtNu);
-          FrVdWE=vector(1,FrAtNu);
+          FrVdWR=dvector(1,FrAtNu);
+          FrVdWE=dvector(1,FrAtNu);
           FrAtoTyp_nu=ivector(1,FrAtNu);
           if(! AssiRE(NumbAT,AtTyAr,VdWRad,VdWEne,FrAtNu,FrAtTy,FrVdWR,FrVdWE,FPaOut,
                 AtENAr,FrAtEl_nu,FrAtoTyp_nu) )
@@ -4236,7 +4244,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
           FrRad2=dvector(1,FrAtNu);
           FrRadOut=dvector(1,FrAtNu);
           FrRadOut2=dvector(1,FrAtNu);
-          Frdist2=matrix(1,FrAtNu,1,FrAtNu);
+          Frdist2=dmatrix(1,FrAtNu,1,FrAtNu);
           nn = get_Ch_Rad_Fr(FrAtNu,FrCoor,FrVdWR,WaMoRa,FrRad,FrRad2,FrRadOut,
               FrRadOut2,Frdist2,&Rmin,&FrRmax);
 
@@ -4290,17 +4298,17 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
           /* Compute the square root of the van der Waals current fragment energies
              and the power of 3 of the fragment van der Waals radii */
-          FrVdWE_sr=vector(1,FrAtNu);
+          FrVdWE_sr=dvector(1,FrAtNu);
           SqRoEn(FrAtNu,FrVdWE,FrVdWE_sr);
-          FrVdWR_p3=vector(1,FrAtNu);
+          FrVdWR_p3=dvector(1,FrAtNu);
           for (j=1;j<=FrAtNu;j++)
             FrVdWR_p3[j]=FrVdWR[j]*FrVdWR[j]*FrVdWR[j];
 
 
-          RoSFCo=matrix(1,FrAtNu,1,3);
-          SDFrRe_ps=matrix(1,FrAtNu,1,ReAtNu);
-          SDFrRe_ps_elec=matrix(1,FrAtNu,1,ReAtNu);
-          ChFrRe_ps_elec=matrix(1,FrAtNu,1,ReAtNu);
+          RoSFCo=dmatrix(1,FrAtNu,1,3);
+          SDFrRe_ps=dmatrix(1,FrAtNu,1,ReAtNu);
+          SDFrRe_ps_elec=dmatrix(1,FrAtNu,1,ReAtNu);
+          ChFrRe_ps_elec=dmatrix(1,FrAtNu,1,ReAtNu);
 
 
           /* Loop over the list of the second clustering step and compute the energy
@@ -4370,12 +4378,12 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
           }
 
-          free_matrix(RoSFCo,1,FrAtNu,1,3);
-          free_matrix(SDFrRe_ps,1,FrAtNu,1,ReAtNu);
-          free_matrix(SDFrRe_ps_elec,1,FrAtNu,1,ReAtNu);
-          free_matrix(ChFrRe_ps_elec,1,FrAtNu,1,ReAtNu);
+          free_dmatrix(RoSFCo,1,FrAtNu,1,3);
+          free_dmatrix(SDFrRe_ps,1,FrAtNu,1,ReAtNu);
+          free_dmatrix(SDFrRe_ps_elec,1,FrAtNu,1,ReAtNu);
+          free_dmatrix(ChFrRe_ps_elec,1,FrAtNu,1,ReAtNu);
           free_structpointvect(surfpt_ex,1,NPtSphere * (ReAtNu+FrAtNu));
-          free_matrix(Frdist2,1,FrAtNu,1,FrAtNu);
+          free_dmatrix(Frdist2,1,FrAtNu,1,FrAtNu);
           free_dvector(FrRadOut2,1,FrAtNu);
           free_dvector(FrRadOut,1,FrAtNu);
           free_dvector(FrRad2,1,FrAtNu);
@@ -4384,10 +4392,10 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
           free_ivector(iatsrf_fr,1,NPtSphere*FrAtNu);
           free_ivector(pointsrf_fr,1,FrAtNu);
           free_ivector(nsurf_fr,1,FrAtNu);
-          free_vector(FrVdWR,1,FrAtNu);
-          free_vector(FrVdWE,1,FrAtNu);
-          free_vector(FrVdWE_sr,1,FrAtNu);
-          free_vector(FrVdWR_p3,1,FrAtNu);
+          free_dvector(FrVdWR,1,FrAtNu);
+          free_dvector(FrVdWE,1,FrAtNu);
+          free_dvector(FrVdWE_sr,1,FrAtNu);
+          free_dvector(FrVdWR_p3,1,FrAtNu);
           free_ivector(FrAtoTyp_nu,1,FrAtNu);
 
         } /* End of for (Ind_num_cn=1;Ind_num_cn<=FrCoNu;Ind_num_cn++) clangini*/
@@ -4415,7 +4423,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
            IntVar2 numbering on clusters */
         FrPosAr_pproc=ivector(1,NuPosSdCl);
         SdClusAr_pproc=ivector(1,NuPosSdCl);
-        TotEnSdClus_pproc=vector(1,NuPosSdCl);
+        TotEnSdClus_pproc=dvector(1,NuPosSdCl);
 
         IntVar1=0;
         IntVar2=0;
@@ -4725,7 +4733,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
         free_ivector(FrPosAr_pproc,1,NuPosSdCl);
         free_ivector(SdClusAr_pproc,1,NuPosSdCl);
-        free_vector(TotEnSdClus_pproc,1,NuPosSdCl);
+        free_dvector(TotEnSdClus_pproc,1,NuPosSdCl);
         free_ivector(Index_pproc,1,NuPosSdCl);
         free_ivector(FrPosAr_sort,1,NuPosSdCl);
         free_ivector(SdClusAr_sort,1,NuPosSdCl);
@@ -4735,10 +4743,10 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
       } /* End of if (Solv_typ[0]=='p') clangini */
 
-      free_vector(Coulo_ro,1,SFWrNu_init);
-      free_vector(Vande_ro,1,SFWrNu_init);
-      free_vector(TotEn_ro,1,SFWrNu_init);
-      free_vector(TotEn_ro_cp,1,SFWrNu_init);
+      free_dvector(Coulo_ro,1,SFWrNu_init);
+      free_dvector(Vande_ro,1,SFWrNu_init);
+      free_dvector(TotEn_ro,1,SFWrNu_init);
+      free_dvector(TotEn_ro_cp,1,SFWrNu_init);
 
       free_ivector(FraEqu,1,SFWrNu_init);
       free_ivector(ClusIn,1,ClusNu);
@@ -4748,9 +4756,9 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
       free_ivector(ClusLi_sd_01,1,SFWrNu);
       free_ivector(ClusLi_sd_01_reduc,1,SFWrNu);
       free_ivector(ClusLi_sd_pproc,1,SFWrNu);
-      free_matrix(FrCoor_clus,1,FrAtNu,1,3);
-      free_vector(FraSim_no,1,FrCoNu);
-      free_vector(FraSim_no_sd,1,FrCoNu);
+      free_dmatrix(FrCoor_clus,1,FrAtNu,1,3);
+      free_dvector(FraSim_no,1,FrCoNu);
+      free_dvector(FraSim_no_sd,1,FrCoNu);
 
       /* Co2 : End */
     } /*End of if (SFWrNu_init) ... clangini*/
@@ -4781,16 +4789,16 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
     fclose(FPaOut);
 
     for (i1=1;i1<=SFWrNu_init;i1++)
-      free_matrix(FrCoPo[i1],1,FrAtNu,1,3);
-    free_ppfvector(FrCoPo,1,ToNFrP);
+      free_dmatrix(FrCoPo[i1],1,FrAtNu,1,3);
+    free_ppdvector(FrCoPo,1,ToNFrP);
     free_ivector(ConfArr,1,ToNFrP);
 
-    free_matrix(FrCoor,1,FrAtNu,1,3);
+    free_dmatrix(FrCoor,1,FrAtNu,1,3);
     free_cmatrix(FrAtEl,1,FrAtNu,1,5);
     free_cmatrix(FrAtTy,1,FrAtNu,1,7);
     free_cmatrix(FrSyAtTy,1,FrAtNu,1,7); /*clangini 2016*/
     free_cmatrix(SubNa,1,FrAtNu,1,10); /*clangini 2016*/
-    free_vector(FrPaCh,1,FrAtNu);
+    free_dvector(FrPaCh,1,FrAtNu);
     free_imatrix(FrBdAr,1,FrBdNu,1,2);
     free_cmatrix(FrBdTy,1,FrBdNu,1,4);
     free_ivector(AliHyd,1,FrAtNu);
@@ -4831,23 +4839,23 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
     /* clean-up */
     free_ivector(Index_ro,1,currentsize);
-    free_vector(VW_f_ro,1,currentsize);
-    free_vector(VW_s_ro,1,currentsize);
-    free_vector(In_f_ro,1,currentsize);
-    free_vector(In_s_ro,1,currentsize);
-    free_vector(Dr_f_ro,1,currentsize);
-    free_vector(Dr_s_ro,1,currentsize);
-    free_vector(Df_f_ro,1,currentsize);
-    free_vector(Df_s_ro,1,currentsize);
-    free_vector(To_f_ro,1,currentsize);
-    free_vector(To_s_ro,1,currentsize);
+    free_dvector(VW_f_ro,1,currentsize);
+    free_dvector(VW_s_ro,1,currentsize);
+    free_dvector(In_f_ro,1,currentsize);
+    free_dvector(In_s_ro,1,currentsize);
+    free_dvector(Dr_f_ro,1,currentsize);
+    free_dvector(Dr_s_ro,1,currentsize);
+    free_dvector(Df_f_ro,1,currentsize);
+    free_dvector(Df_s_ro,1,currentsize);
+    free_dvector(To_f_ro,1,currentsize);
+    free_dvector(To_s_ro,1,currentsize);
 
 
     /* Free the dynamically allocated memory */
     free_dvector(ReSelfVol,1,ReAtNu);
     free_c3tensor(GridMat,1,NGridx+1,1,NGridy+1,1,NGridz+1);
     free_ivector(ReApAt,1,Napol_Vect_re);
-    free_matrix(apol_Vect_re,1,Napol_Vect_re,1,6);
+    free_dmatrix(apol_Vect_re,1,Napol_Vect_re,1,6);
     free_dvector(ReSurf_apol,1,Nsurfpt_re_apol);
     free_dvector(ReRadOut2,1,ReAtNu);
     free_dvector(ReRadOut,1,ReAtNu);
@@ -4873,20 +4881,20 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
     free_ivector(BSReNu,1,BSResN);
     /*free_cmatrix(FrFiNa,1,FragNu+CorrFiNumb,1,_STRLENGTH); Now FrFiNa is a char vector */
     free_cmatrix(ReAtEl,1,ReAtNu,1,5);
-    free_matrix(ReCoor,1,ReAtNu,1,3);
+    free_dmatrix(ReCoor,1,ReAtNu,1,3);
     free_cmatrix(ReAtTy,1,ReAtNu,1,7);
     free_ivector(ReResN,1,ReAtNu);
-    free_vector(RePaCh,1,ReAtNu);
+    free_dvector(RePaCh,1,ReAtNu);
     free_ivector(ReDATy,1,ReAcNu+ReDoNu);
     free_ivector(ReDAAt,1,ReAcNu+ReDoNu);
     free_ivector(ReHydN,1,ReAcNu+ReDoNu);
-    free_matrix(ReVeCo,1,ReAcNu+ReDoNu,1,6);
+    free_dmatrix(ReVeCo,1,ReAcNu+ReDoNu,1,6);
     free_cmatrix(AtTyAr,1,NumbAT,1,7);
     free_ivector(AtENAr,1,NumbAT);
-    free_vector(VdWRad,1,NumbAT);
-    free_vector(VdWEne,1,NumbAT);
-    free_vector(ReVdWR,1,ReAtNu);
-    free_vector(ReVdWE,1,ReAtNu);
+    free_dvector(VdWRad,1,NumbAT);
+    free_dvector(VdWEne,1,NumbAT);
+    free_dvector(ReVdWR,1,ReAtNu);
+    free_dvector(ReVdWE,1,ReAtNu);
     if ((Solv_typ[0]=='s')||(Solv_typ[0]=='b')||(Solv_typ[0]=='p')) {
       free_i3tensor(CubFAI,1,CubNum[1],1,CubNum[2],1,CubNum[3]);
       free_i3tensor(CubLAI,1,CubNum[1],1,CubNum[2],1,CubNum[3]);
@@ -4898,34 +4906,34 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
       free_ivector(LiChResEn,1,ReReNu);
     }
     if ((Solv_typ[0]=='f')||(Solv_typ[0]=='b')||(Solv_typ[0]=='p')) {
-      free_f3tensor(CoGrRP,1,CoGPoN[1],1,CoGPoN[2],1,CoGPoN[3]);
-      free_f3tensor(VWGrRP_at,1,VWGPoN[1],1,VWGPoN[2],1,VWGPoN[3]);
-      free_f3tensor(VWGrRP_re,1,VWGPoN[1],1,VWGPoN[2],1,VWGPoN[3]);
+      free_d3tensor(CoGrRP,1,CoGPoN[1],1,CoGPoN[2],1,CoGPoN[3]);
+      free_d3tensor(VWGrRP_at,1,VWGPoN[1],1,VWGPoN[2],1,VWGPoN[3]);
+      free_d3tensor(VWGrRP_re,1,VWGPoN[1],1,VWGPoN[2],1,VWGPoN[3]);
     }
-    free_vector(ReVdWE_sr,1,ReAtNu);
+    free_dvector(ReVdWE_sr,1,ReAtNu);
     /*free_vector(FrMaEn,1,FragNu+CorrFiNumb); clangini CHECK*/
     //free_matrix(SimWei,1,150,1,150); clangini
-    free_matrix(SimWei,0,150,0,150); //Want to use atom element 0 for lone pair. clangini
+    free_dmatrix(SimWei,0,150,0,150); //Want to use atom element 0 for lone pair. clangini
     /*free_vector(FrMaEn_sd,1,FragNu+CorrFiNumb); clangini CHECK*/
     free_ivector(ReAtEl_nu,1,ReAtNu);
     free_ivector(BSAtLi,1,BSAtNu);
     free_imatrix(ReBdAr,1,ReBdNu,1,2);
     free_ivector(HybReAt,1,ReAtNu);
     free_ivector(BSMeAN,1,BSMeNu);
-    free_matrix(BSMeVE,1,BSMeNu,1,3);
+    free_dmatrix(BSMeVE,1,BSMeNu,1,3);
     /*free_ivector(SFWrNu_ar,1,FragNu); clangini*//* -CorrFiNumb not needed !*/
     /*free_cmatrix(ResN_fr,1,FragNu,1,10); clangini*//* -CorrFiNumb not needed !*/
     /* free_cmatrix(FrFiNa_out,1,FragNu,1,_STRLENGTH); allocated statically clangini */
     free_ivector(PolVect_rec_01,1,ReAcNu+ReDoNu);
-    free_matrix(BLAtTy,1,NumbAT,1,NumbAT);
+    free_dmatrix(BLAtTy,1,NumbAT,1,NumbAT);
     free_ivector(ReAtoTyp_nu,1,ReAtNu);
     free_ivector(FiAtRes,1,ReReNu);
     free_ivector(LaAtRes,1,ReReNu);
     free_ivector(AtReprRes,1,ReReNu);
-    free_vector(TotChaRes,1,ReReNu);
+    free_dvector(TotChaRes,1,ReReNu);
     /*free_cmatrix(ApPoChoi,1,FragNu+CorrFiNumb,1,2); clangini CHECK*/
-    free_vector(ReVdWR_p3,1,ReAtNu);
-    free_matrix(distrPointBS,1,distrPointBSNumb,1,3);
+    free_dvector(ReVdWR_p3,1,ReAtNu);
+    free_dmatrix(distrPointBS,1,distrPointBSNumb,1,3);
 
 
     return 0;
