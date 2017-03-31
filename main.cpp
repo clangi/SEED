@@ -1368,7 +1368,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
     FrAlSet = convert2pp_return(1,3,1,3,FrAlSet_m[0],FrAlSet_rows);
     align_flag = set_align_ref(FrCoor,FrAtNu,FrAlRef,FrAlSet); //setting the reference
     //print_pp(1,3,1,3,FrAlRef);
-    if(align_flag){
+    if(align_flag && (EvalEn[0] == 'n')){
       // Find rotation quaternion
       //std::cout<<"Old: "<<FrCoor[1][1]<<" "<<FrCoor[1][2]<<" "<<FrCoor[1][3]<<" "<<std::endl;
 #ifdef DEBUG_CL
@@ -1393,6 +1393,9 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       //std::cout<<"New: "<<FrCoor[2][1]<<" "<<FrCoor[2][2]<<" "<<FrCoor[2][3]<<" "<<std::endl;
       //std::cout<<"New: "<<FrCoor[3][1]<<" "<<FrCoor[3][2]<<" "<<FrCoor[3][3]<<" "<<std::endl;
 #endif
+    }
+    else {
+      std::cout << "Fragment " << FragNa << "has not been pre-aligned." << std::endl;
     }
     /* CLANGINI 2016 end */
 
