@@ -1,0 +1,189 @@
+FUNCTIONS:
+ReInFi: This function reads the data of the input (InpFil) and parameters (TREFiP) files
+extoutnam: This function extracts the output name for each fragment type from the fragments paths.
+            (strips the path and the file extension from the fragment file)
+VARIABLES:
+FrFiNa = Fragment File Paths (complete name with all the path as in seed.inp)
+OutFil = path of the file containing the output informations (seed output file with all the calculations done -> seed.out)
+FrFiNa_out = output name for each fragment type (corresponds to FrFiNa after stripping out the path and file extension)
+ResN_fr = name of the fragment residue (Taken from the residue field in the mol2 file or assigned by SEED if not present)
+ReResN = receptor residues numbers
+FiNuMa = maximal number of mol2 files to be written for each fragment type
+SFWrNu = number of written seeded fragments
+FrCoNu = number of conformations(conformers) of the current fragment type
+NuPosSdCl = total number of kept positions which are members of the kept second clusters (representative included)
+FrPosAr_sort = array containing the number of the fragment position for the postprocessing after sorting
+
+#### WHY WE NEED TO USE DOUBLE/TRIPLE POINTERS AND SO ON ####
+http://stackoverflow.com/questions/2838038/c-programming-malloc-inside-another-function
+
+SFWrNu  number of written seeded fragments
+SFWrNu_ar = array of the finally kept number of fragment positions for each fragment type 
+ResN_fr       name of the fragment residue
+
+write_pproc_opt  option for writing *_pproc* files
+NuPosSdCl  total number of kept positions which are members of the kept second clusters (representative included)
+ConfArr:  array of conformations numbers 
+ToNFrP:  total number of fragment positions 
+Ind_num_cn: index over the number of conformations
+NuPosSdCl:  total number of kept positions which are members of the kept 
+second clusters (representative included)
+
+#
+If you’d like a variable to be set to a value only if it’s not already set, then you can use the shorthand operator ‘?=’ instead of ‘=’. These two settings of the variable ‘FOO’ are identical (see The origin Function):
+
+FOO ?= bar
+#
+A substitution reference substitutes the value of a variable with alterations that you specify. It has the form ‘$(var:a=b)’ (or ‘${var:a=b}’) and its meaning is to take the value of the variable var, replace every a at the end of a word with b in that value, and substitute the resulting string.
+
+When we say “at the end of a word”, we mean that a must appear either followed by whitespace or at the end of the value in order to be replaced; other occurrences of a in the value are unaltered. For example:
+
+foo := a.o b.o c.o
+bar := $(foo:.o=.c)
+
+sets ‘bar’ to ‘a.c b.c c.c’
+#
+-MP
+    This option instructs CPP to add a phony target for each dependency other than the main file, causing each to depend on nothing. These dummy rules work around errors make gives if you remove header files without updating the Makefile to match.
+
+    This is typical output:-
+
+     	
+
+    /tmp/test.o: /tmp/test.c /tmp/test.h
+
+    /tmp/test.h:
+#
+-MMD
+    Like `-MD' except mention only user header files, not system -header files. 
+#
+If you write a rule whose recipe will not create the target file, the recipe will be executed every time the target comes up for remaking. Here is an example:
+
+clean:
+        rm *.o temp
+
+Because the rm command does not create a file named clean, probably no such file will ever exist. Therefore, the rm command will be executed every time you say ‘make clean’.
+
+In this example, the clean target will not work properly if a file named clean is ever created in this directory. Since it has no prerequisites, clean would always be considered up to date and its recipe would not be executed. To avoid this problem you can explicitly declare the target to be phony by making it a prerequisite of the special target .PHONY (see Special Built-in Target Names) as follows:
+
+.PHONY: clean
+clean:
+        rm *.o temp
+#
+
+ls *.c | sed s/[.]c$//g | awk 'BEGIN {ORS=" "} {print $1}'
+
+
+rename 's/\.c$/.cpp/' *.c
+
+
+AtENAr: atom element number array.
+ReAtEl_nu: Receptor atom element number.
+FrAtEl_nu: Fragment atom element number.
+SimWei:  similarity weight factors for GSEAL
+NuPosSdCl:  total number of kept positions which are members of the kept second clusters (representative included) -> number of poses I keep in the pproc file
+NuLiEnClus:  number of lines to be written in the output file for the sorted energies 
+             and the two clustering procedures
+
+WARNING: Clustering seems to be done between fast and slow energy evaluation!
+				 I think that, being the array of clustering sorted. A representative of first GSEAL is 
+         automatically a representative of second GSEAL as well.
+NuSdClKe:  number of second clusters which are kept (energy of the cluster representative below 
+           a user-given cutoff)
+NuPosSdCl:  total number of kept positions which are members of the kept second clusters 
+            (either representative of first or of second cluster)
+int *ClusLi_sd_pproc:  cluster indexation for the second GSEAL for the postprocessing (2-> 
+                       representative of the first GSEAL, 1-> representative of the second GSEAL
+                       (only a reduced number), 0-> in the clusters)
+int *ClusLi_sd: cluster list done with the second GSEAL
+int *ClusLi_sd_01:  cluster indexation for the second GSEAL (1->all the representatives, 0-> 
+                    in the clusters)
+int *ClusLi_sd_01_reduc: same comment as for ClusLi_sd_01 but keeping only a reduced number 
+                         of representatives
+FrMaEn, FrMaEn_sd: energy cut-offs on fast energy, to be kept for clustering (FrMaEn), for 
+                   second clustering (FrMaEn_sd).
+int *ClusIn [1-ClusNu]: indexes for the cluster list done with GSEAL (Gives the CUMULATIVE 
+                        number of poses in each cluster!).
+int *ClusLi [1-SFWrNu]:  cluster list done with GSEAL (Contain the Fr_nu of the fragments, 
+                         ordered by cluster)
+int NuClusMem:  number of cluster members to be written in ?_clus_reduc.chm file
+int ClusVa_wr:  variable used in the clustering process (for writing)
+int PrintVa:  variable used in the printing process
+float **FrCoor_clus [FrAtNu, 3]  coordinates of a fragment for computing the normalization in the clustering procedure
+float *FraSim_no:  normalization for the similarity number between two fragments
+float *FraSim_no_sd:  normalization for the similarity number between two fragments
+     for the second GSEAL
+float FraSim_no_max:  normalization (maximum) for the clustering procedure
+
+WARNING: POSE != CONFORMATION. in the output of seed we get the different poses of the same conformation!
+
+int *FraEqu:   equivalence between the fragments
+int *FraEqu_sd:  equivalence between the fragments for the second GSEAL
+
+int SFWrNu_init:  initial value of total SFWrNu (This value is the total number of cluster which passed the fast energy evaluation)
+int SFWrNu:  number of written seeded fragments. (This value is the total number of poses which passed the fast energy evaluation, then it may be lowered to match the maximum number of positions conserved for clustering)-> at the end is the maximum number of fragments to consider after fast energy evaluation.
+int *Index_ro: represents the absolute Fr_nu (cfr. log file). Fr_nu[j] gives the index of the j-th best pose in the array of the total fragments which passed the threshold. This is because SFWrNu <= SFWrNu_init
+float ***FrCoPo:  vector of pointers pointing to matrices of fragment coordinates (-> they contain the coords of the poses, whereas FrCoor are the coords of the input fragment)
+
+int ClusNu: number of fragment clusters
+SimCut: it is the parameter "delta" for clustering
+
+int *FrPosAr_pproc [1-NuPosSdCl]:  array containing the number of the fragment position (Fr_nu)
+                                   for the postprocessing
+int *SdClusAr_pproc [1-NuPosSdCl]:  array containing the number of the second cluster 
+                                    to which belongs the fragment position for the postprocessing
+float *TotEnSdClus_pproc [1-NuPosSdCl]:  array containing the total energy (slow method) of 
+                                         the second cluster (kept positions) 
+                                         for the postprocessing
+int *FlagAr [1-NuPosSdCl]: flag array
+int *Index_pproc [1-NuPosSdCl]:  array of indexes for the postprocessing (sorting step)
+int *FrPosAr_sort [1-NuPosSdCl]:  array containing the number of the fragment position (Fr_nu) 
+                                  for the postprocessing after sorting (inter+intra cluster sorting)
+int *SdClusAr_sort [1-NuPosSdCl]:  array containing the number of the second cluster to which 
+                                   belongs the fragment position for the postprocessing after 
+                                   sorting (new order) (inter+intra cluster sorting)
+
+It seems that To_s_ro is as big as To_f_ro even though the slow calculation is usually done (post-process mode) on a subset of the seeded poses. -> probably bottleneck for fast energy is not the memory but the energy calculation itself.
+
+NuPosMem: the number of poses saved in new output file (equivalent to NuClusMem)
+
+Solv_typ:   Solvation algorithm type (f_ast,s_low,b_oth,p_ostprocess)
+
+void CoNuBu(...): count number of bumps
+int BumpMa: Maximum number of tolerated bumps
+
+SAS1 is a SAS built to obtain the volume enclosed by the MS
+SAS2 is a SAS built for a fast evaluation of the desolvation
+SAS3 is a SAS built to estimate the surface hydrophobicity
+
+int Surf_Grid_unif_dens(...):  Place points over the SAS assuming a uniform surface density
+
+MuFaVdWCoff_ap:  multiplicative factor used for computing the van der Waals
+                 energy cutoff in the seeding of the apolar fragments
+VdWCoff_ap:   VdWCoff_ap  van der Waals energy cutoff in the seeding of apolar fragments
+              (=MuFaVdWCoff_ap*FrAtNu)
+
+SpPoCh_bool:SpPoCh_bool  fragment position in the specified sphere (1->yes,0->no)  fragment position in the specified sphere (1->yes,0->no)
+SpPoCh_opt:  check if the fragment is in the specified sphere (y,n)
+BumpFaCut:  cutoff (maximal vdW energy) for bump checking with fast energy
+            evaluation
+VWGrIn:  van der Waals grid increase
+VWGrSi:  van der Waals grid size
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
