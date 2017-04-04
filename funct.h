@@ -65,7 +65,7 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
             char *gc_opt,int *gc_reprke,double *gc_cutclus,double *gc_endifclus,
             double *gc_weighneg,double *gc_weighpos,int *gc_maxwrite,
             char *write_pproc_opt,char *write_pproc_chm_opt,char *write_best_opt,
-            char *write_sumtab_opt,double **AtWei);
+            char *write_sumtab_opt,char *write_best_sumtab_opt,double **AtWei);
 
 void ReReFi_mol2(char *RecFil,int *ReAtNu,int *ReBdNu,int *ReReNu,
                  char ***ReAtEl,double ***ReCoor,char ***ReAtTy,int **ReResN,

@@ -186,7 +186,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
        CoGrAcc[2],CoGrFile[_STRLENGTH],EvalEn[2],SpPoCh_opt[2],**SubNa,
        FrFiNa_out[_STRLENGTH],/* *ApPoChoi,*/ ApPoChoi[2], VWGrAcc[2],VWGrFile[_STRLENGTH],EmpCorrB[2],
        gc_opt[2],write_pproc_opt[2],write_pproc_chm_opt[2], TabFil[_STRLENGTH]/*clangini*/,
-       write_sumtab_opt[2], write_best_opt[2];
+       write_sumtab_opt[2], write_best_opt[2], write_best_sumtab_opt[2];
   int i,*BSReNu,BSResN/*,FragNu cl*/,FrAtNu,FrBdNu,CurFra,**FrBdAr,*AliHyd,ReAtNu/*,TotFra clangini*/,
       ReBdNu,ReReNu,*ReResN,ReAcNu,ReDoNu,*ReDATy,*ReDAAt,*ReHydN,FrAcNu,
       FrDoNu,*FrDATy,*FrDAAt,*FrHydN,j,k,SFWrNu,l,NumbAT,CubNum[4],*CubLiA,
@@ -296,6 +296,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   double FrAlRef_m[3][3], *FrAlRef_rows[3], **FrAlRef,
         FrAlSet_m[3][3], *FrAlSet_rows[3], **FrAlSet;
   double AnglRo; //before it was a float. clangini
+  double **FrCoor_NoAlign;
 #ifdef USE_QUATERNION_ROTATION //clangini
   double SeFrAx[4]; //axis for fragment rotation
   Quaternion<double> q_SeFr; //calls default constructor
@@ -408,7 +409,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       &distrPointBS,&angle_rmin,&angle_rmax,&mult_fact_rmin,&mult_fact_rmax,
       EmpCorrB,gc_opt,&gc_reprke,&gc_cutclus,&gc_endifclus,&gc_weighneg,
       &gc_weighpos,&gc_maxwrite,write_pproc_opt,write_pproc_chm_opt,
-      write_best_opt,write_sumtab_opt,&AtWei);/*clangini*/
+      write_best_opt,write_sumtab_opt,write_best_sumtab_opt,&AtWei);/*clangini*/
 
   /* Check presence of parameter file */
   //std::cout << "Input file: " << TREFiP << std::endl;
@@ -1238,6 +1239,8 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
                 << "for writing _pproc summary table." << std::endl;
     }
     TabOutStream.close();
+  }
+  if (write_best_sumtab_opt[0]=='y'){
     // Second summary table, with the best poses:
     strcpy(TabFil,"./outputs/seed_best_pproc.dat");
     TabOutStream.open (TabFil);
@@ -1397,6 +1400,16 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       //std::cout<<"New: "<<FrCoor[2][1]<<" "<<FrCoor[2][2]<<" "<<FrCoor[2][3]<<" "<<std::endl;
       //std::cout<<"New: "<<FrCoor[3][1]<<" "<<FrCoor[3][2]<<" "<<FrCoor[3][3]<<" "<<std::endl;
 #endif
+    }
+    else if(align_flag && (EvalEn[0] == 'y')){
+      FrCoor_NoAlign=dmatrix(1,FrAtNu,1,3);//original coordinates before
+        //alignment. clangini
+
+      for (int ii=1;ii <= FrAtNu;ii++){
+        for(int jj=1;jj <=3; jj++)
+          FrCoor_NoAlign[ii][jj] = FrCoor[ii][jj];
+      }
+      struct_align(FrCoor,FrAtNu,FrAlRef,FrAlSet,3);
     }
     else {
       std::cout << "Fragment " << FragNa << "has not been pre-aligned." << std::endl;
@@ -2217,9 +2230,9 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
               /* Seed fragment */
               SeedFr_ap(j,apol_Vect_re,ReApAt,k,apol_Vect_fr,FrApAt,FrCoor,
                   ReVdWR,FrVdWR,FrAtNu,FPaOut,SeFrCo);
-              #ifdef USE_QUATERNION_ROTATION //clangini
-              AnglRo = 6.283185307179586476925286766559/NuRoAx;
-
+#ifdef USE_QUATERNION_ROTATION //clangini
+              //AnglRo = 6.283185307179586476925286766559/NuRoAx;
+              AnglRo = M_PI*2/NuRoAx;
               SeFrAx[1]=ReCoor[ReApAt[j]][1]-SeFrCo[FrApAt[k]][1];
               SeFrAx[2]=ReCoor[ReApAt[j]][2]-SeFrCo[FrApAt[k]][2];
               SeFrAx[3]=ReCoor[ReApAt[j]][3]-SeFrCo[FrApAt[k]][3];
@@ -2232,23 +2245,23 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 RoSFCo[ii][2] = SeFrCo[ii][2];
                 RoSFCo[ii][3] = SeFrCo[ii][3];
               }
-              #endif
+#endif
 
               /* Make rotations */
               for (l=1;l<=NuRoAx;l++) {
-                #ifdef USE_QUATERNION_ROTATION //clangini
+#ifdef USE_QUATERNION_ROTATION //clangini
                 FrNuTo = FrNuTo+1;
                 for (int ii=1;ii<=FrAtNu;ii++){
                   q_SeFr.quatConjugateVecRef(RoSFCo[ii],SeFrCo[FrApAt[k]]);
                 }
-                #else
-                AnglRo=6.2831854/NuRoAx*l;
+#else
+                AnglRo = M_PI*2/NuRoAx*l;
 
                 FrNuTo=FrNuTo+1;
 
                 /* RoSFCo is the position of the rotated fragment */
                 RoSeFr(j,ReApAt,ReCoor,k,FrApAt,FrAtNu,SeFrCo,AnglRo,RoSFCo);
-                #endif
+#endif
 
                 VW_f=0.0;
                 VW_s=0.0;
@@ -2740,8 +2753,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
               SeedFr(j,ReVeCo,k,FrVeCo,FrAtNu,FrCoor,ReDATy,SeFrCo,FrAtoTyp_nu,
                   FrDAAt,ReAtoTyp_nu,ReDAAt,BLAtTy,FPaOut);
 
-              #ifdef USE_QUATERNION_ROTATION //clangini
-              AnglRo = 6.283185307179586476925286766559/NuRoAx;
+#ifdef USE_QUATERNION_ROTATION //clangini
+              AnglRo = M_PI*2/NuRoAx;
 
               SeFrAx[1]=ReCoor[ReDAAt[j]][1]-SeFrCo[FrDAAt[k]][1];
               SeFrAx[2]=ReCoor[ReDAAt[j]][2]-SeFrCo[FrDAAt[k]][2];
@@ -2755,23 +2768,23 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 RoSFCo[ii][2] = SeFrCo[ii][2];
                 RoSFCo[ii][3] = SeFrCo[ii][3];
               }
-              #endif
+#endif
 
               /* Make rotations */
               for (l=1;l<=NuRoAx;l++) {
-                #ifdef USE_QUATERNION_ROTATION //clangini
+#ifdef USE_QUATERNION_ROTATION //clangini
                 FrNuTo = FrNuTo+1;
                 for (int ii=1;ii<=FrAtNu;ii++){
                   q_SeFr.quatConjugateVecRef(RoSFCo[ii],SeFrCo[FrDAAt[k]]);
                 }
-                #else
-                AnglRo=6.2831854/NuRoAx*l;
+#else
+                AnglRo=M_PI*2/NuRoAx*l;
 
                 FrNuTo=FrNuTo+1;
 
                 /* RoSFCo is the position of the rotated fragment */
                 RoSeFr(j,ReDAAt,ReCoor,k,FrDAAt,FrAtNu,SeFrCo,AnglRo,RoSFCo);
-                #endif
+#endif
 
                 VW_f=0.0;
                 VW_s=0.0;
@@ -3101,8 +3114,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
               /* Seed fragment */
               SeedFr_ap(j,apol_Vect_re,ReApAt,k,apol_Vect_fr,FrApAt,FrCoor,
                   ReVdWR,FrVdWR,FrAtNu,FPaOut,SeFrCo);
-              #ifdef USE_QUATERNION_ROTATION //clangini
-              AnglRo = 6.283185307179586476925286766559/NuRoAx;
+#ifdef USE_QUATERNION_ROTATION //clangini
+              AnglRo = M_PI*2/NuRoAx;
 
               SeFrAx[1]=ReCoor[ReApAt[j]][1]-SeFrCo[FrApAt[k]][1];
               SeFrAx[2]=ReCoor[ReApAt[j]][2]-SeFrCo[FrApAt[k]][2];
@@ -3116,23 +3129,23 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 RoSFCo[ii][2] = SeFrCo[ii][2];
                 RoSFCo[ii][3] = SeFrCo[ii][3];
               }
-              #endif
+#endif
 
               /* Make rotations */
               for (l=1;l<=NuRoAx;l++) {
-                #ifdef USE_QUATERNION_ROTATION //clangini
+#ifdef USE_QUATERNION_ROTATION //clangini
                 FrNuTo = FrNuTo+1;
                 for (int ii=1;ii<=FrAtNu;ii++){
                   q_SeFr.quatConjugateVecRef(RoSFCo[ii],SeFrCo[FrApAt[k]]);
                 }
-                #else
-                AnglRo=6.2831854/NuRoAx*l;
+#else
+                AnglRo=M_PI*2/NuRoAx*l;
 
                 FrNuTo=FrNuTo+1;
 
                 /* RoSFCo is the position of the rotated fragment */
                 RoSeFr(j,ReApAt,ReCoor,k,FrApAt,FrAtNu,SeFrCo,AnglRo,RoSFCo);
-                #endif
+#endif
 
                 VW_f=0.0;
                 VW_s=0.0;
@@ -3495,14 +3508,22 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
         SFWrNu=0;
 
-        for (j=1;j<=FrAtNu;j++) {
+        /*for (j=1;j<=FrAtNu;j++) {
           RoSFCo[j][1]=FrCoor[j][1];
           RoSFCo[j][2]=FrCoor[j][2];
           RoSFCo[j][3]=FrCoor[j][3];
-        }
+        }*/
+
+        for (j=1;j<=FrAtNu;j++) {
+          RoSFCo[j][1]=FrCoor_NoAlign[j][1];
+          RoSFCo[j][2]=FrCoor_NoAlign[j][2];
+          RoSFCo[j][3]=FrCoor_NoAlign[j][3];
+        } //clangini. The seeded frag coordinates correspond to the original
+        //coordinates without pre-alignment.
 
         /* Make the translation vector and the rotation matrices for ElecFrag */
-        for (j=1;j<=3;j++)
+        // Now FrCoor is no longer identical to RoSFCo
+        /*for (j=1;j<=3;j++)
           Tr[j]=0.0;
         for (j=1;j<=3;j++) {
           for (k=1;k<=3;k++) {
@@ -3515,7 +3536,9 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
               U2[j][k]=0.0;
             }
           }
-        }
+        }*/
+
+        Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);//clangini
 
         VW_f=0.0;
         VW_s=0.0;
@@ -3652,7 +3675,38 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
             "%10d%12.2f%11.2f%13.2f%12.2f%13.2f\n",
             Ind_num_cn,VW_s,In_s,Dr_s,Df_s,
             To_s);
-
+        // if energy evaluation run is requested, the energies are saved in
+        // the best output summary table. clangini
+        HeAtCo = count_heavy_atom(FrAtEl_nu, FrAtNu);
+        MolWei = molecular_weight(FrAtEl_nu, FrAtNu, AtWei);
+        if (write_best_sumtab_opt[0]=='y'){
+          // append to _best_pproc summary table
+          strcpy(TabFil,"./outputs/seed_best_pproc.dat");
+          TabOutStream.open (TabFil, std::ios::out | std::ios::app); // append mode
+          if(TabOutStream.is_open()){
+            //for (j=1;j<=((NuPosMem<NuPosSdCl)?NuPosMem:NuPosSdCl);j++) {
+            sprintf(TabLin,
+                  "%-30s%8d%10d%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10d%10.4f",
+                  FragNa,1,
+                  1,
+                  To_s,
+                  In_s,
+                  Dr_s,
+                  Df_s,
+                  VW_s,
+                  (In_s-FrSolvEn),
+                  FrSolvEn,(To_s/HeAtCo),
+                  (VW_s/HeAtCo),
+                  (In_s/HeAtCo),
+                  HeAtCo,MolWei);
+            TabOutStream << TabLin << std::endl;
+            //}
+          } else {
+            std::cerr << "Unable to write to file "<< TabFil << std::endl;
+          }
+          TabOutStream.close();
+        }
+        free_dmatrix(FrCoor_NoAlign,1,FrAtNu,1,3);//clangini
       }
       else {
         /* --------------------- */
@@ -4633,15 +4687,15 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
 
         /* Append lines to summary table. START clangini */
+        /* Calculate HAC (Heavy Atom Count) and MW (Molecular Weight)*/
+        HeAtCo = count_heavy_atom(FrAtEl_nu, FrAtNu);
+        MolWei = molecular_weight(FrAtEl_nu, FrAtNu, AtWei);
         if (write_sumtab_opt[0]=='y'){
           // append to _pproc summary table
           //std::ofstream TabOutStream;
           strcpy(TabFil,"./outputs/seed_pproc.dat");
           TabOutStream.open (TabFil, std::ios::out | std::ios::app); // append mode
           if(TabOutStream.is_open()){
-            /* Calculate HAC (Heavy Atom Count) */
-            HeAtCo = count_heavy_atom(FrAtEl_nu, FrAtNu);
-            MolWei = molecular_weight(FrAtEl_nu, FrAtNu, AtWei);
             for (j=1;j<=((NuLiEnClus<NuPosSdCl)?NuLiEnClus:NuPosSdCl);j++) {
               sprintf(TabLin,
                     "%-30s%8d%10d%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10d%10.4f",
@@ -4657,7 +4711,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
             std::cerr << "Unable to write to file "<< TabFil << std::endl;
           }
           TabOutStream.close();
-
+        }
+        if (write_best_sumtab_opt[0]=='y'){
           // append to _best_pproc summary table
           strcpy(TabFil,"./outputs/seed_best_pproc.dat");
           TabOutStream.open (TabFil, std::ios::out | std::ios::app); // append mode

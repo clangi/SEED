@@ -63,7 +63,7 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
             char *gc_opt,int *gc_reprke,double *gc_cutclus,double *gc_endifclus,
             double *gc_weighneg,double *gc_weighpos,int *gc_maxwrite,
             char *write_pproc_opt,char *write_pproc_chm_opt,char *write_best_opt,
-            char *write_sumtab_opt,double **AtWei)
+            char *write_sumtab_opt,char *write_best_sumtab_opt,double **AtWei)
 /* This function reads the data of the input (InpFil) and parameters (TREFiP)
    files :
    OutFil  path of the file containing the output informations
@@ -329,14 +329,25 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
   SkipComLin(FilePa,StrLin);
   sscanf(StrLin,"%lf%lf",RedRPV_nkvRatio,NCutapolRatio);
 
-/* Number of cluster members to be written in output files */
+/* Write *_pproc* files in postprocess mode (y/n) / charmm files */
+  //SkipComLin(FilePa,StrLin);
+  //sscanf(StrLin,"%s%s",write_pproc_opt,write_pproc_chm_opt);
+
+/* Write *_pproc*.mol2 file and write *_best_pproc*.mol2 file
+in postprocess mode (y/n   y/n) */
+  SkipComLin(FilePa,StrLin);
+  sscanf(StrLin,"%s%s",write_pproc_opt,write_best_opt);
+
+/* Write summary tables *_pproc*.dat and *_best_pproc*.dat
+in postprocess mode (y/n   y/n) */
+  SkipComLin(FilePa,StrLin);
+  sscanf(StrLin,"%s%s",write_sumtab_opt,write_best_sumtab_opt);
+
+/* Number of cluster members and total number of poses to be
+written in output file*/ //clangini
 // cluster members for the first clustering!
   SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%d",NuClusMem);
-
-/* Number of poses to be written in output files. clangini */
-  SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%d",NuPosMem); // clangini
+  sscanf(StrLin,"%d%d",NuClusMem, NuPosMem);
 
 /* Path of the file containing the output informations */
   SkipComLin(FilePa,StrLin);
@@ -514,18 +525,6 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
    Printing level (0,1->preprocess,2->second clustering) */
   SkipComLin(FilePa,StrLin);
   sscanf(StrLin,"%d%d",NuLiEnClus,PrintLev);
-
-/* Write *_pproc* files in postprocess mode (y/n) / charmm files */
-  SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%s%s",write_pproc_opt,write_pproc_chm_opt);
-
-/* Write *_pproc* files in postprocess mode (y/n) / charmm files */
-  SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%s",write_best_opt);
-
-/* Write summary table file seed_summary.dat in postprocess mode (y/n) */
-  SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%s",write_sumtab_opt);
 
 /* CLANGINI 2016 END */
 
