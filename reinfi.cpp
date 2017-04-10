@@ -725,23 +725,21 @@ int CheckMol2File(char * name)
 	return 0;
     }
 
-/* clangini 2016: as the SUBSTRUCTURE-tag will not be used any more
-   (neither for fragments nor for receptor) we do not perform this check any more */
-/*    while(FilChk!=NULL && !feof(FilChk) && !ferror(FilChk)  )
-    {
-	fgets_wrapper(StrLin,200,FilChk);
-	if(!strncmp("@<TRIPOS>SUBSTRUCTURE",StrLin,21))
-	{
-	    break;
-	}
-    }
+/* clangini 2016: SUBSTRUCTURE-tag is still used for the receptor */
+  while(FilChk!=NULL && !feof(FilChk) && !ferror(FilChk)  )
+  {
+	   fgets_wrapper(StrLin,200,FilChk);
+     if(!strncmp("@<TRIPOS>SUBSTRUCTURE",StrLin,21))
+     {
+       break;
+     }
+   }
 
-    if(FilChk==NULL || feof(FilChk) ||  ferror(FilChk)  )
-    {
-	fprintf(stderr,"WARNING, could not find @<TRIPOS>SUBSTRUCTURE-tag in file %s ! \n",name);
-	return 0;
-    } */
-/* clangini 2016 END */
+  if(FilChk==NULL || feof(FilChk) ||  ferror(FilChk)  )
+  {
+	   fprintf(stderr,"WARNING, could not find @<TRIPOS>SUBSTRUCTURE-tag in file %s ! \n",name);
+	    return 0;
+  }
 
     fclose(FilChk);
     return 1;

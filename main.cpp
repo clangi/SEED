@@ -1589,11 +1589,11 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
          atoms */
       UndisAt_fr=ivector(1,FrAtNu);
       FindFrSym(FrAtNu,FrCoor,FrAtTy,UndisAt_fr);
-      fprintf(FPaOut,"Vectors considered or not (1,0) on the frag. atoms");
+      /*fprintf(FPaOut,"Vectors considered or not (1,0) on the frag. atoms");
       fprintf(FPaOut," because of rotat. symmetry :\n");
       for (j=1;j<=FrAtNu;j++)
         fprintf(FPaOut,"%7d %7d\n",j,UndisAt_fr[j]);
-      fprintf(FPaOut,"\n");
+      fprintf(FPaOut,"\n");*/ //clangini commented
 
       fclose(FPaOut);
 
@@ -4633,8 +4633,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
         fprintf(FPaOut,"Postprocessed clusters for fragment type %d (%s) :\n\n",
             CurFra,FragNa); /* clangini */
         /* This part of seed.out should also go in the summary table. clangini */
-        fprintf(FPaOut,"                         intermolecular        ");
-        fprintf(FPaOut,"electrostat_desolv.        Total\n");
+        fprintf(FPaOut,"                             intermolecular       ");
+        fprintf(FPaOut,"electrostat_desolv.       Total\n");
 
         fprintf(FPaOut,"   Num    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment");
         fprintf(FPaOut,"       energy\n\n");
@@ -4659,8 +4659,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
         /* Ordered postprocessed output to be written in pproc.mol2 and seed_summary.dat */
         fprintf(FPaOut,"Best postprocessed poses for fragment type %d (%s) :\n\n",
                 CurFra,FragNa);
-        fprintf(FPaOut,"                         intermolecular        ");
-        fprintf(FPaOut,"electrostat_desolv.        Total\n");
+        fprintf(FPaOut,"                                   intermolecular       ");
+        fprintf(FPaOut,"electrostat_desolv.       Total\n");
 
         fprintf(FPaOut,"   Num   Clu    Fr_nu  Conform.  vdWaals  electrost     ");
         fprintf(FPaOut,"receptor   fragment       energy\n\n");

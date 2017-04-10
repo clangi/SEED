@@ -69,5 +69,30 @@ void ReReFi_mol2(char *RecFil,int *ReAtNu,int *ReBdNu,int *ReReNu,
            dummy2);
   }
 
+  /* clangini 2017
+  add check for the correct number of residues */
+  int ReReNu_count = 0;
+  int ReRe_idx;
+  fgets_wrapper(StrLin,_STRLENGTH,FilePa);
+  for (i=0;strncmp(StrLin,"@<TRIPOS>SUBSTRUCTURE",13);i++)
+    fgets_wrapper(StrLin,_STRLENGTH,FilePa);
+  while ((fgets(StrLin,_STRLENGTH,FilePa )!= NULL) &&
+                              !feof(FilePa) && !ferror(FilePa) ){
+      sscanf(StrLin,"%d",&ReRe_idx);
+      if (ReRe_idx == (ReReNu_count+1))
+        ++ReReNu_count;
+      else {
+        break;
+      }
+  }
+  std::cout << ReReNu_count << "  " << *ReReNu << std::endl;
+  if (ReReNu_count != *ReReNu){
+    std::cerr << "WARNING, number of residues in the receptor mol2 file (" <<
+    ReReNu_count << "), does not match the number declared in the " <<
+    "@<TRIPOS>MOLECULE record (" << *ReReNu << ")" << std::endl;
+    std::cerr << "Program exits" << std::endl;
+    exit(12);
+  }
+
   fclose(FilePa);
 }
