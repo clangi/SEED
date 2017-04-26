@@ -4,7 +4,7 @@
 # Folders:
 #SRC_DIR = .
 BUILD_DIR = build
-TARGET_EXEC = seed_3.3.6
+TARGET_EXEC = seed_4.0.0
 
 # Flags:
 CXXFLAGS = -O3 -pedantic -Wall -march=native

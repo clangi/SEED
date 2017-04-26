@@ -442,6 +442,7 @@ void append_pose_to_mol2(FILE *FilePa,char *FragNa,/*int FragNa_count,*/
   fprintf(FilePa,"@<TRIPOS>ATOM\n");
   for(ii=1;ii<=FrAtNu;ii++){
     fprintf(FilePa,"%7d %-8s%10.4f%10.4f%10.4f %-7s%d %s%14.5f\n",
+    //fprintf(FilePa,"%7d %-8s%28.24f%28.24f%28.24f %-7s%d %s%14.5f\n",
             ii,&FrAtEl[ii][1],FrCoPo[Fr_nu][ii][1],
             FrCoPo[Fr_nu][ii][2],FrCoPo[Fr_nu][ii][3],
             &FrSyAtTy[ii][1],1,&SubNa[ii][1],FrPaCh[ii]); //isub==1 always

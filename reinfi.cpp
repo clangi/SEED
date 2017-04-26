@@ -422,17 +422,27 @@ written in output file*/ //clangini
   sscanf(StrLin,"%lf",MuFaVdWCoff_ap);
 
 /* Maximal number of mol2 files to be written for each fragment type */
-  SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%d",FiNuMa);
+/* SkipComLin(FilePa,StrLin);
+  sscanf(StrLin,"%d",FiNuMa);*/ /* Choice 1 is hard-coded.
+                                clangini April 2017
+                                simplification of seed.par */
+  *FiNuMa = 1; // clangini
 
 /* Solvation algorithm type (f_ast,s_low,b_oth,p_ostprocess) */
-  SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%s",Solv_typ);
+/*  SkipComLin(FilePa,StrLin);
+  sscanf(StrLin,"%s",Solv_typ);*/ /* Choice 'p' is hard-coded.
+                                    clangini April 2017
+                                    simplification of seed.par */
+
+  strcpy(Solv_typ,"p"); //clangini
 
 /* Empirical correction term (y,n) to the Coulomb field approximation
    for the accurate screened interaction and fragment desolvation energies */
-  SkipComLin(FilePa,StrLin);
-  sscanf(StrLin,"%s",EmpCorrB);
+/*  SkipComLin(FilePa,StrLin);
+  sscanf(StrLin,"%s",EmpCorrB);*/ /* Choice 'y' is hard-coded.
+                                    clangini April 2017
+                                    simplification of seed.par */
+  strcpy(EmpCorrB, "y"); //clangini
 
 /* Grid increase and grid size for the solvation */
   SkipComLin(FilePa,StrLin);

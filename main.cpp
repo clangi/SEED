@@ -6,6 +6,7 @@
 #include "nrutil.h"
 #include <sys/time.h>
 /* CLANGINI 2016 */
+#include <boost/math/constants/constants.hpp>
 #include <sys/stat.h> /* to check for directory existence (consider changing using boost/system instead) */
 #include <iostream>
 #include <iomanip>
@@ -322,7 +323,8 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
     printf("                           University of Zurich                                 \n");
     printf("                         %s  (SEED 3.3.6)                               \n",__DATE__);
     printf("              ------------------------------------------------                  \n\n");
-
+    std::cout << sizeof(float) << std::endl;
+    std::cout << sizeof(double) << std::endl;
     printf("                WARNING No input file specified, exiting !\n\n");
     printf("                usage : seed [inputfile]\n\n");
     exit(12);
@@ -444,6 +446,8 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   fprintf(FPaOut,"                           University of Zurich                                 \n");
   fprintf(FPaOut,"                         %s  (SEED 3.3.6)                                       \n",__DATE__);
   fprintf(FPaOut,"              ------------------------------------------------                  \n\n\n\n");
+
+  std::cout << sizeof(double) << std::endl;
 
   fprintf(FPaOut,"Data of the input file :\n\n");
   FilePa=fopen(InpFil,"r"); /* seed.inp clangini */
@@ -611,14 +615,21 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
     ChkExit=1;
   }
 
-  if (!((EvalEn[0]=='n')||(EvalEn[0]=='y'))) {
+  if (!((EvalEn[0]=='d')||(EvalEn[0]=='e'))) {
     fprintf(FPaOut,"WARNING The parameter for docking or energy evaluation mode \n");
-    fprintf(FPaOut,"        should be either n or y \n\n");
+    fprintf(FPaOut,"        should be either d or e \n\n");
     ChkExit=1;
   }
 
-  if ((EvalEn[0]=='y')&&(Solv_typ[0]=='p'))
-    Solv_typ[0]='b';
+  /*if ((EvalEn[0]=='e')&&(Solv_typ[0]=='p'))
+    Solv_typ[0]='b';*/ //clangini April 2017 simplification of seed.par
+
+  if((EvalEn[0] == 'e')&&(Solv_typ[0]!='s')) {
+    std::cout << "Energy evalutaion (e) requested. Changing energy mode from ("
+      << Solv_typ << ") to (s). Only slow energies will be computed."
+      << std::endl;
+    Solv_typ[0] = 's';
+  } //clangini April 2017 simplification of seed.par
 
   fclose(FPaOut); /* Why do we close it in 'w' mode and re-open in 'a' mode? clangini */
   FPaOut=fopen(OutFil,"a");
@@ -857,6 +868,12 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
     /* Compute or read the receptor part of the van der Waals interactions on a grid */
     for (i=1;i<=3;i++)
       VWGPoN[i]=ffloor((BSMaxC[i]+VWGrIn-(BSMinC[i]-VWGrIn))/VWGrSi)+2;
+    //clangingi debug:
+    //std::cout << "(BSMinC[i]-VWGrIn)  " << (BSMinC[1]-VWGrIn) << std::endl;
+    //std::cout << "(BSMaxC[i]+VWGrIn)  " << (BSMaxC[1]+ VWGrIn) << std::endl;
+    //std::cout << "VWGPoN[i]  " << VWGPoN[1] << std::endl;
+    //end clangini debug
+
     fprintf(FPaOut,"Number of points of the van der Waals grid : %d\n\n",
         VWGPoN[1]*VWGPoN[2]*VWGPoN[3]);
     VWGrRP_at=d3tensor(1,VWGPoN[1],1,VWGPoN[2],1,VWGPoN[3]);
@@ -1076,7 +1093,6 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   corr_re_desofd = 0.39;
   /* surf point dens. for fast desolvation */
   SurfDens_deso = .5;
-
   /* The following is done so that the desolvations of the fast algorithm is
      indipendent of corr_re_desoco, corr_re_desofd and on the point density */
   sprintf(FD,"%s","fd\0");
@@ -1213,7 +1229,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   /* clangini 2016 */
   /* Setting up the table summary file */
   if (write_sumtab_opt[0]=='y'){ // Should introduce some check.
-    strcpy(TabFil,"./outputs/seed_pproc.dat");
+    strcpy(TabFil,"./outputs/seed.dat");
     //char TabLin[_STRLENGTH];
     //std::ofstream TabOutStream;
     TabOutStream.open (TabFil);
@@ -1236,13 +1252,13 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
                    << std::endl;
     } else {
       std::cerr << "Unable to open file "<< TabFil
-                << "for writing _pproc summary table." << std::endl;
+                << "for writing summary table." << std::endl;
     }
     TabOutStream.close();
   }
   if (write_best_sumtab_opt[0]=='y'){
     // Second summary table, with the best poses:
-    strcpy(TabFil,"./outputs/seed_best_pproc.dat");
+    strcpy(TabFil,"./outputs/seed_best.dat");
     TabOutStream.open (TabFil);
     if(TabOutStream.is_open()){
       TabOutStream << std::left << std::setw(30) << "Name" << std::right
@@ -1263,7 +1279,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
                    << std::endl;
     } else {
       std::cerr << "Unable to open file "<< TabFil
-                << "for writing _best_pproc summary table." << std::endl;
+                << "for writing best poses summary table." << std::endl;
     }
     TabOutStream.close();
   }
@@ -1290,7 +1306,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
     //sprintf(WriPat,"%s%s%s","./outputs/",&FrFiNa_out[1], /* should give the possibility to */
     //        "_clus_pproc.mol2\0");               /*use another output folder? */
     sprintf(WriPat,"%s%s%s","./outputs/",FrFiNa_out, /* should give the possibility to */
-            "_clus_pproc.mol2\0");               /*use another output folder? */
+            "_clus.mol2\0");               /*use another output folder? */
           //std::cout << "WriPat: " << WriPat << std::endl;
 
     FilePa=fopen(WriPat,"w");
@@ -1300,7 +1316,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   if (write_best_opt[0]=='y'){
     /* Create WriPat and open file to write a commented header */
     sprintf(WriPat,"%s%s%s","./outputs/",FrFiNa_out,
-            "_clus_best_pproc.mol2\0");
+            "_best.mol2\0");
     FilePa=fopen(WriPat,"w");
     fprintf(FilePa,"# TRIPOS MOL2 file generated by SEED\n\n");
     fclose(FilePa);
@@ -1375,7 +1391,8 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
     FrAlSet = convert2pp_return(1,3,1,3,FrAlSet_m[0],FrAlSet_rows);
     align_flag = set_align_ref(FrCoor,FrAtNu,FrAlRef,FrAlSet); //setting the reference
     //print_pp(1,3,1,3,FrAlRef);
-    if(align_flag && (EvalEn[0] == 'n')){
+    align_flag = false;
+    if(align_flag && (EvalEn[0] == 'd')){
       // Find rotation quaternion
       //std::cout<<"Old: "<<FrCoor[1][1]<<" "<<FrCoor[1][2]<<" "<<FrCoor[1][3]<<" "<<std::endl;
 #ifdef DEBUG_CL
@@ -1401,18 +1418,31 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       //std::cout<<"New: "<<FrCoor[3][1]<<" "<<FrCoor[3][2]<<" "<<FrCoor[3][3]<<" "<<std::endl;
 #endif
     }
-    else if(align_flag && (EvalEn[0] == 'y')){
+    else if(align_flag && (EvalEn[0] == 'e')){
       FrCoor_NoAlign=dmatrix(1,FrAtNu,1,3);//original coordinates before
         //alignment. clangini
 
       for (int ii=1;ii <= FrAtNu;ii++){
-        for(int jj=1;jj <=3; jj++)
+        for(int jj=1;jj <=3; jj++){
           FrCoor_NoAlign[ii][jj] = FrCoor[ii][jj];
+        }
       }
       struct_align(FrCoor,FrAtNu,FrAlRef,FrAlSet,3);
     }
+    else if (!align_flag && (EvalEn[0] == 'e')){
+      FrCoor_NoAlign=dmatrix(1,FrAtNu,1,3);//original coordinates before
+        //alignment. clangini
+
+      for (int ii=1;ii <= FrAtNu;ii++){
+        for(int jj=1;jj <=3; jj++){
+          FrCoor_NoAlign[ii][jj] = FrCoor[ii][jj];
+        }
+      }
+      std::cout << "Fragment " << FragNa
+      << " for energy evaluation run has not been pre-aligned." << std::endl;
+    }
     else {
-      std::cout << "Fragment " << FragNa << "has not been pre-aligned." << std::endl;
+      std::cout << "Fragment " << FragNa << " has not been pre-aligned." << std::endl;
     }
     /* CLANGINI 2016 end */
 
@@ -1434,7 +1464,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 
       /* Compute the maximal number of tolerated bumps */
       BumpMa=ffloor(ScMaBump*((double) FrAtNu));
-      if ((EvalEn[0]=='n')&&((Solv_typ[0]=='s')||(Solv_typ[0]=='b')))
+      if ((EvalEn[0]=='d')&&((Solv_typ[0]=='s')||(Solv_typ[0]=='b')))
         fprintf(FPaOut,"\nMaximal number of tolerated bumps : %d\n\n",BumpMa);
 
       /* Assign the atom element numbers, van der Waals radii and energies
@@ -1613,7 +1643,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       //std::cout << "FrAcNu+FrDoNu: "<< FrAcNu+FrDoNu << std::endl; // clangini OK
       //std::cout << "EvalEn[0]: "<< EvalEn[0] << std::endl; // clangini OK
       //std::cout << "ApPoChoi[0]: "<< ApPoChoi[0] << std::endl; // clangini OK
-      if (((FrAcNu+FrDoNu)!=0)&&(EvalEn[0]!='y')&&
+      if (((FrAcNu+FrDoNu)!=0)&&(EvalEn[0]!='e')&&
           (ApPoChoi[0]=='p')) {
         /* --------------------------- */
         /* Seeding of a polar fragment */
@@ -1657,7 +1687,9 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 
 #ifdef USE_QUATERNION_ROTATION //clangini
               //AnglRo = 6.283185307179586476925286766559/NuRoAx;
-              AnglRo = M_PI*2/NuRoAx;
+              //AnglRo = M_PI*2/NuRoAx;
+              //AnglRo=6.2831854/NuRoAx;
+              AnglRo=boost::math::constants::pi<double>()*2/NuRoAx;
 
               SeFrAx[1]=ReCoor[ReDAAt[j]][1]-SeFrCo[FrDAAt[k]][1];
               SeFrAx[2]=ReCoor[ReDAAt[j]][2]-SeFrCo[FrDAAt[k]][2];
@@ -1665,11 +1697,20 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
               NormVe(&SeFrAx[1],&SeFrAx[2],&SeFrAx[3]);
               q_SeFr.fromAngleAxis(AnglRo,SeFrAx);
 
+              // Test for precision problems
+              //Quaternion<double> aaa;
+              //aaa.fromAngleAxis(0.1,SeFrAx);
+
               for (int ii=1;ii<=FrAtNu;ii++) {
                 RoSFCo[ii][1] = SeFrCo[ii][1];
                 RoSFCo[ii][2] = SeFrCo[ii][2];
                 RoSFCo[ii][3] = SeFrCo[ii][3];
               }
+
+              // Test for precision problems
+              /*for (int ii=1;ii<=FrAtNu;ii++){
+                aaa.quatConjugateVecRef(RoSFCo[ii],SeFrCo[FrDAAt[k]]);
+              }*/
 
 #ifdef DEBUG_CL
               sprintf(WriPat,"%s","quaternion_start.mol2\0"); // clangini
@@ -1689,11 +1730,11 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
               }
               //double AnglRo_double = 6.283185307179586476925286766559/NuRoAx;
               int lll = NuRoAx;
-              //double AnglRo_double = M_PI*2/NuRoAx;
-              double AnglRo_double = M_PI*2/NuRoAx*lll;
+              double AnglRo_double = M_PI*2/NuRoAx;
+              //double AnglRo_double = M_PI*2/NuRoAx*lll;
               q_SeFr.fromAngleAxis(AnglRo_double,SeFrAx);
               //std::cout << q_SeFr <<std::endl;
-              //for (int ii=1; ii <= NuRoAx; ii++){
+              for (int ii=1; ii <= NuRoAx; ii++){
                 for (int jj=1;jj<=FrAtNu;jj++){
                   q_SeFr.quatConjugateVecRef<double>(RoSFCo_dbg[jj],
                                       SeFrCo[FrDAAt[k]][1],
@@ -1702,7 +1743,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
                 }
                 //std::cout << q_SeFr <<std::endl;
                 //q_SeFr.norm_inplace();
-              //}
+              }
               sprintf(WriPat,"%s","quaternion_end.mol2\0"); // clangini
               FilePa=fopen(WriPat,"a");
               append_pose_to_mol2_double(FilePa,FragNa,FrAtNu,FrBdNu,1,FrAtEl,
@@ -2093,7 +2134,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
         }
 
       }
-      else if ((EvalEn[0]!='y')&&(ApPoChoi[0]=='a')) {
+      else if ((EvalEn[0]!='e')&&(ApPoChoi[0]=='a')) {
         /* ----------------------------- */
         /* Seeding of an apolar fragment */
         /* ----------------------------- */
@@ -2610,7 +2651,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
         free_ivector(FrApAt,1,Nsurfpt_fr_apol);
 
       }
-      else if ((EvalEn[0]!='y')&&
+      else if ((EvalEn[0]!='e')&&
           (ApPoChoi[0]=='b')) { // SEEDING both polar and apolar START. clangini
         /* ------------------------------------- */
         /* Seeding in both polar and apolar ways */
@@ -3494,7 +3535,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
         //std::cout << "End of seeding" << std::endl; //clangini OK
       }
-      else if (EvalEn[0]=='y') {
+      else if (EvalEn[0]=='e') {
         /* ------------------------------------------------------------------------ */
         /* Evaluating the energy for the fragment positions given in the input file */
         /* ------------------------------------------------------------------------ */
@@ -3681,7 +3722,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
         MolWei = molecular_weight(FrAtEl_nu, FrAtNu, AtWei);
         if (write_best_sumtab_opt[0]=='y'){
           // append to _best_pproc summary table
-          strcpy(TabFil,"./outputs/seed_best_pproc.dat");
+          strcpy(TabFil,"./outputs/seed_best.dat");
           TabOutStream.open (TabFil, std::ios::out | std::ios::app); // append mode
           if(TabOutStream.is_open()){
             //for (j=1;j<=((NuPosMem<NuPosSdCl)?NuPosMem:NuPosSdCl);j++) {
@@ -3787,7 +3828,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
     SFWrNu_ar=SFWrNu; //clangini
 
     fprintf(FPaOut,"\n");
-    if (EvalEn[0]!='y') {
+    if (EvalEn[0]!='e') {
       fprintf(FPaOut,"Total number of generated fragments of type %d (%s) : %d\n",
           i,FragNa,FrNuTo); /* clangini */
       //std::cout << FrNuTo << " " << ToNFrP << std::endl; //clangini
@@ -3816,7 +3857,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
     SFWrNu_init=SFWrNu;
     SFWrNu=((SFWrNu<MaxPosClus)?SFWrNu:MaxPosClus);
 
-    if (EvalEn[0]!='y')
+    if (EvalEn[0]!='e')
       fprintf(FPaOut,"Number of positions conserved for clustering : %d\n\n",SFWrNu);
 
     fclose(FPaOut);
@@ -4693,7 +4734,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
         if (write_sumtab_opt[0]=='y'){
           // append to _pproc summary table
           //std::ofstream TabOutStream;
-          strcpy(TabFil,"./outputs/seed_pproc.dat");
+          strcpy(TabFil,"./outputs/seed.dat");
           TabOutStream.open (TabFil, std::ios::out | std::ios::app); // append mode
           if(TabOutStream.is_open()){
             for (j=1;j<=((NuLiEnClus<NuPosSdCl)?NuLiEnClus:NuPosSdCl);j++) {
@@ -4714,7 +4755,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
         }
         if (write_best_sumtab_opt[0]=='y'){
           // append to _best_pproc summary table
-          strcpy(TabFil,"./outputs/seed_best_pproc.dat");
+          strcpy(TabFil,"./outputs/seed_best.dat");
           TabOutStream.open (TabFil, std::ios::out | std::ios::app); // append mode
           if(TabOutStream.is_open()){
             for (j=1;j<=((NuPosMem<NuPosSdCl)?NuPosMem:NuPosSdCl);j++) {
@@ -4758,7 +4799,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
               FrPosAr_sort,ResN_fr,FrFiNa_out,FrBdNu,FrAtEl,FrPaCh,
               FrBdAr,FrBdTy,FragNa,SdClusAr_sort,To_s_ro);*/
           sprintf(WriPat,"%s%s%s","./outputs/",FrFiNa_out,
-                  "_clus_pproc.mol2\0"); // clangini
+                  "_clus.mol2\0"); // clangini
           FilePa=fopen(WriPat,"a");
           for (j=1;j<=((NuLiEnClus<NuPosSdCl)?NuLiEnClus:NuPosSdCl);j++){
 #ifdef DEBUG_CL
@@ -4785,7 +4826,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
         // clangini 18/01/17 START
         if (write_best_opt[0]=='y') {// Write *best_pproc* mol2 file
           sprintf(WriPat,"%s%s%s","./outputs/",FrFiNa_out,
-                  "_clus_best_pproc.mol2\0");
+                  "_best.mol2\0");
           FilePa=fopen(WriPat,"a");
           for (j=1;j<=((NuPosMem<NuPosSdCl)?NuPosMem:NuPosSdCl);j++){
 #ifdef DEBUG_CL
@@ -4885,7 +4926,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
     } /*End of if (SFWrNu_init) ... clangini*/
     else { /* else: no seeded positions found clangini*/
       FPaOut=fopen(OutFil,"a");
-      if (EvalEn[0]!='y') {
+      if (EvalEn[0]!='e') {
         fprintf(FPaOut,"WARNING No seeded positions were found for ");
         fprintf(FPaOut,"the fragment type %d\n\n",CurFra);
       }

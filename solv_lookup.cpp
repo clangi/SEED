@@ -595,6 +595,11 @@ double *PUnitVol -------- Volume of the rec (frag) grid element for cont. elec.
   free_dvector(vect2,1,ReAtNu);
   free_dvector(vect1,1,ReAtNu);
   *PNGridx = ( (PMax->x-PMin->x)/GrSiSo + 1);
+  //clangini debug:
+  //std::cout << "PMin->x  " << PMin->x << std::endl;
+  //std::cout << "PMax->x  " << PMax->x << std::endl;
+  //std::cout << "*PNGridx  " << *PNGridx<< std::endl;
+  //clangini debug end
   *PNGridy = ( (PMax->y-PMin->y)/GrSiSo + 1);
   *PNGridz = ( (PMax->z-PMin->z)/GrSiSo + 1);
   *PNGrid = (*PNGridx) * (*PNGridy) * (*PNGridz);
