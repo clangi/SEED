@@ -38,7 +38,8 @@ void FrAcDo(int FrAtNu,int *FrAtEl_nu,double **FrCoor,int *HybFrAt,int FrBdNu,
   HyAtN2 = -1;
   HyAtN3 = -1;
 
-  PiT180=3.1415927/180;
+  //PiT180=3.1415927/180; // clangini
+  PiT180=M_PI/180; //clangini
 
 /* Find the total number of linked atoms, the linked atoms and the number of
    linked hydrogen atoms for each atom of the fragment */
@@ -182,7 +183,8 @@ void FrAcDo(int FrAtNu,int *FrAtEl_nu,double **FrCoor,int *HybFrAt,int FrBdNu,
         RotPla(FrCoor[HelpA2][1],FrCoor[HelpA2][2],FrCoor[HelpA2][3],
                FrCoor[AcAtNu][1],FrCoor[AcAtNu][2],FrCoor[AcAtNu][3],
                FrCoor[HelpA1][1],FrCoor[HelpA1][2],FrCoor[HelpA1][3],
-               (PiT180*180*2-Angl)/2,&(*FrVeCo)[DANumb][1],
+               /*(PiT180*180*2-Angl)/2 clangini*/ (M_PI*2-Angl)/2,
+               &(*FrVeCo)[DANumb][1],
                &(*FrVeCo)[DANumb][2],&(*FrVeCo)[DANumb][3]);
         PoCoVe(FrCoor[AcAtNu][1],FrCoor[AcAtNu][2],FrCoor[AcAtNu][3],
                (*FrVeCo)[DANumb][1],(*FrVeCo)[DANumb][2],(*FrVeCo)[DANumb][3],
@@ -460,7 +462,8 @@ void FrAcDo(int FrAtNu,int *FrAtEl_nu,double **FrCoor,int *HybFrAt,int FrBdNu,
           RotPla(FrCoor[HelpA2][1],FrCoor[HelpA2][2],FrCoor[HelpA2][3],
                  FrCoor[AcAtNu][1],FrCoor[AcAtNu][2],FrCoor[AcAtNu][3],
                  FrCoor[HelpA1][1],FrCoor[HelpA1][2],FrCoor[HelpA1][3],
-                 (PiT180*180*2-Angl)/2,&(*FrVeCo)[DANumb][1],
+                 /*(PiT180*180*2-Angl)/2 clangini*/
+                 (M_PI*2-Angl)/2,&(*FrVeCo)[DANumb][1],
                  &(*FrVeCo)[DANumb][2],&(*FrVeCo)[DANumb][3]);
           PoCoVe(FrCoor[AcAtNu][1],FrCoor[AcAtNu][2],FrCoor[AcAtNu][3],
                  (*FrVeCo)[DANumb][1],(*FrVeCo)[DANumb][2],(*FrVeCo)[DANumb][3],
@@ -547,7 +550,8 @@ void FrAcDo(int FrAtNu,int *FrAtEl_nu,double **FrCoor,int *HybFrAt,int FrBdNu,
           RotPla(FrCoor[HyAtNu][1],FrCoor[HyAtNu][2],FrCoor[HyAtNu][3],
                  FrCoor[AcAtNu][1],FrCoor[AcAtNu][2],FrCoor[AcAtNu][3],
                  FrCoor[HelpA1][1],FrCoor[HelpA1][2],FrCoor[HelpA1][3],
-                 (PiT180*180*2-Angl)/2,&(*FrVeCo)[DANumb][1],
+                 /*(PiT180*180*2-Angl)/2 clangini*/
+                 (M_PI*2-Angl)/2,&(*FrVeCo)[DANumb][1],
                  &(*FrVeCo)[DANumb][2],&(*FrVeCo)[DANumb][3]);
           PoCoVe(FrCoor[AcAtNu][1],FrCoor[AcAtNu][2],FrCoor[AcAtNu][3],
                  (*FrVeCo)[DANumb][1],(*FrVeCo)[DANumb][2],(*FrVeCo)[DANumb][3],

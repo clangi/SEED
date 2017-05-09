@@ -736,20 +736,36 @@ int CheckMol2File(char * name)
     }
 
 /* clangini 2016: SUBSTRUCTURE-tag is still used for the receptor */
-  while(FilChk!=NULL && !feof(FilChk) && !ferror(FilChk)  )
-  {
-	   fgets_wrapper(StrLin,200,FilChk);
-     if(!strncmp("@<TRIPOS>SUBSTRUCTURE",StrLin,21))
-     {
-       break;
-     }
-   }
-
-  if(FilChk==NULL || feof(FilChk) ||  ferror(FilChk)  )
-  {
-	   fprintf(stderr,"WARNING, could not find @<TRIPOS>SUBSTRUCTURE-tag in file %s ! \n",name);
-	    return 0;
-  }
+/* clangini 2017: SUBSTRUCTURE-tag is no longer used for the receptor */
+  // while(FilChk!=NULL && !feof(FilChk) && !ferror(FilChk)  )
+  // {
+	//    fgets_wrapper(StrLin,200,FilChk);
+  //    if(!strncmp("@<TRIPOS>SUBSTRUCTURE",StrLin,21))
+  //    {
+  //      break;
+  //    }
+  //  }
+  //
+  // if(FilChk==NULL || feof(FilChk) ||  ferror(FilChk)  )
+  // {
+	//    fprintf(stderr,"WARNING, could not find @<TRIPOS>SUBSTRUCTURE-tag in file %s ! \n",name);
+	//     return 0;
+  // }
+  /* clangini 2017 introduced check for ALT_TYPE */
+  // while(FilChk!=NULL && !feof(FilChk) && !ferror(FilChk)  )
+  // {
+	//    fgets_wrapper(StrLin,200,FilChk);
+  //    if(!strncmp("@<TRIPOS>ALT_TYPE",StrLin,17))
+  //    {
+  //      break;
+  //    }
+  //  }
+  //
+  // if(FilChk==NULL || feof(FilChk) ||  ferror(FilChk)  )
+  // {
+	//    fprintf(stderr,"WARNING, could not find @<TRIPOS>ALT_TYPE-tag in file %s ! \n",name);
+	//     return 0;
+  // }
 
     fclose(FilChk);
     return 1;

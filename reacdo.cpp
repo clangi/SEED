@@ -52,7 +52,8 @@ void ReAcDo(int BSAtNu,int *BSAtLi,int *ReAtEl_nu,double **ReCoor,
   HyAtN2 = -1;
   HyAtN3 = -1;
 
-  PiT180=3.1415927/180;
+  //PiT180=3.1415927/180;//clangini
+  PiT180=M_PI/180;//clangini
 
 /* Find the total number of linked atoms, the linked atoms and the number of
    linked hydrogen atoms for each atom of the receptor binding site */
@@ -228,7 +229,8 @@ void ReAcDo(int BSAtNu,int *BSAtLi,int *ReAtEl_nu,double **ReCoor,
         RotPla(ReCoor[HelpA2][1],ReCoor[HelpA2][2],ReCoor[HelpA2][3],
                ReCoor[AcAtNu][1],ReCoor[AcAtNu][2],ReCoor[AcAtNu][3],
                ReCoor[HelpA1][1],ReCoor[HelpA1][2],ReCoor[HelpA1][3],
-               (PiT180*180*2-Angl)/2,&(*ReVeCo)[DANumb][1],
+               /*(PiT180*180*2-Angl)/2 clangini*/
+               (M_PI*2-Angl)/2,&(*ReVeCo)[DANumb][1],
                &(*ReVeCo)[DANumb][2],&(*ReVeCo)[DANumb][3]);
         PoCoVe(ReCoor[AcAtNu][1],ReCoor[AcAtNu][2],ReCoor[AcAtNu][3],
                (*ReVeCo)[DANumb][1],(*ReVeCo)[DANumb][2],(*ReVeCo)[DANumb][3],
@@ -534,7 +536,8 @@ void ReAcDo(int BSAtNu,int *BSAtLi,int *ReAtEl_nu,double **ReCoor,
           RotPla(ReCoor[HelpA2][1],ReCoor[HelpA2][2],ReCoor[HelpA2][3],
                  ReCoor[AcAtNu][1],ReCoor[AcAtNu][2],ReCoor[AcAtNu][3],
                  ReCoor[HelpA1][1],ReCoor[HelpA1][2],ReCoor[HelpA1][3],
-                 (PiT180*180*2-Angl)/2,&(*ReVeCo)[DANumb][1],
+                 /*(PiT180*180*2-Angl)/2 clangini*/
+                 (M_PI*2-Angl)/2,&(*ReVeCo)[DANumb][1],
                  &(*ReVeCo)[DANumb][2],&(*ReVeCo)[DANumb][3]);
           PoCoVe(ReCoor[AcAtNu][1],ReCoor[AcAtNu][2],ReCoor[AcAtNu][3],
                  (*ReVeCo)[DANumb][1],(*ReVeCo)[DANumb][2],(*ReVeCo)[DANumb][3],
@@ -629,7 +632,8 @@ void ReAcDo(int BSAtNu,int *BSAtLi,int *ReAtEl_nu,double **ReCoor,
           RotPla(ReCoor[HyAtNu][1],ReCoor[HyAtNu][2],ReCoor[HyAtNu][3],
                  ReCoor[AcAtNu][1],ReCoor[AcAtNu][2],ReCoor[AcAtNu][3],
                  ReCoor[HelpA1][1],ReCoor[HelpA1][2],ReCoor[HelpA1][3],
-                 (PiT180*180*2-Angl)/2,&(*ReVeCo)[DANumb][1],
+                 /*(PiT180*180*2-Angl)/2 clangini*/
+                 (M_PI*2-Angl)/2,&(*ReVeCo)[DANumb][1],
                  &(*ReVeCo)[DANumb][2],&(*ReVeCo)[DANumb][3]);
           PoCoVe(ReCoor[AcAtNu][1],ReCoor[AcAtNu][2],ReCoor[AcAtNu][3],
                  (*ReVeCo)[DANumb][1],(*ReVeCo)[DANumb][2],(*ReVeCo)[DANumb][3],

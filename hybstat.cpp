@@ -16,7 +16,8 @@ void HybStAt(int xxAtNu,int *xxAtEl_nu,double **xxCoor,int xxBdNu,int **xxBdAr,
   int i,j,NumbLA,LiAtAr[10];
   double Distan,AngPla,TriPro,PiT180;
 
-  PiT180=3.1415927/180;
+  //PiT180=3.1415927/180; clangini
+  PiT180=M_PI/180; // clangini
 
 /* Initialization */
   for (i=1;i<=xxAtNu;i++)

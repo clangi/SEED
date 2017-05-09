@@ -6,7 +6,7 @@
 #include "nrutil.h"
 #include <sys/time.h>
 /* CLANGINI 2016 */
-#include <boost/math/constants/constants.hpp>
+//#include <boost/math/constants/constants.hpp>
 #include <sys/stat.h> /* to check for directory existence (consider changing using boost/system instead) */
 #include <iostream>
 #include <iomanip>
@@ -331,7 +331,8 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   }
 
   /* float PiT180=3.1415927/180; variable not used. clangini*/
-  pi4 = acos(-1.) * 4.;
+  //pi4 = acos(-1.) * 4.; // clangini
+  pi4 = M_PI*4; // clangini
   //float pi_float = M_PI;
   //double pi_double = M_PI;
   //std::cout << std::setprecision(20) << pi_float <<"  " << pi_double/180.0 << "  " << pi4 << "  " << 4*pi_double << "  "
@@ -1391,7 +1392,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
     FrAlSet = convert2pp_return(1,3,1,3,FrAlSet_m[0],FrAlSet_rows);
     align_flag = set_align_ref(FrCoor,FrAtNu,FrAlRef,FrAlSet); //setting the reference
     //print_pp(1,3,1,3,FrAlRef);
-    align_flag = false;
+    //align_flag = false;
     if(align_flag && (EvalEn[0] == 'd')){
       // Find rotation quaternion
       //std::cout<<"Old: "<<FrCoor[1][1]<<" "<<FrCoor[1][2]<<" "<<FrCoor[1][3]<<" "<<std::endl;
@@ -1687,9 +1688,9 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 
 #ifdef USE_QUATERNION_ROTATION //clangini
               //AnglRo = 6.283185307179586476925286766559/NuRoAx;
-              //AnglRo = M_PI*2/NuRoAx;
+              AnglRo = M_PI*2/NuRoAx;
               //AnglRo=6.2831854/NuRoAx;
-              AnglRo=boost::math::constants::pi<double>()*2/NuRoAx;
+              //AnglRo=boost::math::constants::pi<double>()*2/NuRoAx;
 
               SeFrAx[1]=ReCoor[ReDAAt[j]][1]-SeFrCo[FrDAAt[k]][1];
               SeFrAx[2]=ReCoor[ReDAAt[j]][2]-SeFrCo[FrDAAt[k]][2];
@@ -2116,6 +2117,13 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
                         Df_s_ro[SFWrNu] = Df_s;
                         To_f_ro[SFWrNu] = To_f;
                         To_s_ro[SFWrNu] = To_s;
+                        //debug clangini start
+                        /*if (SFWrNu == 39 || SFWrNu == 43|| SFWrNu == 8
+                        || SFWrNu == 7|| SFWrNu == 14){
+                          std::cout << SFWrNu << ":  "<< l
+                          << "  To_f:  " << To_f << std::endl;
+                        }*/
+                        //debug clangini end
 
                       }
 
@@ -2273,7 +2281,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                   ReVdWR,FrVdWR,FrAtNu,FPaOut,SeFrCo);
 #ifdef USE_QUATERNION_ROTATION //clangini
               //AnglRo = 6.283185307179586476925286766559/NuRoAx;
-              AnglRo = M_PI*2/NuRoAx;
+              AnglRo = M_PI*2/NuRoAx;//+0.0000000000000001;
+              //AnglRo = 6.2831853/NuRoAx; //clangini debug
               SeFrAx[1]=ReCoor[ReApAt[j]][1]-SeFrCo[FrApAt[k]][1];
               SeFrAx[2]=ReCoor[ReApAt[j]][2]-SeFrCo[FrApAt[k]][2];
               SeFrAx[3]=ReCoor[ReApAt[j]][3]-SeFrCo[FrApAt[k]][3];
@@ -2628,6 +2637,13 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                           Df_s_ro[SFWrNu] = Df_s;
                           To_f_ro[SFWrNu] = To_f;
                           To_s_ro[SFWrNu] = To_s;
+                          //debug clangini start
+                          //if (SFWrNu == 1552 || SFWrNu == 3436|| SFWrNu == 6295
+                          //|| SFWrNu == 13581|| SFWrNu == 5982||SFWrNu == 14650){
+                          //  std::cout << SFWrNu << ":  "<< l
+                          //  << "  To_s:  " << To_s << std::endl;
+                          //}
+                          //debug clangini end
 
                         }
 
@@ -4474,6 +4490,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 RoSFCo[i2][3]=FrCoPo[ClusLi_sd[i1]][i2][3];
               }
 
+              //std::cout << "ClusLi_sd[i1] =========== : " << ClusLi_sd[i1] << std::endl;
               Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);
 
               /* Compute the squared distances between the fragment atoms and the

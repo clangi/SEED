@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include "nrutil.h"
 #include "funct.h"
 
@@ -27,7 +28,8 @@ void FindFrSym(int FrAtNu,double **FrCoor,char **FrAtTy,int *UndisAt_fr)
         NormVect,AnglArr[12];
   char **FrAtTy_rot;
 
-  PiT180=3.1415927/180;
+  //PiT180=3.1415927/180; clangini
+  PiT180 = M_PI/180; //clangini
 
 /* Allocate memory */
   FrCoor_rot=dmatrix(1,FrAtNu,1,3);
@@ -98,7 +100,7 @@ void FindFrSym(int FrAtNu,double **FrCoor,char **FrAtTy,int *UndisAt_fr)
           for (k=1;k<=FrAtNu;k++) {
             RoArVe(FrCoor[k][1]-MidPoint[1],FrCoor[k][2]-MidPoint[2],
                    FrCoor[k][3]-MidPoint[3],VectRot[1],VectRot[2],VectRot[3],
-                   PiT180*180,&FrCoor_rot[k][1],&FrCoor_rot[k][2],
+                   /*PiT180*180*/M_PI,&FrCoor_rot[k][1],&FrCoor_rot[k][2],
                    &FrCoor_rot[k][3]);
             FrCoor_rot[k][1]=FrCoor_rot[k][1]+MidPoint[1];
             FrCoor_rot[k][2]=FrCoor_rot[k][2]+MidPoint[2];

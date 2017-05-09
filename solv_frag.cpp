@@ -4,6 +4,8 @@
 #include <time.h>
 #include "nrutil.h"
 #include "funct.h"
+#include <iomanip> // added by clangini
+#include <limits>  // added by clangini
 
 void ElecFrag(int ReAtNu,double **ReCoor,double *RePaCh,
               double **RePaCh_Fr,double *ReRad,
@@ -316,6 +318,108 @@ struct point *surfpt_fr - Coor of points over frag SAS1 (relative to RoSFCo)
   nxmax_big = (nxmaxFr > NGridx) ? nxmaxFr : NGridx;
   nymax_big = (nymaxFr > NGridy) ? nymaxFr : NGridy;
   nzmax_big = (nzmaxFr > NGridz) ? nzmaxFr : NGridz;
+/* Check if fragment is out of the grid: if yes cut the part that is out */
+//clangini debug start
+  // //nxmin_sma = (nxminFr > nxminBS) ? nxminFr : nxminBS;
+  // if (nxminFr > nxminBS){
+  //   std::cout << "nxminFr > nxminBS" << std::endl;
+  //   nxmin_sma = nxminFr;
+  // } else{
+  //   std::cout << "Out of grid: nxminFr < nxminBS" << std::endl;
+  //   nxmin_sma = nxminBS;
+  // }
+  // if (nyminFr > nyminBS){
+  //   std::cout << "nyminFr > nyminBS" << std::endl;
+  //   nymin_sma = nyminFr;
+  // } else{
+  //   std::cout << "Out of grid: nyminFr < nyminBS" << std::endl;
+  //   nymin_sma = nyminBS;
+  // }
+  // if (nzminFr > nzminBS){
+  //   std::cout << "nzminFr > nzminBS" << std::endl;
+  //   nzmin_sma = nzminFr;
+  // } else{
+  //   std::cout << "Out of grid: nzminFr < nzminBS" << std::endl;
+  //   nzmin_sma = nzminBS;
+  // }
+  // //nymin_sma = (nyminFr > nyminBS) ? nyminFr : nyminBS;
+  // //nzmin_sma = (nzminFr > nzminBS) ? nzminFr : nzminBS;
+  // //nxmax_sma = (nxmaxFr < nxmaxBS) ? nxmaxFr : nxmaxBS;
+  // if (nxmaxFr < nxmaxBS){
+  //   std::cout << "nxmaxFr < nxmaxBS" << std::endl;
+  //   nxmax_sma = nxmaxFr;
+  // } else{
+  //   std::cout << "Out of grid: nxmaxFr > nxmaxBS" << std::endl;
+  //   nxmax_sma = nxmaxBS;
+  // }
+  // nymax_sma = (nymaxFr < nymaxBS) ? nymaxFr : nymaxBS;
+  // if (nymaxFr < nymaxBS){
+  //   std::cout << "nymaxFr < nymaxBS" << std::endl;
+  //   nymax_sma = nymaxFr;
+  // } else{
+  //   std::cout << "Out of grid: nymaxFr > nymaxBS" << std::endl;
+  //   nymax_sma = nymaxBS;
+  // }
+  // nzmax_sma = (nzmaxFr < nzmaxBS) ? nzmaxFr : nzmaxBS;
+  // if (nzmaxFr < nzmaxBS){
+  //   std::cout << "nzmaxFr < nzmaxBS" << std::endl;
+  //   nzmax_sma = nzmaxFr;
+  // } else{
+  //   std::cout << "Out of grid: nzmaxFr > nzmaxBS" << std::endl;
+  //   nzmax_sma = nzmaxBS;
+  // }
+  // //nymax_sma = (nymaxFr < nymaxBS) ? nymaxFr : nymaxBS;
+  // //nzmax_sma = (nzmaxFr < nzmaxBS) ? nzmaxFr : nzmaxBS;
+  //
+  // //nxmin_big = (nxminFr < 1) ? nxminFr : 1;
+  // if (nxminFr < 1){
+  //   std::cout << "nxminFr < 1; out of grid" << std::endl;
+  //   nxmin_big = nxminFr;
+  // } else{
+  //   std::cout << "nxminFr >= 1" << std::endl;
+  //   nxmin_big = 1;
+  // }
+  // if (nyminFr < 1){
+  //   std::cout << "nyminFr < 1; out of grid" << std::endl;
+  //   nymin_big = nyminFr;
+  // } else{
+  //   std::cout << "nyminFr >= 1" << std::endl;
+  //   nymin_big = 1;
+  // }
+  // if (nzminFr < 1){
+  //   std::cout << "nzminFr < 1; out of grid" << std::endl;
+  //   nzmin_big = nzminFr;
+  // } else{
+  //   std::cout << "nzminFr >= 1" << std::endl;
+  //   nzmin_big = 1;
+  // }
+  // //nymin_big = (nyminFr < 1) ? nyminFr : 1;
+  // //nzmin_big = (nzminFr < 1) ? nzminFr : 1;
+  // //nxmax_big = (nxmaxFr > NGridx) ? nxmaxFr : NGridx;
+  // if (nxmaxFr > NGridx){
+  //   std::cout << "nxmaxFr > NGridx; out of grid" << std::endl;
+  //   nxmax_big = nxmaxFr;
+  // } else{
+  //   std::cout << "nxmaxFr < NGridx" << std::endl;
+  //   nxmax_big = NGridx;
+  // }
+  // if (nymaxFr > NGridy){
+  //   std::cout << "nymaxFr > NGridy; out of grid" << std::endl;
+  //   nymax_big = nymaxFr;
+  // } else{
+  //   std::cout << "nymaxFr < NGridy" << std::endl;
+  //   nymax_big = NGridy;
+  // }
+  // if (nzmaxFr > NGridz){
+  //   std::cout << "nzmaxFr > NGridz; out of grid" << std::endl;
+  //   nzmax_big = nzmaxFr;
+  // } else{
+  //   std::cout << "nzmaxFr < NGridz" << std::endl;
+  //   nzmax_big = NGridz;
+  // }
+  // //nymax_big = (nymaxFr > NGridy) ? nymaxFr : NGridy;
+  // //nzmax_big = (nzmaxFr > NGridz) ? nzmaxFr : NGridz;
+//clangini debug end
 
 /* Calculate protein desolvation
   printf("\n\tProtein desolvation...\n");
@@ -395,6 +499,9 @@ struct point *surfpt_fr - Coor of points over frag SAS1 (relative to RoSFCo)
 #ifndef NOWARN
 	  fprintf(FPaOut,"WARNING could not calculate empirically-corrected effective born radius of receptor atom %d using standard approach\n",iat);
 #endif
+    //clangini debug start
+    //std::cout << "Eff radius either none or zero" << std::cout;
+    //clangini debug end
 	  ReEffRad[NeighList3[iat]] = 1. / ( 1./ReRadOut[NeighList3[iat]] -
 					     (ReSelfVol[NeighList3[iat]]+ReSelfVol_add[NeighList3[iat]])/pi4 );
       }
@@ -455,6 +562,9 @@ struct point *surfpt_fr - Coor of points over frag SAS1 (relative to RoSFCo)
 #ifndef NOWARN
 	      fprintf(FPaOut,"WARNING could not calculate empirically-corrected effective born radius of fragment atom %d, using standard approach\n",iat);
 #endif
+        //clangini debug start
+        //std::cout << "Eff radius either none or zero" << std::cout;
+        //clangini debug end
 	      FrEffRad[iat] = 1. / ( 1./FrRadOut[iat] - FrSelfVol[iat]/pi4 );
 
 	  }
@@ -566,11 +676,18 @@ int *PFrOut ------------- Flag telling the position of the frag respect
        (*PnyminFr < 1 && *PnymaxFr < 1) ||
        (*PnyminFr > NGridy && *PnymaxFr > NGridy) ||
        (*PnzminFr < 1 && *PnzmaxFr < 1) ||
-       (*PnzminFr > NGridz && *PnzmaxFr > NGridz) )
+       (*PnzminFr > NGridz && *PnzmaxFr > NGridz) ){
     *PFrOut = 2;
+    //std::cout << "fragment outside of the grid box" << std::endl;
+  }
   else if ( *PnxminFr < 1 || *PnyminFr < 1 || *PnzminFr < 1 ||
-            *PnxmaxFr > NGridx || *PnymaxFr > NGridy || *PnzmaxFr > NGridz )
+            *PnxmaxFr > NGridx || *PnymaxFr > NGridy || *PnzmaxFr > NGridz ){
     *PFrOut = 1;
+    //std::cout << "fragment partially outside of the grid box" << std::endl;
+  }
+  //else {
+  //  std::cout << "fragment inside of the grid box" << std::endl;
+  //}
 
   if (iat == FrAtNu+1 )
     return 1;
@@ -1120,6 +1237,7 @@ double U2[4][4] --------- Rotation matrix around the axis joining the 1st atom a
 {
   int i,j,k,same;
   double Axis[4],phi,cosphi,sinphi,v[4],w[4],norm,costh,Axis2[4];
+  double epsilon = 10000*std::numeric_limits<double>::epsilon();
 
 /* Check if the coordinates are exactly the same */
   same = 1;
@@ -1171,25 +1289,29 @@ out:
   norm = sqrt(Axis[1]*Axis[1] + Axis[2]*Axis[2] + Axis[3]*Axis[3]);
 
 /* Check degeneracy (if v and w are (anti)parallel) and act consequently */
-  if (norm == 0.) {
+  //std::cout << "U1 norm " << norm << std::endl;
+  //if (norm == 0.)
+  if (fabs(norm) < epsilon) {
     Axis[1] = 0.;
     Axis[2] = -v[3];
     Axis[3] = v[2];
     norm = sqrt(Axis[1]*Axis[1] + Axis[2]*Axis[2] + Axis[3]*Axis[3]);
   }
-  if (norm == 0.) {
+  //if (norm == 0.)
+  if (fabs(norm) < epsilon) {
     Axis[1] = -v[3];
     Axis[2] = 0.;
     Axis[3] = v[1];
     norm = sqrt(Axis[1]*Axis[1] + Axis[2]*Axis[2] + Axis[3]*Axis[3]);
   }
-  if (norm == 0.) {
+  //if (norm == 0.)
+  if (fabs(norm) < epsilon) {
     Axis[1] = -v[2];
     Axis[2] = v[1];
     Axis[3] = 0.;
     norm = sqrt(Axis[1]*Axis[1] + Axis[2]*Axis[2] + Axis[3]*Axis[3]);
   }
-
+  //std::cout << "U1 norm " << norm << std::endl;
   for (i=1;i<=3;i++)
     Axis[i] /= norm;
 
@@ -1200,8 +1322,30 @@ out:
   cosphi = (cosphi > -1.0000000000) ? cosphi : -1.0000000000;
   phi = acos(cosphi);
 
-
   sinphi = sin(phi);
+  //clangini debug start
+  //std::cout << "cosphi = " << std::setprecision(20) << cosphi << std::endl;
+  //std::cout << "phi = " << std::setprecision(20) << phi << std::endl;
+  //std::cout << "sinphi = " << std::setprecision(20) << sinphi << std::endl;
+  // clangini debug end
+  //clangini debug start
+  // if (cosphi >= 1){
+  //   cosphi = 1.;
+  //   phi = 0. ;
+  //   sinphi = 0. ;
+  // } else if (cosphi <= -1){
+  //   cosphi = -1.;
+  //   phi = M_PI;
+  //   sinphi = 0. ;
+  // } else{
+  //   phi = acos(cosphi);
+  //   sinphi = sin(phi);
+  // }
+  //
+  // std::cout << "cosphi = " << std::setprecision(20) << cosphi << std::endl;
+  // std::cout << "phi = " << std::setprecision(20) << phi << std::endl;
+  // std::cout << "sinphi = " << std::setprecision(20) << sinphi << std::endl;
+  // clangini debug end
 
 
   for (i=1;i<=3;i++) {
@@ -1246,11 +1390,39 @@ out:
   norm = sqrt((v[1]*v[1] + v[2]*v[2] + v[3]*v[3])*
                (w[1]*w[1] + w[2]*w[2] + w[3]*w[3]));
   cosphi = (v[1]*w[1] + v[2]*w[2] + v[3]*w[3])/norm;
+
+  //clangini debug
+  //cosphi = (cosphi < 1.0000000000) ? cosphi : 1.0000000000;
   cosphi = (cosphi < 1.0000000000) ? cosphi : 1.0000000000;
   cosphi = (cosphi > -1.0000000000) ? cosphi : -1.0000000000;
 
   phi = acos(cosphi);
+
   sinphi = sin(phi);
+  //clangini debug start
+  //std::cout << "cosphi = " << std::setprecision(20) << cosphi << std::endl;
+  //std::cout << "phi = " << std::setprecision(20) << phi << std::endl;
+  //std::cout << "sinphi = " << std::setprecision(20) << sinphi << std::endl;
+  // clangini debug end
+
+  //clangini debug start
+  // if (cosphi >= 0.9999){
+  //   cosphi = 1.;
+  //   phi = 0. ;
+  //   sinphi = 0. ;
+  // } else if (cosphi <= -0.9999){
+  //   cosphi = -1.;
+  //   phi = M_PI;
+  //   sinphi = 0. ;
+  // } else{
+  //   phi = acos(cosphi);
+  //   sinphi = sin(phi);
+  // }
+  //
+  // std::cout << "cosphi = " << std::setprecision(20) << cosphi << std::endl;
+  // std::cout << "phi = " << std::setprecision(20) << phi << std::endl;
+  // std::cout << "sinphi = " << std::setprecision(20) << sinphi << std::endl;
+  // clangini debug end
 
 
   Axis2[1] = v[2]*w[3] - v[3]*w[2];
@@ -1259,12 +1431,30 @@ out:
 
   norm = sqrt(Axis2[1]*Axis2[1] + Axis2[2]*Axis2[2] + Axis2[3]*Axis2[3]);
 
-  if (norm == 0.0) {
+  // std::cout << "Norm: " << norm << std::endl;
+  // if (norm == 0.0) {
+  //   Axis2[1]=Axis[1];
+  //   Axis2[2]=Axis[2];
+  //   Axis2[3]=Axis[3];
+  //   norm=1.;
+  // }
+  //clangini debug start
+  //for (int a = 1; a <=3; a++){
+  //  std::cout << "Axis[" << a << "]: " << Axis[a]
+  //            << "  Axis2[" << a << "]: " << Axis2[a] << std::endl;
+  //}
+  //std::cout << "Norm: " << norm << std::endl;
+  //std::cout << "epsilon: " << 100*std::numeric_limits<double>::epsilon() << std::endl;
+  //std::cout << "U2 norm " << norm << std::endl;
+  if (fabs(norm) < epsilon) {
     Axis2[1]=Axis[1];
     Axis2[2]=Axis[2];
     Axis2[3]=Axis[3];
     norm=1.;
   }
+  //std::cout << "U2 norm " << norm << std::endl;
+  //std::cout << "Norm: " << norm << std::endl;
+  //clangini debug end
 
   for (i=1;i<=3;i++)
     Axis2[i] /= norm;
@@ -1679,6 +1869,9 @@ double *SelfVol --------- SelfVol[iat] = integral of 1/r^4 over the solute
               }
   }
   else {
+    // clangini debug start
+    //std::cout << "fragment partially out or rec elec grid box" << std::endl;
+    //clangini debug end
 /* The fragment is partially out of the rec elec grid box --> you need to check
    carefully the boundaries in order not ot go out of the box */
     cutoff1sq = cutoff1 * cutoff1;
@@ -2198,6 +2391,7 @@ double *PFrSelfEn ------- Tot frag self-energy
 #ifndef NOWARN
 	    fprintf(FPaOut,"WARNING could not calculate empirically-corrected effective born radius of fragment atom %d, using standard approach\n",iat);
 #endif
+      std::cout << "Fragment effective radius is 0 or nan" << std::endl;
 	    FrEffRad[iat] = 1. / ( 1./FrRadOut[iat] - FrSelfVol[iat]/pi4 );
 	  }
 

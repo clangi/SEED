@@ -61,6 +61,10 @@ void SqDisFrRe_ps(int FrAtNu,double **RoSFCo,double **ReCoor,double *ReMinC,
    fragment atom is */
     for (j=1;j<=3;j++)
       CubAto[j]=ffloor((RoSFCo[i][j]-ReMinC[j])/GrSiCu_en)+1;
+    //clangini debug start
+    //std::cout << "CubAto[xyz] = " << CubAto[1] << "  " << CubAto[2] << "  "
+    //          << CubAto[3] << "  " << std::endl;
+    //clangini debug end
 
 /* Loop over the cube of the pseudo-sphere */
     for (j=-PsSpNC;j<=PsSpNC;j++) {
@@ -106,7 +110,11 @@ void SqDisFrRe_ps(int FrAtNu,double **RoSFCo,double **ReCoor,double *ReMinC,
               }
 
             }
-
+            //clangini debug start:
+            //else{
+            //  std::cout << "Out of the grid list" << std::endl;
+            //}
+            //clangini debug end
           }
 
         }

@@ -25,7 +25,8 @@ void MakSpV(int DAType,int DoAcAt,int HyOrZe,double SphAng,int SphPoN,
   double IntPar,ReaPar,PiT180,TheSte,PhiSte,TranVe[4],RotAng,RotaAx[4];
   double DIntPar;
 
-  PiT180=3.1415927/180;
+  //PiT180=3.1415927/180; clangini
+  PiT180=M_PI/180; //clangini
   TopVec=*DANumb;
 
   if (DAType==0) {
