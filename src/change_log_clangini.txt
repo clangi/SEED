@@ -1,0 +1,26 @@
+27.09.2016
+Modifications to read mol2 file with the CHARMM atom types encoded in the ALT_TYPE field, in such a way we keep the standard sybyl atom types. Up to now this has been implemented only for the write_mol2_clus_pproc, but should be changed for the write_mol2 as well.
+
+15.11.2016
+Added a check if outputs and scratch folder already exist (in this case does not need to create them again).
+16.11.2016
+Modifications to seed.inp and seed.par: moved some options from .inp to .par and changed the order.
+Do not need to specify any more the options for the receptor desolvation algorithm. The choice of "co" (Coulomb Approximation) is hard-coded and the UHBD exe and dir are set to empty strings. However the variables were not removed to maintain retro-compatibility.
+
+Removed check for SUBSTRUCTURE tag from CheckMol2File() function.
+
+Modified ExtOutNam to deal with one single input file
+
+As conformations are now considered separate fragments they are read directly by ReFrFi_mol2()
+instead of ReFrFi_coo_mol2().
+
+In nrutils, function nrerror(), changed the function signature to "char const *"
+
+13.01.2017
+Adding new input parameter for the number of poses saved in new output file (equivalent to NuClusMem): NuPosMem. file name: <input .mol2>_poses_pproc.mol2
+
+Introduce new input parameter for printing the summary table: write_sumtab_opt
+
+Added CluIndexSort to find the new cluster numbering from the old one
+
+Added write_best_opt:  option for writing *_best_pproc* files. To be read from seed.par
