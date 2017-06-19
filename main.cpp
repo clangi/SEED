@@ -174,13 +174,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 {
 
 
-  FILE *FPaOut,*FilChk,*FilePa; /* ,*FileTemp;  dey to remove FileTemp new ;  no more "do_not_touch_ener */
-  /* char *InpFil,RecFil[_STRLENGTH],**FrFiNa,FragNa[_STRLENGTH],**FrAtEl,**FrAtTy,
-   **FrBdTy,**ReAtEl,**ReAtTy,WriPat[_STRLENGTH],WriNam[_STRLENGTH],
-   TREFiP[_STRLENGTH],**AtTyAr,OutFil[_STRLENGTH],FrSubN[20],FrSubC[20],StrLin[_STRLENGTH],
-   CoGrAcc[2],CoGrFile[_STRLENGTH],EvalEn[2],SpPoCh_opt[2],**ResN_fr,
-   **FrFiNa_out,**ApPoChoi,VWGrAcc[2],VWGrFile[_STRLENGTH],EmpCorrB[2],
-   gc_opt[2],write_pproc_opt[2],write_pproc_chm_opt[2]; */
+  FILE *FPaOut,*FilChk,*FilePa;
   char *InpFil,RecFil[_STRLENGTH],/* *FrFiNa*/ FrFiNa[_STRLENGTH],FragNa[_STRLENGTH],**FrAtEl,**FrAtTy,**FrSyAtTy,
        **FrBdTy,**ReAtEl,**ReAtTy,WriPat[_STRLENGTH],/*WriNam[_STRLENGTH],clangini*/
        TREFiP[_STRLENGTH],**AtTyAr,OutFil[_STRLENGTH],FrSubN[20],FrSubC[20],StrLin[_STRLENGTH],
@@ -206,25 +200,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
        *SdClusAr_pproc,IntVar1,IntVar2,*Index_pproc,*FrPosAr_sort,
        *SdClusAr_sort,*FlagAr,*ReprSdClAr,MaxPosClus,SFWrNu_init,PrintLev,
        ToNFrP_ap,ij,distrPointBSNumb,gc_reprke,gc_maxwrite,ChkInGrid; /*,CorrFiNumb; clangini*/
-      /*double **FrCoor,*FrPaCh,**ReCoor,*RePaCh,**ReVeCo,**FrVeCo,**SeFrCo,PiT180,
-      AnglRo,**RoSFCo,*VdWRad,*VdWEne,*ReVdWR,*ReVdWE,*FrVdWR,*FrVdWE,
-      LaVdWR,ReMaxC[4],ReMinC[4],SphAng,VdWFaB,BSMaxC[4],BSMinC[4],CoDieV,
-      CoGrIn,CoGrSi,***CoGrRP,BuEvFa,*ReVdWE_sr,*FrVdWE_sr,
-                                                *FrMaEn,PsSpRa,GrSiCu_en,VWEnEv_ps,
-                                                *Coulo_ro,*Vande_ro,*TotEn_ro,*TotEn_ro_cp,***FrCoPo,**SimWei,SimExp,
-                                                SimCut,FraSim,*FraSim_no,Dist_sq,*FrMaEn_sd,SimExp_sd,SimCut_sd,
-                                                *FraSim_no_sd,**BSMeVE,
-                                                SpPoCh_cent[4],SpPoCh_rad,SpPoCh_gc[4],SpPoCh_dist,
-                                                SpPoCh_rad_sq,SFDeso_fr,**SDFrRe_ps,SFDeso_re,SFVWEn,SFIntElec,
-                                                RedRPV_rp,**BLAtTy,ScMaBump,MuFaVdWCoff_ap,VdWCoff_ap,*TotChaRes,
-                                                **SDFrRe_ps_elec,**ChFrRe_ps_elec,**FrCoor_clus,FraSim_no_max,
-                                                VW_f,VW_s,In_f,In_s,Dr_f,Dr_s,Df_f,Df_s,To_f,To_s,
-                                                *VW_f_ro,*VW_s_ro,*In_f_ro,*In_s_ro,*Dr_f_ro,*Dr_s_ro,*Df_f_ro,
-                                                *Df_s_ro,*To_f_ro,*To_s_ro,***VWGrRP_at,***VWGrRP_re,
-                                                *ReVdWR_p3,*FrVdWR_p3,VWGrIn,VWGrSi,BumpFaCut,
-                                                *TotEnSdClus_pproc,**distrPointBS,angle_rmin,angle_rmax,
-                                                mult_fact_rmin,mult_fact_rmax,gc_cutclus,gc_endifclus,gc_weighneg,
-                                                gc_weighpos,MaxGrIn,RedRPV_nkvRatio,NCutapolRatio;*/
+
       double **FrCoor,*FrPaCh,**ReCoor,*RePaCh,**ReVeCo,**FrVeCo,**SeFrCo,
       /*AnglRo,*/**RoSFCo,*VdWRad,*VdWEne,*ReVdWR,*ReVdWE,*FrVdWR,*FrVdWE,
       LaVdWR,ReMaxC[4],ReMinC[4],SphAng,VdWFaB,BSMaxC[4],BSMinC[4],CoDieV,
@@ -278,7 +254,6 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
                cbmid_re;
   /* CLANGINI 2016 */
   struct stat DirExist;
-  /* char *TmpStr; */
   char TabLin[_STRLENGTH]; //clangini
   std::ofstream TabOutStream; //clangini
   int HeAtCo = 0; // HeAtCo = Heavy Atom Count clangini
@@ -316,27 +291,20 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 
   if(argc <= 1 )
   {
-    printf("              ------------------------------------------------                  \n");
+    printf("         ----------------------------------------------------------             \n");
     printf("               Solvation Energy for Exhaustive Docking (SEED)                   \n");
-    printf("                N. Majeux, M. Scarsi, F. Dey and A. Caflisch                    \n");
+    printf("          N. Majeux, M. Scarsi, F. Dey, C. Langini and A. Caflisch              \n");
     printf("                        Department of Biochemistry                              \n");
     printf("                           University of Zurich                                 \n");
-    printf("                         %s  (SEED 3.3.6)                               \n",__DATE__);
-    printf("              ------------------------------------------------                  \n\n");
-    std::cout << sizeof(float) << std::endl;
-    std::cout << sizeof(double) << std::endl;
+    printf("                         %s  (SEED 4.0.0)                                       \n",__DATE__);
+    printf("         ----------------------------------------------------------             \n\n\n\n");
+
     printf("                WARNING No input file specified, exiting !\n\n");
     printf("                usage : seed [inputfile]\n\n");
     exit(12);
   }
 
-  /* float PiT180=3.1415927/180; variable not used. clangini*/
-  //pi4 = acos(-1.) * 4.; // clangini
   pi4 = M_PI*4; // clangini
-  //float pi_float = M_PI;
-  //double pi_double = M_PI;
-  //std::cout << std::setprecision(20) << pi_float <<"  " << pi_double/180.0 << "  " << pi4 << "  " << 4*pi_double << "  "
-  //  << M_PI*2/360 << std::endl;
 
   /* experimental ... OMP check :: */
 #ifdef OMP
@@ -377,26 +345,11 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   InpFil=argv[1];
 
   /* Check presence of input file */
-  //std::cout << "Input file: " << InpFil << std::endl;
   CheckFile(InpFil,'r');
 
   //SimWei=matrix(1,150,1,150); clangini
   SimWei=dmatrix(0,150,0,150); //Want to use atom element 0 for lone pair. clangini
-  //ReInFi(InpFil,RecFil,&BSResN,&BSReNu,&FrFiNa,TREFiP,
-  //    &SphAng,&SphPoN,&NuRoAx,&VdWFaB,&CoDieV,&CoDieP,&CoGrIn,&CoGrSi,
-  //    OutFil,&BuEvFa,&FrMaEn,&PsSpRa,&GrSiCu_en,&FiNuMa,&GrInSo,
-  //    &GrSiSo,&WaMoRa,&NPtSphere,&DielWa,&DielRe,ReDesoAlg,DesoMapAcc,
-  //    DesoMapFile,FDexe,FDdir,&ReSurfDens_apol,&PtDensFr,&Sphere_apol,&NCutapolRatio,/*&NCutapol,*/
-  //    &ScaleDeso,&ScaleVDW,SimWei,&SimExp,&SimCut,&FrMaEn_sd,
-  //    &SimExp_sd,&SimCut_sd,&BSMeNu,&BSMeAN,&BSMeVE,CoGrAcc,CoGrFile,
-  //    EvalEn,Solv_typ,SpPoCh_opt,SpPoCh_cent,&SpPoCh_rad,
-  //    &SFDeso_fr,&SFDeso_re,&SFVWEn,&SFIntElec,&NuClusMem,&RedRPV_rp,
-  //    &RedRPV_nkvRatio,&ScMaBump,&MuFaVdWCoff_ap,&NuLiEnClus,&ApPoChoi,
-  //    &VWGrIn,&VWGrSi,&BumpFaCut,VWGrAcc,VWGrFile,&MaxPosClus,&PrintLev,
-  //    &NumbAT,&AtTyAr,&AtENAr,&VdWRad,&VdWEne,&BLAtTy,&distrPointBSNumb,
-  //    &distrPointBS,&angle_rmin,&angle_rmax,&mult_fact_rmin,&mult_fact_rmax,
-  //    EmpCorrB,gc_opt,&gc_reprke,&gc_cutclus,&gc_endifclus,&gc_weighneg,
-  //    &gc_weighpos,&gc_maxwrite,write_pproc_opt,write_pproc_chm_opt,&CorrFiNumb);
+
   ReInFi(InpFil,RecFil,&BSResN,&BSReNu,FrFiNa,TREFiP,
       &SphAng,&SphPoN,&NuRoAx,&VdWFaB,&CoDieV,&CoDieP,&CoGrIn,&CoGrSi,
       OutFil,&BuEvFa,&FrMaEn,&PsSpRa,&GrSiCu_en,&FiNuMa,&GrInSo,
@@ -415,7 +368,6 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       write_best_opt,write_sumtab_opt,write_best_sumtab_opt,&AtWei);/*clangini*/
 
   /* Check presence of parameter file */
-  //std::cout << "Input file: " << TREFiP << std::endl;
   CheckFile(TREFiP,'r'); /* clangini This is superflous after already having read the parameters*/
 
   SpPoCh_rad_sq=SpPoCh_rad*SpPoCh_rad;
@@ -432,23 +384,18 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   ChkExit=0;
   FPaOut=fopen(OutFil,"w"); /* OutFil is by default seed.out clangini */
 
-  //std::cout<<"ApPoChoi: "<< ApPoChoi <<std::endl;
-  //std::cout<<"FrFiNa: "<< FrFiNa <<std::endl;
 
   time(&runtime);
   fprintf (FPaOut,"Date and time: %s\n",ctime(&runtime)); //WARNING possible memory leak
-  //std::cout<<"FrFiNa: "<< FrFiNa <<std::endl;
-  //std::cout<<"ApPoChoi: "<< ApPoChoi <<std::endl;
 
-  fprintf(FPaOut,"              ------------------------------------------------                  \n");
+  fprintf(FPaOut,"         ----------------------------------------------------------             \n");
   fprintf(FPaOut,"               Solvation Energy for Exhaustive Docking (SEED)                   \n");
-  fprintf(FPaOut,"                N. Majeux, M. Scarsi, F. Dey and A. Caflisch                    \n");
+  fprintf(FPaOut,"          N. Majeux, M. Scarsi, F. Dey, C. Langini and A. Caflisch              \n");
   fprintf(FPaOut,"                        Department of Biochemistry                              \n");
   fprintf(FPaOut,"                           University of Zurich                                 \n");
-  fprintf(FPaOut,"                         %s  (SEED 3.3.6)                                       \n",__DATE__);
-  fprintf(FPaOut,"              ------------------------------------------------                  \n\n\n\n");
+  fprintf(FPaOut,"                         %s  (SEED 4.0.0)                                       \n",__DATE__);
+  fprintf(FPaOut,"         ----------------------------------------------------------             \n\n\n\n");
 
-  std::cout << sizeof(double) << std::endl;
 
   fprintf(FPaOut,"Data of the input file :\n\n");
   FilePa=fopen(InpFil,"r"); /* seed.inp clangini */
@@ -563,7 +510,6 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 
   /* Fragment input file is now only one clangini*/
   if ((FilChk=fopen(FrFiNa,"r"))==NULL) {
-    //std::cout << "FrFiNa: " << FrFiNa << std::endl;
     fprintf(FPaOut,"WARNING Was not able to open fragment file %s\n\n",FrFiNa);
     ChkExit=1;
   }
@@ -1230,14 +1176,15 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   /* clangini 2016 */
   /* Setting up the table summary file */
   if (write_sumtab_opt[0]=='y'){ // Should introduce some check.
-    strcpy(TabFil,"./outputs/seed.dat");
+    strcpy(TabFil,"./outputs/seed_clus.dat");
     //char TabLin[_STRLENGTH];
     //std::ofstream TabOutStream;
     TabOutStream.open (TabFil);
     if(TabOutStream.is_open()){
       TabOutStream << std::left << std::setw(30) << "Name" << std::right
                    << std::setw(8)  << "Pose"
-                   << std::setw(10)  << "Cluster"
+                   << std::setw(10) << "Cluster"
+                   << std::setw(10) << "Fr_nu"
                    << std::setw(10) << "Tot"
                    << std::setw(10) << "ElinW"
                    << std::setw(10) << "rec_des"
@@ -1265,6 +1212,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       TabOutStream << std::left << std::setw(30) << "Name" << std::right
                    << std::setw(8)  << "Pose"
                    << std::setw(10)  << "Cluster"
+                   << std::setw(10) << "Fr_nu"
                    << std::setw(10) << "Tot"
                    << std::setw(10) << "ElinW"
                    << std::setw(10) << "rec_des"
@@ -1295,9 +1243,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   if (FrInStream.fail()) {
     fprintf(stderr,"Cannot open specified input file %s\nProgram exits!\n",FrFiNa);
     exit(13);
-  } //else { /* clangini */
-    //std::cout << "Opened file: " << FrFiNa << std::endl;
-  //}
+  }
   std::streampos FrInPos = FrInStream.tellg(); /* Save the get position */
 
   if (write_pproc_opt[0]=='y'){
@@ -1308,7 +1254,6 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
     //        "_clus_pproc.mol2\0");               /*use another output folder? */
     sprintf(WriPat,"%s%s%s","./outputs/",FrFiNa_out, /* should give the possibility to */
             "_clus.mol2\0");               /*use another output folder? */
-          //std::cout << "WriPat: " << WriPat << std::endl;
 
     FilePa=fopen(WriPat,"w");
     fprintf(FilePa,"# TRIPOS MOL2 file generated by SEED\n\n");
@@ -1322,7 +1267,6 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
     fprintf(FilePa,"# TRIPOS MOL2 file generated by SEED\n\n");
     fclose(FilePa);
   }
-  //std::cout << "Before loop!" << std::endl; /*clangini*/
   while((FrInStream.eof() == 0)&&(LstFra_f == 0)) { /* loop until reach end of file -> loop over fragments clangini*/
     /*for (i=1;i<=FragNu;i++) */ /* open loop over fragments (has to be removed) clangini */
     /* control amount of printed "out of grid" error messages */
@@ -1334,12 +1278,10 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 
     /* CurFra=i; clangini */
     FPaOut=fopen(OutFil,"a");
-    //std::cout << "OutFil is: " << OutFil << std::endl; /* clangini OK*/
 
     //fprintf(FPaOut,"-------------------------------------------------\n\n");//Moved after fragment reading. clangini
     //fprintf(FPaOut,"Data for the fragment type %d :\n\n",CurFraTot); //Moved after fragment reading. clangini
 
-    //std::cout << "Written some lines to OutFil!" << std::endl; /*clangini OK*/
 
     /* times(&timevar); */
     /* time_6=timevar.tms_utime+timevar.tms_stime; */
@@ -1349,11 +1291,6 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
        coordinates */
     /* CLANGINI 2016 */
 
-    /* clangini ReFrFi_mol2(CurFra,FrFiNa,FragNa,&FrAtNu,&FrBdNu,&FrAtEl,&FrCoor,&FrAtTy,
-       &FrPaCh,&FrBdAr,&FrBdTy,FrSubN,FrSubC,&FrCoNu);*/
-    /*ReFrFi_mol2_syb(CurFra,FrFiNa,FragNa,&FrAtNu,&FrBdNu,&FrAtEl,&FrCoor,&FrAtTy,
-      &FrSyAtTy,&FrPaCh,&FrBdAr,&FrBdTy,FrSubN,FrSubC,&FrCoNu);*/
-
     /* ReFrFi_mol2 has been reimplemented in C++ clangini */
     /* Reads the next valid molecule. If it detects any problems it skips the molecule. clangini */
     LstFra_f = ReFrFi_mol2(&FrInStream,&FrInPos,&SkiFra,&CurFraTot,FragNa,
@@ -1361,28 +1298,18 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
                            &FrAtNu,&FrBdNu,&FrAtEl,&FrCoor,&FrAtTy,&FrSyAtTy,
                            &FrPaCh,&FrBdAr,&FrBdTy,FrSubN,FrSubC,&FrCoNu,
                            &SubNa,AlTySp);
-    //std::cout<< "AlTySp is: "<<AlTySp<<std::endl;
-    //std::cout << "LstFra_f value is: " << LstFra_f << std::endl; /* clangini */
     if (LstFra_f){
-      //fprintf(stderr,"No more fragments in input file %s\n", FrFiNa);
-      std::cerr << "No more fragments in input file" << FrFiNa << std::endl;
+      std::cerr << "\tNo more fragments in input file " << FrFiNa << std::endl;
       fclose(FPaOut);
       break;
-    } //else {
-      //std::cout << "Read one fragment!" << std::endl; /* clangini */
-    //}
-
-    //for (int kkk=1;kkk <= FrAtNu; kkk++){
-    //  std::cout<<"Atom type for atom "<<kkk<<": "<<FrAtTy[kkk][1]<<std::endl;
-    //}
+    }
 
     //CurFraTot++; //This is updated in ReFrFi_mol2
     if ( ++FragNa_map[FragNa_str] > 1){
       sprintf(buff, "$%d",FragNa_map[FragNa_str]);
       strcat(FragNa,buff);
     }
-    std::cout<< "FragNa_str: " << FragNa_str << " "
-      << FragNa_map[FragNa_str] << std::endl;
+
     CurFra++; /* After succesfully reading, we update the current fragment index */
     i = CurFra; /* Not to change i to CurFra everywhere in the following clangini*/
     fprintf(FPaOut,"-------------------------------------------------\n\n");//Moved here clangini
@@ -4751,13 +4678,13 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
         if (write_sumtab_opt[0]=='y'){
           // append to _pproc summary table
           //std::ofstream TabOutStream;
-          strcpy(TabFil,"./outputs/seed.dat");
+          strcpy(TabFil,"./outputs/seed_clus.dat");
           TabOutStream.open (TabFil, std::ios::out | std::ios::app); // append mode
           if(TabOutStream.is_open()){
             for (j=1;j<=((NuLiEnClus<NuPosSdCl)?NuLiEnClus:NuPosSdCl);j++) {
               sprintf(TabLin,
-                    "%-30s%8d%10d%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10d%10.4f",
-                    FragNa,j,SdClusAr_sort[j],To_s_ro[FrPosAr_sort[j]],In_s_ro[FrPosAr_sort[j]],
+                    "%-30s%8d%10d%10d%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10d%10.4f",
+                    FragNa,j,SdClusAr_sort[j],FrPosAr_sort[j],To_s_ro[FrPosAr_sort[j]],In_s_ro[FrPosAr_sort[j]],
                     Dr_s_ro[FrPosAr_sort[j]],Df_s_ro[FrPosAr_sort[j]],
                     VW_s_ro[FrPosAr_sort[j]],(In_s_ro[FrPosAr_sort[j]]-FrSolvEn),
                     FrSolvEn,(To_s_ro[FrPosAr_sort[j]]/HeAtCo),
@@ -4777,9 +4704,10 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
           if(TabOutStream.is_open()){
             for (j=1;j<=((NuPosMem<NuPosSdCl)?NuPosMem:NuPosSdCl);j++) {
               sprintf(TabLin,
-                    "%-30s%8d%10d%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10d%10.4f",
+                    "%-30s%8d%10d%10d%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10d%10.4f",
                     FragNa,j,
                     CluIndex_sort[SdClusAr_pproc[Index_pproc[j]]],
+                    FrPosAr_pproc[Index_pproc[j]],
                     To_s_ro[FrPosAr_pproc[Index_pproc[j]]],
                     In_s_ro[FrPosAr_pproc[Index_pproc[j]]],
                     Dr_s_ro[FrPosAr_pproc[Index_pproc[j]]],

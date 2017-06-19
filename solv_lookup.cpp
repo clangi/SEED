@@ -527,7 +527,7 @@ struct point len ----------- ReMaxC - ReMinC
 
   free_dvector(vdWSurfPt,1,*PNsurfpt_re_apol); /* prev. mem. leak*/
 
-  printf("End Solv\n");
+  printf("\n\tEnd Solv\n");
 }
 
 int get_Grid_Dim(int ReAtNu,double **ReCoor,double *ReVdWR,double WaMoRa,

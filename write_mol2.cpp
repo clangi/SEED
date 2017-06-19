@@ -432,11 +432,12 @@ void append_pose_to_mol2(FILE *FilePa,char *FragNa,/*int FragNa_count,*/
   //} else {
   //  fprintf(FilePa,"%s\n",FragNa);
   //}
-  fprintf(FilePa," %d %d 1 0 0\n",FrAtNu,FrBdNu);/*always include one substructure ??*/
+  fprintf(FilePa," %d %d 0 0 0\n",FrAtNu,FrBdNu);/*always include one substructure ??*/
   fprintf(FilePa,"****\n");
   fprintf(FilePa,"USER_CHARGES\n");
   fprintf(FilePa,"INVALID_CHARGES\n");
-  fprintf(FilePa,"Pose: %3d Cluster: %3d TotEn: %8.2f Fr_nu: %6d\n",imol,SdClu,To_s_ro,Fr_nu);
+  fprintf(FilePa,"Pose: %3d Cluster: %3d Fr_nu: %6d TotEn: %8.2f\n",imol,SdClu,
+          Fr_nu, To_s_ro);
 
   /* Write the atoms */
   fprintf(FilePa,"@<TRIPOS>ATOM\n");

@@ -1391,8 +1391,6 @@ out:
                (w[1]*w[1] + w[2]*w[2] + w[3]*w[3]));
   cosphi = (v[1]*w[1] + v[2]*w[2] + v[3]*w[3])/norm;
 
-  //clangini debug
-  //cosphi = (cosphi < 1.0000000000) ? cosphi : 1.0000000000;
   cosphi = (cosphi < 1.0000000000) ? cosphi : 1.0000000000;
   cosphi = (cosphi > -1.0000000000) ? cosphi : -1.0000000000;
 

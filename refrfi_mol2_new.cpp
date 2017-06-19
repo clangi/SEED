@@ -83,7 +83,7 @@ int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
     //std::cout << "Out of while StrLin is: " << StrLin << std::endl; /* clangini OK */
 
 	  if (inStream->eof()){
-		  std::cerr << "End of file was reached!" << std::endl;
+		  std::cerr << "\n\tEnd of fragment library was reached!" << std::endl;
   		return 1;
 	  } //else {
       //insec = 1; /* Entering molecule section */
@@ -98,13 +98,13 @@ int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
     //std::cout << "FragNa is: " << FragNa << std::endl; /* clangini */
 	  //StrLin = getline(inStream);     /* Read FrAtNu, FrBdNu, FrCoNu */
     std::getline(*inStream,StrLin);
-	  std::stringstream(StrLin) >> (*FrAtNu) >> (*FrBdNu) >> (*FrCoNu);
-    if (*FrCoNu != 1){
+	  std::stringstream(StrLin) >> (*FrAtNu) >> (*FrBdNu); //>> (*FrCoNu);
+    /*if (*FrCoNu != 1){
       std::cerr << "WARNING! Number of substructures/conformations is " << *FrCoNu << " (!=1)" << std::endl;
       std::cerr << "This number is ignored and set to 1." << std::endl;
       *FrCoNu = 1;
-    } /* clangini  this works */
-    //std::cout << "FrAtNu " << *FrAtNu << " FrBdNu " << *FrBdNu << " FrCoNu " << *FrCoNu << std::endl; /* clangini OK*/
+    } Always put FrCoNu to 1 */
+    *FrCoNu = 1;
 
 	  /* Move to the @<TRIPOS>ATOM block */
 	  while (!inStream->eof() && StrLin[0] != '@'){ // should use StrLin.c_str()? clangini
@@ -112,7 +112,7 @@ int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
       std::getline(*inStream,StrLin);
 	  }
 	  if (inStream->eof()){
-		  std::cerr << "End of file was reached before expected! Last fragment was skipped \n";
+		  std::cerr << "End of fragment library was reached before expected! Last fragment was skipped \n";
 		  return 1;
 	  }
 
@@ -180,7 +180,7 @@ int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
       std::getline(*inStream,StrLin);
 	  }
 	  if (inStream->eof()){
-		  std::cerr << "End of file was reached before expected! Last fragment was skipped!\n";
+		  std::cerr << "End of fragment library was reached before expected! Last fragment was skipped!\n";
       /* Once we will implement the resizing this part will not be needed any more */
 		  free_cmatrix(*FrAtEl,1,*FrAtNu,1,5);
       free_dmatrix(*FrCoor,1,*FrAtNu,1,3);
@@ -237,7 +237,7 @@ int ReFrFi_mol2(std::istream *inStream, std::streampos *strPos,
   	  }
     }
 	  if (inStream->eof()){
-		  std::cerr << "End of file was reached before expected! Last fragment was skipped!\n";
+		  std::cerr << "End of fragment library was reached before expected! Last fragment was skipped!\n";
 		  /* Once we will implement the resizing this part will not be needed any more */
 		  free_cmatrix(*FrAtEl,1,*FrAtNu,1,5);
       free_dmatrix(*FrCoor,1,*FrAtNu,1,3);
