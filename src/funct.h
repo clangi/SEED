@@ -261,7 +261,7 @@ void write_chm_clus_reduc(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
                           char **FrAtTy,double ***FrCoPo,int *ClusLi_sd,
                           int *ClusLi_sd_01_reduc,int NonAliHy,char **ResN_fr,
                           char **FrFiNa_out);
-void Wr_pdb_uhbd(int ReAtNu,double **ReCoor,char *RecFilPDB);
+/* void Wr_pdb_uhbd(int ReAtNu,double **ReCoor,char *RecFilPDB); commented by clangini*/
 void Reduc_polvectre(int ReAtNu,double **ReCoor,double *ReVdWR,double *ReVdWE_sr,
                      int ReAcNu,int ReDoNu,int *ReDATy,int *ReDAAt,int *ReHydN,
                      double **ReVeCo,double RedRPV_rp,double RedRPV_nkvRatio, /* RedRPV_nkv */

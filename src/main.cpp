@@ -653,8 +653,8 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 
   /* Create the receptor file in a kind of PDB format for UHBD.
      Only when UHBD is used */
-  if (DesoMapAcc[0]!='r')
-    Wr_pdb_uhbd(ReAtNu,ReCoor,RecFilPDB);
+  /*if (DesoMapAcc[0]!='r')
+    Wr_pdb_uhbd(ReAtNu,ReCoor,RecFilPDB); clangini commented */
 
   /* Make the list of atoms which are in the binding site */
   MakBSAtList(ReAtNu,ReResN,BSResN,BSReNu,&BSAtNu,&BSAtLi);

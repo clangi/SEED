@@ -16,7 +16,7 @@ include Makefile.local
 
 DEP_FLAGS = $(INC_FLAGS) -MMD -MP
 
-PRESRCLIST = align_frag assire checkresn cofren cogrep conubu convert2pp count_heavy_atom extoutnam featres fialhy findfrsym fracdo geomcent geomfu hybstat listchres main makbsatlist makspv nrutil otfunc psspee psspma reacdo reduc_polvectre refrfi_coo_mol2 refrfi_mol2_new reinfi relaic relaic_en rerefi_mol2 rosefr seedfr_ap seedfr simila solv_frag solv_frag_fast solv_lookup solv_util sort_all sort sqdisfrre_ps vwfren vwgrep write_charmm write_chm_clus write_mol2 wr_pdb_uhbd
+PRESRCLIST = align_frag assire checkresn cofren cogrep conubu convert2pp count_heavy_atom extoutnam featres fialhy findfrsym fracdo geomcent geomfu hybstat listchres main makbsatlist makspv nrutil otfunc psspee psspma reacdo reduc_polvectre refrfi_coo_mol2 refrfi_mol2_new reinfi relaic relaic_en rerefi_mol2 rosefr seedfr_ap seedfr simila solv_frag solv_frag_fast solv_lookup solv_util sort_all sort sqdisfrre_ps vwfren vwgrep write_charmm write_chm_clus write_mol2 
 SRCLIST = $(PRESRCLIST:%=%.c)
 #SRCS = $(SRCLIST:%=$(SRC_DIR)/%)
 SRCS = $(SRCLIST)
@@ -33,11 +33,11 @@ ECHO = @echo
 seed: $(TARGET_EXEC)
 
 $(TARGET_EXEC): $(OBJS)
-	$(CXX) $(OBJS) $(LDFLAGS) -o $@ 
+	$(CXX) $(OBJS) $(LDFLAGS) -o $@
 
 $(BUILD_DIR)/%.o: %.cpp
 	$(MKDIR_P) $(BUILD_DIR)
-	$(CXX) -c $(CXXFLAGS) $(DEP_FLAGS) $< -o $@ 
+	$(CXX) -c $(CXXFLAGS) $(DEP_FLAGS) $< -o $@
 
 -include $(DEPS)
 
@@ -55,4 +55,3 @@ clean:
 	for i in $(OBJS); do (if [ -e $${i} ]; then $(RM) $${i}; fi;) done
 	for i in $(DEPS); do (if [ -e $${i} ]; then $(RM) $${i}; fi;) done
 	if [ -d $(BUILD_DIR) ]; then $(RMDIR) $(BUILD_DIR); fi
-

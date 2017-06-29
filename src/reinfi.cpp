@@ -359,21 +359,21 @@ written in output file*/ //clangini
 
   if(CoGrAcc[0] != 'n') /* new : always calculate from scratch - don't read or write */
     CheckFile(CoGrFile,CoGrAcc[0]); /*dey new*/
-//  std::cout << "file: " << CoGrFile << std::endl;
+
 /* van der Waals grid access (write read or none) / name of the file */
   SkipComLin(FilePa,StrLin);
   sscanf(StrLin,"%s%s",VWGrAcc,VWGrFile);
 
   if(VWGrAcc[0] != 'n') /* new : always calculate from scratch - don't read or write */
     CheckFile(VWGrFile,VWGrAcc[0]); /*dey new*/
-//  std::cout << "file: " << VWGrFile << std::endl;
+
 /* D map grid access (write read or none) / name of the file */
   SkipComLin(FilePa,StrLin);
   sscanf(StrLin,"%s%s",DesoMapAcc,DesoMapFile);
 
   if(DesoMapAcc[0] != 'n') /* new : always calculate from scratch - don't read or write */
     CheckFile(DesoMapFile,DesoMapAcc[0]); /*dey new*/
-//  std::cout << "file: " << DesoMapFile << std::endl;
+
 /* Read the scaling factor used for computing the maximal number of tolerated
    bumps, the factor for the checking of the bumps distances and the factor of
    bump evaluation */
