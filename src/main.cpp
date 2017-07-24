@@ -11,6 +11,8 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <vector>
+#include <pose.hpp>
 
 #ifdef USE_QUATERNION_ROTATION
 #include <quaternion.h>
@@ -273,6 +275,9 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
         FrAlSet_m[3][3], *FrAlSet_rows[3], **FrAlSet;
   double AnglRo; //before it was a float. clangini
   double **FrCoor_NoAlign;
+  /* For minimization: clangini */
+  std::vector<Seed::Pose> PoseVector;
+  bool do_angle_minimization;
 #ifdef USE_QUATERNION_ROTATION //clangini
   double SeFrAx[4]; //axis for fragment rotation
   Quaternion<double> q_SeFr; //calls default constructor
@@ -2012,6 +2017,12 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 
                         ConfArr[SFWrNu]=Ind_num_cn;
 
+                        /* add pose to vector of poses */
+                        PoseVector.push_back(Seed::Pose(ReDAAt[j], FrDAAt[k],
+                          SeFrAx, l*AnglRo, FrCoPo[SFWrNu]));
+                        /*if (SFWrNu == 1){
+                          PoseVector.at(SFWrNu-1).print();
+                        }*/
 
                         if(SFWrNu + 1>= currentsize)
                         {
@@ -4397,7 +4408,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
 
           /* Loop over the list of the second clustering step and compute the energy
-             with the slow method for the kept members of the current conformation */
+          with the slow method for the kept members of the current conformation */
 
           /* dey test -> shared FrAtNu,ReCoor,CubNum_en,GrSiCu_en,CubLAI_en,CubLiA_en */
           /* does not work yet: */
@@ -4406,10 +4417,69 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
           /* #ifdef OMP  */
           /* #pragma omp parallel for default(shared) private(i1,i2,Tr,U1,U2,VWEnEv_ps,FrSolvEn,ReDesoElec,ReFrIntElec,FrDesoElec) firstprivate(RoSFCo) */
           /* #endif */
+
           for (i1=1;i1<=SFWrNu;i1++) {
 
             if (((ClusLi_sd_pproc[i1]==2)||(ClusLi_sd_pproc[i1]==1))&&
-                (ConfArr[ClusLi_sd[i1]]==Ind_num_cn)) {
+            (ConfArr[ClusLi_sd[i1]]==Ind_num_cn)) {
+
+              do_angle_minimization = true;
+
+              if (do_angle_minimization){
+                double angle_step = 1.0/180 * M_PI;
+                int n_angle_step = (int) 2 * AnglRo/angle_step + 1;
+                std::cout << "n_angle_step = " << n_angle_step << std::endl;
+                //double angle_start = PoseVector[ClusLi_sd[i1]-1].getAngle() - AnglRo;
+                //double angle_end = PoseVector[ClusLi_sd[i1]-1].getAngle() + AnglRo;
+
+                PoseVector.at(ClusLi_sd[i1]-1).print();
+                std::vector<double> angle_seq = lineseq(angle_start, angle_end, angle_step);
+
+                Quaternion<double> minQuat, stepQuat;
+                minQuat.fromAngleAxis(-AnglRo,
+                  PoseVector.at(ClusLi_sd[i1]-1).getAxis());
+                stepQuat.fromAngleAxis(angle_step,
+                  PoseVector.at(ClusLi_sd[i1]-1).getAxis());
+
+                #ifdef DEBUG_LINESEARCH
+                int fr_at_idx = PoseVector[ClusLi_sd[i1]-1].getFrAtIdx();
+                sprintf(WriPat,"%s","line_search_poses.mol2\0"); // clangini
+                FilePa = fopen(WriPat, "a");
+                for (i2=1;i2<=FrAtNu;i2++){ // append the pose stored in Pose
+                  RoSFCo[i2][1] = PoseVector.at(ClusLi_sd[i1]-1).getCoord(i2, 1);
+                  RoSFCo[i2][2] = PoseVector.at(ClusLi_sd[i1]-1).getCoord(i2, 2);
+                  RoSFCo[i2][3] = PoseVector.at(ClusLi_sd[i1]-1).getCoord(i2, 3);
+                }
+                append_pose_to_mol2(FilePa,FragNa,FrAtNu,FrBdNu,1,FrAtEl,RoSFCo,
+                                    1,FrSyAtTy,FrAtTy,CurFra,FrBdAr,
+                                    FrBdTy,1,0.0,
+                                    FrPaCh,SubNa,AlTySp);
+
+                for (i2 = 1; i2 <= FrAtNu; i2++) {
+                  minQuat.quatConjugateVecRef(RoSFCo[i2],
+                    PoseVector.at(ClusLi_sd[i1]-1).getCoord(fr_at_idx, 1),
+                    PoseVector.at(ClusLi_sd[i1]-1).getCoord(fr_at_idx, 2),
+                    PoseVector.at(ClusLi_sd[i1]-1).getCoord(fr_at_idx, 3));
+                }
+
+                for (int step = 1; step <= n_angle_step; step++){
+                  for (i2 = 1; i2 <= FrAtNu; i2++) {
+                    stepQuat.quatConjugateVecRef(RoSFCo[i2],
+                      PoseVector.at(ClusLi_sd[i1]-1).getCoord(fr_at_idx, 1),
+                      PoseVector.at(ClusLi_sd[i1]-1).getCoord(fr_at_idx, 2),
+                      PoseVector.at(ClusLi_sd[i1]-1).getCoord(fr_at_idx, 3));
+                  }
+                  append_pose_to_mol2(FilePa,FragNa,FrAtNu,FrBdNu,1,FrAtEl,RoSFCo,
+                                      1,FrSyAtTy,FrAtTy,CurFra,FrBdAr,
+                                      FrBdTy,1,0.0,
+                                      FrPaCh,SubNa,AlTySp);
+                }
+
+                fclose(FilePa);
+                #endif
+                /* Here let's do the line search energy calculation */
+                
+              }
 
               for (i2=1;i2<=FrAtNu;i2++) {
                 RoSFCo[i2][1]=FrCoPo[ClusLi_sd[i1]][i2][1];
@@ -4421,48 +4491,49 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
               Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);
 
               /* Compute the squared distances between the fragment atoms and the
-                 corresponding receptor atoms of the pseudo-sphere procedure, one list
-                 for the vdW energy and another for the electrostatic interaction energy.
-                 In the case of the electrostatic interaction energy, it also provides the
-                 corresponding partial or total charges */
+              corresponding receptor atoms of the pseudo-sphere procedure, one list
+              for the vdW energy and another for the electrostatic interaction energy.
+              In the case of the electrostatic interaction energy, it also provides the
+              corresponding partial or total charges */
               SqDisFrRe_ps(FrAtNu,RoSFCo,ReCoor,ReMinC,GrSiCu_en,
-                  CubNum_en,CubFAI_en,CubLAI_en,CubLiA_en,
-                  PsSpNC,PsSphe,SDFrRe_ps,ReAtNu,PsSpRa,
-                  RePaCh,ReReNu,AtReprRes,FiAtRes,LaAtRes,
-                  TotChaRes,NuChResEn,LiChResEn,
-                  SDFrRe_ps_elec,ChFrRe_ps_elec);
+                CubNum_en,CubFAI_en,CubLAI_en,CubLiA_en,
+                PsSpNC,PsSphe,SDFrRe_ps,ReAtNu,PsSpRa,
+                RePaCh,ReReNu,AtReprRes,FiAtRes,LaAtRes,
+                TotChaRes,NuChResEn,LiChResEn,
+                SDFrRe_ps_elec,ChFrRe_ps_elec);
 
               /* Compute vdW energy */
               PsSpEE(FrAtNu,ReAtNu,ReVdWE_sr,FrVdWE_sr,
-                  ReVdWR,FrVdWR,&VWEnEv_ps,SDFrRe_ps);
+                ReVdWR,FrVdWR,&VWEnEv_ps,SDFrRe_ps);
 
               /* Compute receptor desolvation, fragment desolvation and receptor-fragment
-                 interaction (with screening effect) energies (slow method) */
+              interaction (with screening effect) energies (slow method) */
               ElecFrag(ReAtNu,ReCoor,RePaCh,ChFrRe_ps_elec,
-                  ReRad,ReRad2,ReRadOut,
-                  ReRadOut2,surfpt_re,nsurf_re,
-                  pointsrf_re,ReSelfVol,FrAtNu,RoSFCo,FrCoor,
-                  FrPaCh,FrRad,FrRad2,FrRadOut,FrRadOut2,
-                  Frdist2,SDFrRe_ps_elec,FrMinC,FrMaxC,&FrSolvEn,
-                  Nsurfpt_fr,surfpt_fr,
-                  nsurf_fr,pointsrf_fr,surfpt_ex,Tr,U1,U2,WaMoRa,
-                  GrSiSo,NPtSphere,Min,Max,XGrid,YGrid,ZGrid,
-                  NGridx,NGridy,NGridz,GridMat,
-                  DeltaPrDeso,Kelec,Ksolv,UnitVol,
-                  pi4,nxminBS,nyminBS,nzminBS,nxmaxBS,nymaxBS,
-                  nzmaxBS,corr_scrint,corr_fr_deso,&ReDesoElec,
-                  &ReFrIntElec,&FrDesoElec,ReSelfVol_corrB,EmpCorrB,FPaOut);
+                ReRad,ReRad2,ReRadOut,
+                ReRadOut2,surfpt_re,nsurf_re,
+                pointsrf_re,ReSelfVol,FrAtNu,RoSFCo,FrCoor,
+                FrPaCh,FrRad,FrRad2,FrRadOut,FrRadOut2,
+                Frdist2,SDFrRe_ps_elec,FrMinC,FrMaxC,&FrSolvEn,
+                Nsurfpt_fr,surfpt_fr,
+                nsurf_fr,pointsrf_fr,surfpt_ex,Tr,U1,U2,WaMoRa,
+                GrSiSo,NPtSphere,Min,Max,XGrid,YGrid,ZGrid,
+                NGridx,NGridy,NGridz,GridMat,
+                DeltaPrDeso,Kelec,Ksolv,UnitVol,
+                pi4,nxminBS,nyminBS,nzminBS,nxmaxBS,nymaxBS,
+                nzmaxBS,corr_scrint,corr_fr_deso,&ReDesoElec,
+                &ReFrIntElec,&FrDesoElec,ReSelfVol_corrB,EmpCorrB,FPaOut);
 
               VW_s_ro[ClusLi_sd[i1]]=SFVWEn*VWEnEv_ps;
               In_s_ro[ClusLi_sd[i1]]=SFIntElec*ReFrIntElec;
               Dr_s_ro[ClusLi_sd[i1]]=SFDeso_re*ReDesoElec;
               Df_s_ro[ClusLi_sd[i1]]=SFDeso_fr*FrDesoElec;
               To_s_ro[ClusLi_sd[i1]]=VW_s_ro[ClusLi_sd[i1]]+In_s_ro[ClusLi_sd[i1]]+
-                                     Dr_s_ro[ClusLi_sd[i1]]+Df_s_ro[ClusLi_sd[i1]];
+              Dr_s_ro[ClusLi_sd[i1]]+Df_s_ro[ClusLi_sd[i1]];
 
             }
 
           }
+
 
           free_dmatrix(RoSFCo,1,FrAtNu,1,3);
           free_dmatrix(SDFrRe_ps,1,FrAtNu,1,ReAtNu);
@@ -4910,6 +4981,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
     free_cmatrix(FrBdTy,1,FrBdNu,1,4);
     free_ivector(AliHyd,1,FrAtNu);
     free_ivector(FrAtEl_nu,1,FrAtNu);
+
+    PoseVector.clear();
   } /* End of while(!FrInStream.eof()&&!LstFra_f)  clangini */
 
 

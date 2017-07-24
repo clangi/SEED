@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <vector>
 #include "nrutil.h"
 #include "funct.h"
 

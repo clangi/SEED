@@ -1,6 +1,8 @@
 #ifndef _NR_UTILS_H_
 #define _NR_UTILS_H_
 
+#include <vector>
+
 /* -->> unused variables !
 static float sqrarg;
 #define SQR(a) ((sqrarg=(a)) == 0.0 ? 0.0 : sqrarg*sqrarg)
@@ -113,6 +115,7 @@ double * dvecresize(double *,int newsize);
 double **zero_dmatrix(int rl,int rh,int cl,int ch);
 void dmm_prod(int m1,int n1,int m2,int n2,double **A,double **B,double **P);
 void dm_transpose(int m, int n, double **M, double **T);
+std::vector<double> lineseq(double start, double end, double step);
 /* ------------------------- */
 
 #else /* ANSI */

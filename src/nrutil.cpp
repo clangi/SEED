@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <vector> // clangini
+#include <iostream> // clangini
 #define NR_END 1
 #define FREE_ARG char*
 
@@ -696,6 +698,15 @@ void dm_transpose(int m, int n, double **M,double **T){
     }
   }
 
+}
+
+std::vector<double> lineseq(double start, double end, double step){
+  int nstep = (int) (end - start)/step + 1;
+  std::vector<double> sequence(nstep);
+
+  for (int i = 0; i < nstep; i++)
+    sequence[i] = start + i * step;
+  return sequence;
 }
 /*---------------------*/
 
