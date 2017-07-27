@@ -5,6 +5,9 @@
 #include <time.h>
 #include "nrutil.h"
 #include <sys/time.h>
+#include "funct.h"
+#include <float.h>
+
 /* CLANGINI 2016 */
 //#include <boost/math/constants/constants.hpp>
 #include <sys/stat.h> /* to check for directory existence (consider changing using boost/system instead) */
@@ -13,19 +16,19 @@
 #include <fstream>
 
 #ifdef USE_QUATERNION_ROTATION
-#include <quaternion.h>
+  #include <quaternion.h>
 #endif
 
 #if  __cplusplus > 199711L
-#include <unordered_map> //C++11 feature. Implemented as hash table
+  #include <unordered_map> //C++11 feature. Implemented as hash table
 #else
-#include <map>
+  #include <map>
+#endif
+
+#ifdef ENABLE_MPI
+  #include <mpi.h>
 #endif
 /* CLANGINI 2016 END */
-#include "funct.h"
-
-#include <float.h>
-
 
 #define _STRLENGTH 500
 
