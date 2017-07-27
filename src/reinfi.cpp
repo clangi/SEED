@@ -4,9 +4,18 @@
 #include <stdlib.h> /* for exit-fct.*/
 #include "funct.h"
 
+#ifdef ENABLE_MPI
+  #include <mpi.h>
+  #ifndef MASTERRANK
+    #define MASTERRANK 0
+  #endif
+#endif
+
 #ifndef _STRLENGTH
 #define _STRLENGTH 500
 #endif
+
+
 
 /*void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
             int *FragNu,char ***FrFiNa,char *TREFiP,double *SphAng,
@@ -588,6 +597,11 @@ written in output file*/ //clangini
   }
 
 /* Print BLAtTy in a separate file */
+  #ifdef ENABLE_MPI
+  int myrank;
+  MPI_Comm_rank(MPI_COMM_WORLD,&myrank);
+  if(myrank == MASTERRANK){
+  #endif
   FilePa2=fopen("./outputs/length_hb.gen","w");
   fprintf(FilePa2,"File containing the bond lengths between atom types ");
   fprintf(FilePa2,"in the hydrogen bond \n");
@@ -599,6 +613,9 @@ written in output file*/ //clangini
     }
   }
   fclose(FilePa2);
+  #ifdef ENABLE_MPI
+  }
+  #endif
   /*clangini START Read atomic weights */
   SkipComLin(FilePa,StrLin);
   sscanf(StrLin,"%d",&UsVal2); // Number of elements (without element 0)
