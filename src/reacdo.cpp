@@ -210,9 +210,9 @@ void ReAcDo(int BSAtNu,int *BSAtLi,int *ReAtEl_nu,double **ReCoor,
   for (i=1;i<=BSAtNu;i++) {
 
 /* Case where the receptor binding site atom is a N */
-    if (ReAtEl_nu[BSAtLi[i]]==7) {
+    if (ReAtEl_nu[BSAtLi[i]] == 7) {
 
-      if ((LiToNu[i]==2)&&(LiHyNu[i]==0)) {
+      if ((LiToNu[i] == 2)&&( LiHyNu[i] == 0)) { // case (a) in Fig. 1 of documentation
         AcAtNu=BSAtLi[i];
         HelpA1=LiAtom[i][1];
         HelpA2=LiAtom[i][2];
@@ -222,7 +222,7 @@ void ReAcDo(int BSAtNu,int *BSAtLi,int *ReAtEl_nu,double **ReCoor,
         (*ReDAAt)[DANumb]=AcAtNu;
         (*ReHydN)[DANumb]=0;
         for (k=4;k<=6;k++)
-          (*ReVeCo)[DANumb][k]=ReCoor[AcAtNu][k-3];
+          (*ReVeCo)[DANumb][k] = ReCoor[AcAtNu][k-3];
         Angl=PlaAng(ReCoor[AcAtNu][1],ReCoor[AcAtNu][2],ReCoor[AcAtNu][3],
                     ReCoor[HelpA1][1],ReCoor[HelpA1][2],ReCoor[HelpA1][3],
                     ReCoor[HelpA2][1],ReCoor[HelpA2][2],ReCoor[HelpA2][3]);
@@ -240,7 +240,7 @@ void ReAcDo(int BSAtNu,int *BSAtLi,int *ReAtEl_nu,double **ReCoor,
                *ReHydN,*ReVeCo);
       }
 
-      else if ((LiToNu[i]==3)&&(LiHyNu[i]==1)) {
+      else if ((LiToNu[i] == 3)&&(LiHyNu[i] == 1)) { // case (b) of Fig.1 in the documentation
         DoAtNu=BSAtLi[i];
         for (j=1;j<=3;j++) {
           if (ReAtEl_nu[LiAtom[i][j]]==1) HyAtNu=LiAtom[i][j];
@@ -251,7 +251,7 @@ void ReAcDo(int BSAtNu,int *BSAtLi,int *ReAtEl_nu,double **ReCoor,
         (*ReDAAt)[DANumb]=DoAtNu;
         (*ReHydN)[DANumb]=HyAtNu;
         for (k=1;k<=3;k++)
-          (*ReVeCo)[DANumb][k]=ReCoor[DoAtNu][k];
+          (*ReVeCo)[DANumb][k] = ReCoor[DoAtNu][k];
         PoCoVe(ReCoor[DoAtNu][1],ReCoor[DoAtNu][2],ReCoor[DoAtNu][3],
                ReCoor[HyAtNu][1],ReCoor[HyAtNu][2],ReCoor[HyAtNu][3],
                1.0,&(*ReVeCo)[DANumb][4],&(*ReVeCo)[DANumb][5],
@@ -260,7 +260,7 @@ void ReAcDo(int BSAtNu,int *BSAtLi,int *ReAtEl_nu,double **ReCoor,
                *ReHydN,*ReVeCo);
       }
 
-      else if ((LiToNu[i]==3)&&(LiHyNu[i]==2)) {
+      else if ((LiToNu[i]==3)&&(LiHyNu[i]==2)) { // case for example of ASN sidechain. clangini
         DoAtNu=BSAtLi[i];
         HyAtNu=0;
         for (j=1;j<=3;j++) {

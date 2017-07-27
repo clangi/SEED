@@ -3,8 +3,10 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <cmath> //clangini
 #include <vector> // clangini
 #include <iostream> // clangini
+#include <limits> // clangini
 #define NR_END 1
 #define FREE_ARG char*
 
@@ -701,11 +703,17 @@ void dm_transpose(int m, int n, double **M,double **T){
 }
 
 std::vector<double> lineseq(double start, double end, double step){
-  int nstep = (int) (end - start)/step + 1;
+  double epsilon = 10000*std::numeric_limits<double>::epsilon();
+
+  //std::cout << (end - start + step - epsilon)/step << std::endl;
+  //std::cout << ceil((end - start + step - epsilon)/step) << std::endl;
+  int nstep = ceil((end - start + step - epsilon)/step);
+
   std::vector<double> sequence(nstep);
 
   for (int i = 0; i < nstep; i++)
     sequence[i] = start + i * step;
+
   return sequence;
 }
 /*---------------------*/

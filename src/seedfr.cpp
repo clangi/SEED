@@ -65,18 +65,18 @@ void SeedFr(int ReCuVe,double **ReVeCo,int FrCuVe,double **FrVeCo,int FrAtNu,
    donor (acceptor) atom and the fragment acceptor (donor) atom. One has to
    take into account that the vectors have already a length of 1.0 */
 
-  if (ReDATy[ReCuVe]==0) {
+  if (ReDATy[ReCuVe] == 0) { // ReDATy == 0 --> donor
     TranVe[1]=ReVeCo[ReCuVe][4]-ReVeCo[ReCuVe][1];
     TranVe[2]=ReVeCo[ReCuVe][5]-ReVeCo[ReCuVe][2];
     TranVe[3]=ReVeCo[ReCuVe][6]-ReVeCo[ReCuVe][3];
   }
-  else {
+  else { // ReDATy == 1 --> acceptor
     TranVe[1]=ReVeCo[ReCuVe][1]-ReVeCo[ReCuVe][4];
     TranVe[2]=ReVeCo[ReCuVe][2]-ReVeCo[ReCuVe][5];
     TranVe[3]=ReVeCo[ReCuVe][3]-ReVeCo[ReCuVe][6];
   }
 
-  HBLeng=BLAtTy[FrAtoTyp_nu[FrDAAt[FrCuVe]]][ReAtoTyp_nu[ReDAAt[ReCuVe]]];
+  HBLeng = BLAtTy[FrAtoTyp_nu[FrDAAt[FrCuVe]]][ReAtoTyp_nu[ReDAAt[ReCuVe]]];
 
   for (i=1;i<=FrAtNu;i++) {
     SeFrCo[i][1]=SeFrCo[i][1]+(HBLeng-1.0)*TranVe[1];

@@ -277,7 +277,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   double **FrCoor_NoAlign;
   /* For minimization: clangini */
   std::vector<Seed::Pose> PoseVector;
-  bool do_angle_minimization;
+  bool do_angle_minimization, do_distance_minimization;
 #ifdef USE_QUATERNION_ROTATION //clangini
   double SeFrAx[4]; //axis for fragment rotation
   Quaternion<double> q_SeFr; //calls default constructor
@@ -1063,18 +1063,18 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 
   /* Allocate some memory for variables that will be kept in use during all the program */
   /* all of this regards the receptor only clangini */
-  ReRad=dvector(1,ReAtNu);
-  ReRad2=dvector(1,ReAtNu);
-  ReRadOut=dvector(1,ReAtNu);
-  ReRadOut2=dvector(1,ReAtNu);
+  ReRad = dvector(1,ReAtNu);
+  ReRad2 = dvector(1,ReAtNu);
+  ReRadOut = dvector(1,ReAtNu);
+  ReRadOut2 = dvector(1,ReAtNu);
 
-  surfpt_re=structpointvect(1,NPtSphere*ReAtNu);
-  iatsrf_re=ivector(1,NPtSphere*ReAtNu);
-  nsurf_re=ivector(1,ReAtNu);
-  pointsrf_re=ivector(1,ReAtNu);
-  for (ij=1;ij<=ReAtNu;ij++)
-    pointsrf_re[ij]=0;
-  for (iat=1;iat<=ReAtNu;iat++)
+  surfpt_re = structpointvect(1,NPtSphere*ReAtNu);
+  iatsrf_re = ivector(1,NPtSphere*ReAtNu);
+  nsurf_re = ivector(1,ReAtNu);
+  pointsrf_re = ivector(1,ReAtNu);
+  for (ij = 1; ij <= ReAtNu; ij++)
+    pointsrf_re[ij] = 0;
+  for (iat=1; iat <= ReAtNu; iat++)
     nsurf_re[iat] = 0;
 
   ReRmax = MaxVector(ReVdWR,1,ReAtNu);
@@ -1166,19 +1166,55 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
      We loop until we get to the end of the fragment input file. clangini */
 
   /* dey new: memory allocation of arrays handled dynamically -> realloc(..) resizing */
-  Index_ro=ivector(1,currentsize); /* up to now it is not clear to me what they are for. clangini */
-  VW_f_ro=dvector(1,currentsize);
-  VW_s_ro=dvector(1,currentsize);
-  In_f_ro=dvector(1,currentsize);
-  In_s_ro=dvector(1,currentsize);
-  Dr_f_ro=dvector(1,currentsize);
-  Dr_s_ro=dvector(1,currentsize);
-  Df_f_ro=dvector(1,currentsize);
-  Df_s_ro=dvector(1,currentsize);
-  To_f_ro=dvector(1,currentsize);
-  To_s_ro=dvector(1,currentsize);
+  Index_ro = ivector(1,currentsize); /* up to now it is not clear to me what they are for. clangini */
+  VW_f_ro = dvector(1,currentsize);
+  VW_s_ro = dvector(1,currentsize);
+  In_f_ro = dvector(1,currentsize);
+  In_s_ro = dvector(1,currentsize);
+  Dr_f_ro = dvector(1,currentsize);
+  Dr_s_ro = dvector(1,currentsize);
+  Df_f_ro = dvector(1,currentsize);
+  Df_s_ro = dvector(1,currentsize);
+  To_f_ro = dvector(1,currentsize);
+  To_s_ro = dvector(1,currentsize);
 
   /* clangini 2016 */
+  #ifdef DEBUG_LINESEARCH
+  std::ofstream line_search_outFile;
+  line_search_outFile.open("line_search_energies.txt", std::ios::out);
+  if(line_search_outFile.is_open()){
+    line_search_outFile << std::left << std::setw(30) << "Name" << std::right
+                 << std::setw(8)  << "Fr_nu"
+                 << std::setw(10) << "Rot_angle"
+                 << std::setw(10) << "Tot"
+                 << std::setw(10) << "ElinW"
+                 << std::setw(10) << "rec_des"
+                 << std::setw(10) << "frg_des"
+                 << std::setw(10) << "vdW"
+                 << std::endl;
+  } else {
+    std::cerr << "ERROR in writing linesearch energies!" << std::endl;
+  }
+  line_search_outFile.close();
+  #endif
+  #ifdef DEBUG_DISTSEARCH
+  std::ofstream dist_search_outFile;
+  dist_search_outFile.open("dist_search_energies.txt", std::ios::out);
+  if(dist_search_outFile.is_open()){
+    dist_search_outFile << std::left << std::setw(30) << "Name" << std::right
+                 << std::setw(8)  << "Fr_nu"
+                 << std::setw(10) << "Rot_angle"
+                 << std::setw(10) << "Tot"
+                 << std::setw(10) << "ElinW"
+                 << std::setw(10) << "rec_des"
+                 << std::setw(10) << "frg_des"
+                 << std::setw(10) << "vdW"
+                 << std::endl;
+  } else {
+    std::cerr << "ERROR in writing distsearch energies!" << std::endl;
+  }
+  dist_search_outFile.close();
+  #endif
   /* Setting up the table summary file */
   if (write_sumtab_opt[0]=='y'){ // Should introduce some check.
     strcpy(TabFil,"./outputs/seed_clus.dat");
@@ -1352,7 +1388,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 #endif
     }
     else if(align_flag && (EvalEn[0] == 'e')){
-      FrCoor_NoAlign=dmatrix(1,FrAtNu,1,3);//original coordinates before
+      FrCoor_NoAlign=dmatrix(1,FrAtNu,1,3); //original coordinates before
         //alignment. clangini
 
       for (int ii=1;ii <= FrAtNu;ii++){
@@ -1363,7 +1399,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       struct_align(FrCoor,FrAtNu,FrAlRef,FrAlSet,3);
     }
     else if (!align_flag && (EvalEn[0] == 'e')){
-      FrCoor_NoAlign=dmatrix(1,FrAtNu,1,3);//original coordinates before
+      FrCoor_NoAlign=dmatrix(1,FrAtNu,1,3); //original coordinates before
         //alignment. clangini
 
       for (int ii=1;ii <= FrAtNu;ii++){
@@ -1572,12 +1608,8 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 
       if (Ind_num_cn==1)
         FrNuVdW_ap=-1;
-      //std::cout << "Before selecting ApPoChoi mode" << std::endl; // clangini OK
-      //std::cout << "FrAcNu+FrDoNu: "<< FrAcNu+FrDoNu << std::endl; // clangini OK
-      //std::cout << "EvalEn[0]: "<< EvalEn[0] << std::endl; // clangini OK
-      //std::cout << "ApPoChoi[0]: "<< ApPoChoi[0] << std::endl; // clangini OK
-      if (((FrAcNu+FrDoNu)!=0)&&(EvalEn[0]!='e')&&
-          (ApPoChoi[0]=='p')) {
+
+      if (((FrAcNu+FrDoNu)!=0)&&(EvalEn[0]!='e')&& (ApPoChoi[0]=='p')) {
         /* --------------------------- */
         /* Seeding of a polar fragment */
         /* --------------------------- */
@@ -1594,9 +1626,9 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
         }
         ToNFrP=ToNFrP*NuRoAx*FrCoNu;
 
-        if (Ind_num_cn==1) {
-          FrCoPo=ppdvector(1,ToNFrP);
-          ConfArr=ivector(1,ToNFrP);
+        if (Ind_num_cn == 1) {
+          FrCoPo = ppdvector(1, ToNFrP);
+          ConfArr = ivector(1, ToNFrP);
         }
 
         if (Ind_num_cn==1) {
@@ -2018,7 +2050,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
                         ConfArr[SFWrNu]=Ind_num_cn;
 
                         /* add pose to vector of poses */
-                        PoseVector.push_back(Seed::Pose(ReDAAt[j], FrDAAt[k],
+                        PoseVector.push_back(Seed::Pose(SFWrNu, ReDAAt[j], FrDAAt[k],
                           SeFrAx, l*AnglRo, FrCoPo[SFWrNu]));
                         /*if (SFWrNu == 1){
                           PoseVector.at(SFWrNu-1).print();
@@ -4423,17 +4455,23 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
             if (((ClusLi_sd_pproc[i1]==2)||(ClusLi_sd_pproc[i1]==1))&&
             (ConfArr[ClusLi_sd[i1]]==Ind_num_cn)) {
 
-              do_angle_minimization = true;
+              do_angle_minimization = false;
 
               if (do_angle_minimization){
-                double angle_step = 1.0/180 * M_PI;
-                int n_angle_step = (int) 2 * AnglRo/angle_step + 1;
-                std::cout << "n_angle_step = " << n_angle_step << std::endl;
-                //double angle_start = PoseVector[ClusLi_sd[i1]-1].getAngle() - AnglRo;
-                //double angle_end = PoseVector[ClusLi_sd[i1]-1].getAngle() + AnglRo;
+                double angle_step = M_PI/180; // This should become user-given
+                int n_angle_step;
+                // int n_angle_step = round(2 * AnglRo/angle_step) + 1; // use the size of angle_seq to avoid any problems
+                double angle_start = PoseVector[ClusLi_sd[i1]-1].getAngle() - AnglRo;
+                double angle_end = PoseVector[ClusLi_sd[i1]-1].getAngle() + AnglRo;
 
-                PoseVector.at(ClusLi_sd[i1]-1).print();
+                //PoseVector.at(ClusLi_sd[i1]-1).print();
                 std::vector<double> angle_seq = lineseq(angle_start, angle_end, angle_step);
+                n_angle_step = angle_seq.size();
+                std::vector<Seed::PoseEnergy> line_search_en(n_angle_step);
+
+                // for (int aaa = 0; aaa < n_angle_step; aaa++)
+                //   std::cout << angle_seq[aaa] << " ";
+                // std::cout << std::endl;
 
                 Quaternion<double> minQuat, stepQuat;
                 minQuat.fromAngleAxis(-AnglRo,
@@ -4441,11 +4479,12 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 stepQuat.fromAngleAxis(angle_step,
                   PoseVector.at(ClusLi_sd[i1]-1).getAxis());
 
+                /* Here let's do the line search energy calculation */
                 #ifdef DEBUG_LINESEARCH
                 int fr_at_idx = PoseVector[ClusLi_sd[i1]-1].getFrAtIdx();
                 sprintf(WriPat,"%s","line_search_poses.mol2\0"); // clangini
                 FilePa = fopen(WriPat, "a");
-                for (i2=1;i2<=FrAtNu;i2++){ // append the pose stored in Pose
+                for (i2=1;i2<=FrAtNu;i2++){ // set pose coordinates
                   RoSFCo[i2][1] = PoseVector.at(ClusLi_sd[i1]-1).getCoord(i2, 1);
                   RoSFCo[i2][2] = PoseVector.at(ClusLi_sd[i1]-1).getCoord(i2, 2);
                   RoSFCo[i2][3] = PoseVector.at(ClusLi_sd[i1]-1).getCoord(i2, 3);
@@ -4455,31 +4494,213 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                                     FrBdTy,1,0.0,
                                     FrPaCh,SubNa,AlTySp);
 
-                for (i2 = 1; i2 <= FrAtNu; i2++) {
+                for (i2 = 1; i2 <= FrAtNu; i2++) { // set starting point
                   minQuat.quatConjugateVecRef(RoSFCo[i2],
-                    PoseVector.at(ClusLi_sd[i1]-1).getCoord(fr_at_idx, 1),
-                    PoseVector.at(ClusLi_sd[i1]-1).getCoord(fr_at_idx, 2),
-                    PoseVector.at(ClusLi_sd[i1]-1).getCoord(fr_at_idx, 3));
+                    PoseVector.at(ClusLi_sd[i1]-1).getAtom(fr_at_idx));
                 }
+                /* evaluate energy for starting point */
+                Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);
+                SqDisFrRe_ps(FrAtNu,RoSFCo,ReCoor,ReMinC,GrSiCu_en,
+                  CubNum_en,CubFAI_en,CubLAI_en,CubLiA_en,
+                  PsSpNC,PsSphe,SDFrRe_ps,ReAtNu,PsSpRa,
+                  RePaCh,ReReNu,AtReprRes,FiAtRes,LaAtRes,
+                  TotChaRes,NuChResEn,LiChResEn,
+                  SDFrRe_ps_elec,ChFrRe_ps_elec);
+                PsSpEE(FrAtNu,ReAtNu,ReVdWE_sr,FrVdWE_sr,
+                  ReVdWR,FrVdWR,&VWEnEv_ps,SDFrRe_ps);
+                ElecFrag(ReAtNu,ReCoor,RePaCh,ChFrRe_ps_elec,
+                  ReRad,ReRad2,ReRadOut,
+                  ReRadOut2,surfpt_re,nsurf_re,
+                  pointsrf_re,ReSelfVol,FrAtNu,RoSFCo,FrCoor,
+                  FrPaCh,FrRad,FrRad2,FrRadOut,FrRadOut2,
+                  Frdist2,SDFrRe_ps_elec,FrMinC,FrMaxC,&FrSolvEn,
+                  Nsurfpt_fr,surfpt_fr,
+                  nsurf_fr,pointsrf_fr,surfpt_ex,Tr,U1,U2,WaMoRa,
+                  GrSiSo,NPtSphere,Min,Max,XGrid,YGrid,ZGrid,
+                  NGridx,NGridy,NGridz,GridMat,
+                  DeltaPrDeso,Kelec,Ksolv,UnitVol,
+                  pi4,nxminBS,nyminBS,nzminBS,nxmaxBS,nymaxBS,
+                  nzmaxBS,corr_scrint,corr_fr_deso,&ReDesoElec,
+                  &ReFrIntElec,&FrDesoElec,ReSelfVol_corrB,EmpCorrB,FPaOut);
+                /* set energy */
+                line_search_en[0].VW = SFVWEn*VWEnEv_ps;
+                line_search_en[0].In = SFIntElec*ReFrIntElec;
+                line_search_en[0].Df = SFDeso_fr*FrDesoElec;
+                line_search_en[0].Dr = SFDeso_re*ReDesoElec;
+                line_search_en[0].calcTot();
 
-                for (int step = 1; step <= n_angle_step; step++){
-                  for (i2 = 1; i2 <= FrAtNu; i2++) {
+
+                for (int step = 1; step < n_angle_step; step++){
+
+                  for (i2 = 1; i2 <= FrAtNu; i2++) { // rotate pose
                     stepQuat.quatConjugateVecRef(RoSFCo[i2],
-                      PoseVector.at(ClusLi_sd[i1]-1).getCoord(fr_at_idx, 1),
-                      PoseVector.at(ClusLi_sd[i1]-1).getCoord(fr_at_idx, 2),
-                      PoseVector.at(ClusLi_sd[i1]-1).getCoord(fr_at_idx, 3));
+                      PoseVector.at(ClusLi_sd[i1]-1).getAtom(fr_at_idx));
                   }
                   append_pose_to_mol2(FilePa,FragNa,FrAtNu,FrBdNu,1,FrAtEl,RoSFCo,
                                       1,FrSyAtTy,FrAtTy,CurFra,FrBdAr,
                                       FrBdTy,1,0.0,
                                       FrPaCh,SubNa,AlTySp);
-                }
+                  /* evaluate energy for starting point */
+                  Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);
+                  SqDisFrRe_ps(FrAtNu,RoSFCo,ReCoor,ReMinC,GrSiCu_en,
+                    CubNum_en,CubFAI_en,CubLAI_en,CubLiA_en,
+                    PsSpNC,PsSphe,SDFrRe_ps,ReAtNu,PsSpRa,
+                    RePaCh,ReReNu,AtReprRes,FiAtRes,LaAtRes,
+                    TotChaRes,NuChResEn,LiChResEn,
+                    SDFrRe_ps_elec,ChFrRe_ps_elec);
+                  PsSpEE(FrAtNu,ReAtNu,ReVdWE_sr,FrVdWE_sr,
+                    ReVdWR,FrVdWR,&VWEnEv_ps,SDFrRe_ps);
+                  ElecFrag(ReAtNu,ReCoor,RePaCh,ChFrRe_ps_elec,
+                    ReRad,ReRad2,ReRadOut,
+                    ReRadOut2,surfpt_re,nsurf_re,
+                    pointsrf_re,ReSelfVol,FrAtNu,RoSFCo,FrCoor,
+                    FrPaCh,FrRad,FrRad2,FrRadOut,FrRadOut2,
+                    Frdist2,SDFrRe_ps_elec,FrMinC,FrMaxC,&FrSolvEn,
+                    Nsurfpt_fr,surfpt_fr,
+                    nsurf_fr,pointsrf_fr,surfpt_ex,Tr,U1,U2,WaMoRa,
+                    GrSiSo,NPtSphere,Min,Max,XGrid,YGrid,ZGrid,
+                    NGridx,NGridy,NGridz,GridMat,
+                    DeltaPrDeso,Kelec,Ksolv,UnitVol,
+                    pi4,nxminBS,nyminBS,nzminBS,nxmaxBS,nymaxBS,
+                    nzmaxBS,corr_scrint,corr_fr_deso,&ReDesoElec,
+                    &ReFrIntElec,&FrDesoElec,ReSelfVol_corrB,EmpCorrB,FPaOut);
+                  /* set energy */
+                  line_search_en[step].VW = SFVWEn*VWEnEv_ps;
+                  line_search_en[step].In = SFIntElec*ReFrIntElec;
+                  line_search_en[step].Df = SFDeso_fr*FrDesoElec;
+                  line_search_en[step].Dr = SFDeso_re*ReDesoElec;
+                  line_search_en[step].calcTot();
 
+                }
                 fclose(FilePa);
+
+                // Save energies:
+                //std::ofstream line_search_outFile;
+                line_search_outFile.open("line_search_energies.txt", std::ios::app);
+                if(line_search_outFile.is_open()){
+                  for (int p = 0; p < n_angle_step; p++){
+                    line_search_outFile << std::left << std::setw(30) <<  FragNa << std::right
+                      << std::setw(8)  << PoseVector[ClusLi_sd[i1]-1].getFr_nu()
+                      << std::setw(10) << angle_seq[p]
+                      << std::setw(10) << line_search_en[p].Tot
+                      << std::setw(10) << line_search_en[p].In
+                      << std::setw(10) << line_search_en[p].Dr
+                      << std::setw(10) << line_search_en[p].Df
+                      << std::setw(10) << line_search_en[p].VW
+                      << std::endl;
+                  }
+                } else {
+                  std::cerr << "ERROR in writing linesearch energies!" << std::endl;
+                }
+                line_search_outFile.close();
+
+                angle_seq.clear();
+                line_search_en.clear();
                 #endif
-                /* Here let's do the line search energy calculation */
-                
-              }
+              } /* end of angular interval refinement */
+
+              do_distance_minimization = false;
+
+              if (do_distance_minimization) {
+                int n_dist_step;
+                double dist_step = 0.1; // This should become user-given
+                double *ReAtCoor = ReCoor[PoseVector[ClusLi_sd[i1]-1].getReAtIdx()];
+                double *FrAtCoor = PoseVector[ClusLi_sd[i1]-1].getAtom("FragDA");
+                double DA_dist = VeNorm(FrAtCoor[1]-ReAtCoor[1],
+                  FrAtCoor[2]-ReAtCoor[2], FrAtCoor[3]-ReAtCoor[3]);
+
+                double distAxis[4]; // Normalized axis for translation
+                for (int ii = 1; ii <= 3; ii++)
+                  distAxis[ii] = FrAtCoor[ii] - ReAtCoor[ii];
+                NormVe(&distAxis[1], &distAxis[2], &distAxis[3]);
+
+                // std::cout << "DA_dist = " << DA_dist << std::endl;
+                double dist_start = DA_dist - 5*dist_step;
+                double dist_stop = DA_dist + 5*dist_step;
+
+                std::vector<double> dist_seq = lineseq(dist_start, dist_stop, dist_step);
+                n_dist_step = dist_seq.size();
+                std::vector<Seed::PoseEnergy> dist_search_en(n_dist_step);
+
+                #ifdef DEBUG_DISTSEARCH
+                sprintf(WriPat,"%s","dist_search_poses.mol2\0");
+                FilePa = fopen(WriPat, "a");
+                for (i2 = 1; i2 <= FrAtNu; i2++){ // set pose coordinates
+                  RoSFCo[i2][1] = PoseVector.at(ClusLi_sd[i1]-1).getCoord(i2, 1);
+                  RoSFCo[i2][2] = PoseVector.at(ClusLi_sd[i1]-1).getCoord(i2, 2);
+                  RoSFCo[i2][3] = PoseVector.at(ClusLi_sd[i1]-1).getCoord(i2, 3);
+                }
+                append_pose_to_mol2(FilePa,FragNa,FrAtNu,FrBdNu,1,FrAtEl,RoSFCo,
+                                    1,FrSyAtTy,FrAtTy,CurFra,FrBdAr,
+                                    FrBdTy,1,0.0,
+                                    FrPaCh,SubNa,AlTySp);
+                //std::vector<double>::iterator itDist_seq; // define iterator into the sequence
+                //for (itDist_seq = dist_seq.begin(); itDist_seq != dist_seq.end(); ++itDist_seq)
+                for (int step = 0; step < n_dist_step; step++){
+                  for (i2 = 1; i2 <= FrAtNu; i2++){ // set pose coordinates
+                    RoSFCo[i2][1] = PoseVector.at(ClusLi_sd[i1]-1).getCoord(i2, 1) + (dist_seq[step] - DA_dist) * distAxis[1];
+                    RoSFCo[i2][2] = PoseVector.at(ClusLi_sd[i1]-1).getCoord(i2, 2) + (dist_seq[step] - DA_dist) * distAxis[2];
+                    RoSFCo[i2][3] = PoseVector.at(ClusLi_sd[i1]-1).getCoord(i2, 3) + (dist_seq[step] - DA_dist) * distAxis[3];
+                  }
+                  append_pose_to_mol2(FilePa,FragNa,FrAtNu,FrBdNu,1,FrAtEl,RoSFCo,
+                                      1,FrSyAtTy,FrAtTy,CurFra,FrBdAr,
+                                      FrBdTy,1,0.0,
+                                      FrPaCh,SubNa,AlTySp);
+                  /* Evaluate energy */
+                  /* evaluate energy for starting point */
+                  Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);
+                  SqDisFrRe_ps(FrAtNu,RoSFCo,ReCoor,ReMinC,GrSiCu_en,
+                    CubNum_en,CubFAI_en,CubLAI_en,CubLiA_en,
+                    PsSpNC,PsSphe,SDFrRe_ps,ReAtNu,PsSpRa,
+                    RePaCh,ReReNu,AtReprRes,FiAtRes,LaAtRes,
+                    TotChaRes,NuChResEn,LiChResEn,
+                    SDFrRe_ps_elec,ChFrRe_ps_elec);
+                  PsSpEE(FrAtNu,ReAtNu,ReVdWE_sr,FrVdWE_sr,
+                    ReVdWR,FrVdWR,&VWEnEv_ps,SDFrRe_ps);
+                  ElecFrag(ReAtNu,ReCoor,RePaCh,ChFrRe_ps_elec,
+                    ReRad,ReRad2,ReRadOut,
+                    ReRadOut2,surfpt_re,nsurf_re,
+                    pointsrf_re,ReSelfVol,FrAtNu,RoSFCo,FrCoor,
+                    FrPaCh,FrRad,FrRad2,FrRadOut,FrRadOut2,
+                    Frdist2,SDFrRe_ps_elec,FrMinC,FrMaxC,&FrSolvEn,
+                    Nsurfpt_fr,surfpt_fr,
+                    nsurf_fr,pointsrf_fr,surfpt_ex,Tr,U1,U2,WaMoRa,
+                    GrSiSo,NPtSphere,Min,Max,XGrid,YGrid,ZGrid,
+                    NGridx,NGridy,NGridz,GridMat,
+                    DeltaPrDeso,Kelec,Ksolv,UnitVol,
+                    pi4,nxminBS,nyminBS,nzminBS,nxmaxBS,nymaxBS,
+                    nzmaxBS,corr_scrint,corr_fr_deso,&ReDesoElec,
+                    &ReFrIntElec,&FrDesoElec,ReSelfVol_corrB,EmpCorrB,FPaOut);
+                  /* set energy */
+                  dist_search_en[step].VW = SFVWEn*VWEnEv_ps;
+                  dist_search_en[step].In = SFIntElec*ReFrIntElec;
+                  dist_search_en[step].Df = SFDeso_fr*FrDesoElec;
+                  dist_search_en[step].Dr = SFDeso_re*ReDesoElec;
+                  dist_search_en[step].calcTot();
+                }
+                fclose(FilePa);
+                /* Save energies to file */
+                dist_search_outFile.open("dist_search_energies.txt", std::ios::app);
+                if(dist_search_outFile.is_open()){
+                  for (int p = 0; p < n_dist_step; p++){
+                    dist_search_outFile << std::left << std::setw(30) <<  FragNa << std::right
+                      << std::setw(8)  << PoseVector[ClusLi_sd[i1]-1].getFr_nu()
+                      << std::setw(10) << dist_seq[p]
+                      << std::setw(10) << dist_search_en[p].Tot
+                      << std::setw(10) << dist_search_en[p].In
+                      << std::setw(10) << dist_search_en[p].Dr
+                      << std::setw(10) << dist_search_en[p].Df
+                      << std::setw(10) << dist_search_en[p].VW
+                      << std::endl;
+                  }
+                } else {
+                  std::cerr << "ERROR in writing distsearch energies!" << std::endl;
+                }
+                dist_search_outFile.close();
+                dist_seq.clear();
+                dist_search_en.clear();
+                #endif
+              } /* End of distance interval refinement */
 
               for (i2=1;i2<=FrAtNu;i2++) {
                 RoSFCo[i2][1]=FrCoPo[ClusLi_sd[i1]][i2][1];
