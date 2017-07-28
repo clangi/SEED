@@ -99,19 +99,25 @@ void ExtOutNam(char *FrFiNa,char *FrFiNa_out, int myrank)
 {
   char *LasCha;
   char suffix[_STRLENGTH];
+  char extension[10];
   int LengStr,j;
 
   // first we modify FrFiNa to add the _partMYRANK
-  sprintf(suffix, "_part%d.mol2", myrank);
+  sprintf(suffix, "_part%d", myrank);
   LengStr = strlen(&FrFiNa[0]);
 
   LasCha = strrchr(&FrFiNa[0], '.');
   if (LasCha != NULL) {
     LasCha = LasCha - 1;
+    strcpy(extension, LasCha + 1);
   }
-  else
+  else {
     LasCha = &FrFiNa[0] + LengStr - 1;
+    extension[0] = '\0';
+  }
   strcpy(LasCha + 1, suffix);
+  LengStr = strlen(&FrFiNa[0]);
+  strcpy(&FrFiNa[0 + LengStr], extension);
 
   // Then we simply call the normal version of ExtOutNam
   ExtOutNam(FrFiNa, FrFiNa_out);
