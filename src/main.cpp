@@ -293,10 +293,10 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 #endif
 
   #ifdef ENABLE_MPI // start MPI universe!
-   MPI_Init(&argc,&argv); // Initialize MPI
-   MPI_Comm_size(MPI_COMM_WORLD,&numtasks); // get number of tasks
-   MPI_Comm_rank(MPI_COMM_WORLD,&myrank); // get my rank
-   MPI_Get_processor_name(processor_name, &name_len); // get processor name
+  MPI_Init(&argc,&argv); // Initialize MPI
+  MPI_Comm_size(MPI_COMM_WORLD,&numtasks); // get number of tasks
+  MPI_Comm_rank(MPI_COMM_WORLD,&myrank); // get my rank
+  MPI_Get_processor_name(processor_name, &name_len); // get processor name
   #endif
   /*
      allocation in block size  -> to do realloc increase
@@ -396,6 +396,8 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   #ifdef ENABLE_MPI // add suffix corresponding to the part
   ExtOutNam(FrFiNa, FrFiNa_out, myrank); // overloaded in case we use MPI
   ExtOutNam(OutFil, dummyStr, myrank);
+
+  MPI_Barrier(MPI_COMM_WORLD);
   #else
   ExtOutNam(FrFiNa,FrFiNa_out);
   #endif
@@ -4994,6 +4996,25 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
     /* time_8*0.01); */
     fclose(FPaOut);
 
+    #ifdef ENABLE_MPI
+    MPI_Barrier(MPI_COMM_WORLD);
+    int dummyMpi;
+    int endtag = 777;
+    MPI_Status status;
+    if (myrank == MASTERRANK){
+      for (i = 1; i <= numtasks - 1; i++){
+        MPI_Send(&dummyMpi, 1, MPI_INT, i, endtag, MPI_COMM_WORLD);
+      }
+    } else {
+      MPI_Recv(&dummyMpi, 1, MPI_INT, MASTERRANK, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+      if (status.MPI_TAG == endtag){
+        fprintf(stdout, "Rank %d received correct end message from rank %d\n", myrank, MASTERRANK);
+      } else {
+        fprintf(stderr, "Fatal. Received bad message \'%d\' from master rank. Expected \'%d\'\n", status.MPI_TAG, endtag);
+        MPI_Abort(MPI_COMM_WORLD, 1); // double check if it is correct to stop execution like this
+      }
+    }
+    #endif
 
     /* clean-up */
     free_ivector(Index_ro,1,currentsize);
