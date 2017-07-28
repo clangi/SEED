@@ -3311,6 +3311,11 @@ double ***DeltaPrDeso --- Elec desolvation due to the occupation of a grid point
   FILE *WriFile,*ReaFile;
 
   if (DesoMapAcc[0] == 'w') {
+    #ifdef ENABLE_MPI
+    int myrank;
+    MPI_Comm_rank(MPI_COMM_WORLD,&myrank);
+    if (myrank == MASTERRANK){
+    #endif
 /* Write the D vector on the output file */
 #ifndef NOWRITE
     WriFile=fopen(DesoMapFile,"w");
@@ -3327,6 +3332,9 @@ double ***DeltaPrDeso --- Elec desolvation due to the occupation of a grid point
             fprintf(WriFile,"%.12f\n",DeltaPrDeso[ix][iy][iz]);
     fclose(WriFile);
 #endif
+    #ifdef ENABLE_MPI
+    }
+    #endif
   }
   else if (DesoMapAcc[0] == 'r') {
 /* Read the D vector from the input file */

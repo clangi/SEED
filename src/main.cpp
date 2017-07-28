@@ -354,7 +354,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   /* Make the directory scratch (if it does not exist)*/
   if ((stat("scratch",&DirExist) != 0)||(stat("scratch", &DirExist) == 0 && !S_ISDIR(DirExist.st_mode))){
     if(system("mkdir scratch") == -1)
-      std::cout << "Cannot create outputs directory" << std::endl;
+      std::cout << "Cannot create scratch directory" << std::endl;
   }
   /* CLANGINI 2016 END */
   /* Read the input and parameters files */
@@ -774,7 +774,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
     fprintf(FPaOut,"Number of points of the coulombic grid : %d\n\n",
         CoGPoN[1]*CoGPoN[2]*CoGPoN[3]);
     CoGrRP=d3tensor(1,CoGPoN[1],1,CoGPoN[2],1,CoGPoN[3]);
-    if (CoGrAcc[0]=='r') {
+    if (CoGrAcc[0]=='r') { // Reading case:
       FilePa=fopen(CoGrFile,"r");
       fgets_wrapper(StrLin,_STRLENGTH,FilePa);
       sscanf(StrLin,"%d%d%d",&Nx,&Ny,&Nz);
@@ -802,10 +802,13 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       }
       fclose(FilePa);
     }
-    else {
+    else { // calculating/writing case:
       CoGReP(ReAtNu,ReCoor,RePaCh,CoDieV,CoDieP,CoGrIn,CoGrSi,BSMinC,CoGPoN,
           CoGrRP);
       printf("Receptor part of the coulombic interaction -> done\n");
+      #ifdef ENABLE_MPI
+      if (myrank == MASTERRANK){
+      #endif
       if (CoGrAcc[0]=='w') {
         FilePa=fopen(CoGrFile,"w"); /* to change to "wb" for binray grids*/
         /* FilePa=fopen(CoGrFile,"wb"); /\* to change to "wb" for binray grids*\/ */
@@ -825,6 +828,9 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
         }
         fclose(FilePa);
       }
+      #ifdef ENABLE_MPI
+      }
+      #endif
     }
 
     /* times(&timevar); */
@@ -834,16 +840,14 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
     /* time_3=timevar.tms_utime+timevar.tms_stime; */
     gettimeofday(&time_2,NULL);
     gettimeofday(&time_3,NULL);
+    #ifdef ENABLE_MPI
+    MPI_Barrier(MPI_COMM_WORLD);
+    #endif
 
 
     /* Compute or read the receptor part of the van der Waals interactions on a grid */
     for (i=1;i<=3;i++)
       VWGPoN[i]=ffloor((BSMaxC[i]+VWGrIn-(BSMinC[i]-VWGrIn))/VWGrSi)+2;
-    //clangingi debug:
-    //std::cout << "(BSMinC[i]-VWGrIn)  " << (BSMinC[1]-VWGrIn) << std::endl;
-    //std::cout << "(BSMaxC[i]+VWGrIn)  " << (BSMaxC[1]+ VWGrIn) << std::endl;
-    //std::cout << "VWGPoN[i]  " << VWGPoN[1] << std::endl;
-    //end clangini debug
 
     fprintf(FPaOut,"Number of points of the van der Waals grid : %d\n\n",
         VWGPoN[1]*VWGPoN[2]*VWGPoN[3]);
@@ -873,6 +877,9 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       VWGReP(ReAtNu,ReCoor,ReVdWR_p3,ReVdWE_sr,VWGrIn,VWGrSi,BSMinC,VWGPoN,
           ReMaxC,ReMinC,VWGrRP_at,VWGrRP_re);
       printf("Receptor part of the van der Waals interaction -> done\n");
+      #ifdef ENABLE_MPI
+      if (myrank == MASTERRANK){
+      #endif
       if (VWGrAcc[0]=='w') {
         FilePa=fopen(VWGrFile,"w");
         fprintf(FilePa,"%d %d %d\n",VWGPoN[1],VWGPoN[2],VWGPoN[3]);
@@ -885,12 +892,17 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
         }
         fclose(FilePa);
       }
+      #ifdef ENABLE_MPI
+      }
+      #endif
     }
 
     /* times(&timevar); */
     /* time_4=timevar.tms_utime+timevar.tms_stime; */
     gettimeofday(&time_4,NULL);
-
+    #ifdef ENABLE_MPI
+    MPI_Barrier(MPI_COMM_WORLD);
+    #endif
   }
 
 
@@ -1159,6 +1171,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   fclose(FilePa);
 #ifdef ENABLE_MPI
   }
+  MPI_Barrier(MPI_COMM_WORLD);
 #endif
 
 
