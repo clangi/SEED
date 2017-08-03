@@ -290,6 +290,9 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   int myrank, name_len, numtasks;
   char processor_name[MPI_MAX_PROCESSOR_NAME];
   char dummyStr[_STRLENGTH];
+  double start_time, end_time, max_time; // for timing
+  int dummyMpi; // dummy
+  int endtag = 777; // for final handshaking
 #endif
 
   #ifdef ENABLE_MPI // start MPI universe!
@@ -297,6 +300,9 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   MPI_Comm_size(MPI_COMM_WORLD,&numtasks); // get number of tasks
   MPI_Comm_rank(MPI_COMM_WORLD,&myrank); // get my rank
   MPI_Get_processor_name(processor_name, &name_len); // get processor name
+
+  MPI_Barrier(MPI_COMM_WORLD); // synchronize before calculating the starting time
+  start_time = MPI_Wtime();
   #endif
   /*
      allocation in block size  -> to do realloc increase
@@ -346,6 +352,9 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   /* t_omp_start = omp_get_wtime(); */
 #endif
   /* CLANGINI 2016 */
+  #ifdef ENABLE_MPI
+  if(myrank == MASTERRANK) {
+  #endif
   /* Make the directory outputs (if it does not exist)*/
   if ((stat("outputs",&DirExist) != 0)||(stat("outputs", &DirExist) == 0 && !S_ISDIR(DirExist.st_mode))){
     if (system("mkdir outputs") == -1)
@@ -356,6 +365,10 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
     if(system("mkdir scratch") == -1)
       std::cout << "Cannot create scratch directory" << std::endl;
   }
+  #ifdef ENABLE_MPI
+  }
+  MPI_Barrier(MPI_COMM_WORLD); // Necessary to avoid problems with CheckFile function within ReInFi
+  #endif
   /* CLANGINI 2016 END */
   /* Read the input and parameters files */
   InpFil=argv[1];
@@ -5010,9 +5023,10 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
     fclose(FPaOut);
 
     #ifdef ENABLE_MPI
+    // final MPI output and handshaking:
+    end_time = MPI_Wtime() - start_time;
+    fprintf(stdout, "Rank %d finished execution after %.2f seconds\n", myrank, end_time);
     MPI_Barrier(MPI_COMM_WORLD);
-    int dummyMpi;
-    int endtag = 777;
     MPI_Status status;
     if (myrank == MASTERRANK){
       for (i = 1; i <= numtasks - 1; i++){
@@ -5026,6 +5040,10 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
         fprintf(stderr, "Fatal. Received bad message \'%d\' from master rank. Expected \'%d\'\n", status.MPI_TAG, endtag);
         MPI_Abort(MPI_COMM_WORLD, 1); // double check if it is correct to stop execution like this
       }
+    }
+    MPI_Reduce(&end_time, &max_time, 1, MPI_DOUBLE,MPI_MAX, 0, MPI_COMM_WORLD);
+    if(myrank == MASTERRANK){
+      fprintf(stdout, "\nMax execution time across all ranks (Total execution time): %.2f seconds\n", max_time);
     }
     #endif
 
