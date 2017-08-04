@@ -2575,6 +2575,9 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
                           ConfArr[SFWrNu]=Ind_num_cn;
 
+                          /* add to PoseVector for interval refinement. clangini */
+                          PoseVector.push_back(Seed::Pose(SFWrNu, ReApAt[j], FrApAt[k],
+                            SeFrAx, l*AnglRo, FrCoPo[SFWrNu]));
 
                           if(SFWrNu + 1>= currentsize)
                           {
@@ -3081,6 +3084,9 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
                         ConfArr[SFWrNu]=Ind_num_cn;
 
+                        /* add to pose vector for interval refinement. clangini */
+                        PoseVector.push_back(Seed::Pose(SFWrNu, ReDAAt[j], FrDAAt[k],
+                          SeFrAx, l*AnglRo, FrCoPo[SFWrNu]));
 
                         if(SFWrNu + 1>= currentsize)
                         {
@@ -3465,6 +3471,10 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                           }
 
                           ConfArr[SFWrNu]=Ind_num_cn;
+
+                          /* add to pose vector for interval refinement. clangini */
+                          PoseVector.push_back(Seed::Pose(SFWrNu, ReApAt[j], FrApAt[k],
+                            SeFrAx, l*AnglRo, FrCoPo[SFWrNu]));
 
                           if(SFWrNu + 1>= currentsize)
                           {
@@ -4599,7 +4609,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 #endif
               } /* end of angular interval refinement */
 
-              do_distance_minimization = false;
+              do_distance_minimization = true;
 
               if (do_distance_minimization) {
                 int n_dist_step;
@@ -4630,10 +4640,10 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                   RoSFCo[i2][2] = PoseVector.at(ClusLi_sd[i1]-1).getCoord(i2, 2);
                   RoSFCo[i2][3] = PoseVector.at(ClusLi_sd[i1]-1).getCoord(i2, 3);
                 }
-                append_pose_to_mol2(FilePa,FragNa,FrAtNu,FrBdNu,1,FrAtEl,RoSFCo,
+              /*  append_pose_to_mol2(FilePa,FragNa,FrAtNu,FrBdNu,1,FrAtEl,RoSFCo,
                                     1,FrSyAtTy,FrAtTy,CurFra,FrBdAr,
                                     FrBdTy,1,0.0,
-                                    FrPaCh,SubNa,AlTySp);
+                                    FrPaCh,SubNa,AlTySp); */
                 //std::vector<double>::iterator itDist_seq; // define iterator into the sequence
                 //for (itDist_seq = dist_seq.begin(); itDist_seq != dist_seq.end(); ++itDist_seq)
                 for (int step = 0; step < n_dist_step; step++){
@@ -4642,10 +4652,6 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     RoSFCo[i2][2] = PoseVector.at(ClusLi_sd[i1]-1).getCoord(i2, 2) + (dist_seq[step] - DA_dist) * distAxis[2];
                     RoSFCo[i2][3] = PoseVector.at(ClusLi_sd[i1]-1).getCoord(i2, 3) + (dist_seq[step] - DA_dist) * distAxis[3];
                   }
-                  append_pose_to_mol2(FilePa,FragNa,FrAtNu,FrBdNu,1,FrAtEl,RoSFCo,
-                                      1,FrSyAtTy,FrAtTy,CurFra,FrBdAr,
-                                      FrBdTy,1,0.0,
-                                      FrPaCh,SubNa,AlTySp);
                   /* Evaluate energy */
                   /* evaluate energy for starting point */
                   Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);
@@ -4677,6 +4683,11 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                   dist_search_en[step].Df = SFDeso_fr*FrDesoElec;
                   dist_search_en[step].Dr = SFDeso_re*ReDesoElec;
                   dist_search_en[step].calcTot();
+
+                  append_pose_to_mol2(FilePa,FragNa,FrAtNu,FrBdNu,1,FrAtEl,RoSFCo,
+                                      PoseVector[ClusLi_sd[i1]-1].getFr_nu(),FrSyAtTy,FrAtTy,CurFra,FrBdAr,
+                                      FrBdTy,1, dist_search_en[step].Tot,
+                                      FrPaCh,SubNa,AlTySp);
                 }
                 fclose(FilePa);
                 /* Save energies to file */
@@ -4685,12 +4696,12 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                   for (int p = 0; p < n_dist_step; p++){
                     dist_search_outFile << std::left << std::setw(30) <<  FragNa << std::right
                       << std::setw(8)  << PoseVector[ClusLi_sd[i1]-1].getFr_nu()
-                      << std::setw(10) << dist_seq[p]
-                      << std::setw(10) << dist_search_en[p].Tot
-                      << std::setw(10) << dist_search_en[p].In
-                      << std::setw(10) << dist_search_en[p].Dr
-                      << std::setw(10) << dist_search_en[p].Df
-                      << std::setw(10) << dist_search_en[p].VW
+                      << std::setw(10) << dist_seq[p] << " "
+                      << std::setw(10) << dist_search_en[p].Tot << " "
+                      << std::setw(10) << dist_search_en[p].In << " "
+                      << std::setw(10) << dist_search_en[p].Dr << " "
+                      << std::setw(10) << dist_search_en[p].Df << " "
+                      << std::setw(10) << dist_search_en[p].VW << " "
                       << std::endl;
                   }
                 } else {
