@@ -1,4 +1,4 @@
-CXXFLAGS = -std=c++11 -O3 -pedantic -Wall -march=native -DUSE_QUATERNION_ROTATION -DDEBUG_DISTSEARCH #-DDEBUG_CL
+CXXFLAGS = -std=c++11 -O3 -pedantic -Wall -march=native -DUSE_QUATERNION_ROTATION -DDEBUG_INTREF #-DDEBUG_CL
 CXX = g++
 LDFLAGS = -lm -O3 -static
 INC_FLAGS = -I. -I./lib/

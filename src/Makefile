@@ -4,7 +4,7 @@
 # Folders:
 #SRC_DIR = .
 BUILD_DIR = build
-TARGET_EXEC = seed_4_linesearch
+TARGET_EXEC = seed_4_bothsearch
 
 # Flags:
 CXXFLAGS = -std=c++11 -O3 -pedantic -Wall -march=native
