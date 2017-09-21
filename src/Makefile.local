@@ -1,4 +1,9 @@
-CXXFLAGS = -std=c++11 -O3 -pedantic -Wall -march=native -DUSE_QUATERNION_ROTATION -DENABLE_MPI #-DDEBUG_CL
-CXX = mpic++
-LDFLAGS = -O3 -l:libmpi_cxx.so.1.0.2
-INC_FLAGS = -I. -I./lib/ 
+CXXFLAGS = -std=c++11 -O3 -pedantic -Wall -march=native -DUSE_QUATERNION_ROTATION #-DDEBUG_CL
+CXX = g++
+LDFLAGS = -lm -O3 -static
+INC_FLAGS = -I. -I./lib/
+
+# For seed MPI:
+MPICXX = mpic++
+MPICXXFLAGS = -std=c++11 -O3 -pedantic -Wall -march=native -DUSE_QUATERNION_ROTATION
+MPILDFLAGS = -lm -O3 -l:libmpi_cxx.so.1.0.2
