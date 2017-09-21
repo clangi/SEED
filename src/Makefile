@@ -16,11 +16,11 @@ include Makefile.local
 
 DEP_FLAGS = $(INC_FLAGS) -MMD -MP
 
-PRESRCLIST = align_frag assire checkresn cofren cogrep conubu convert2pp count_heavy_atom extoutnam featres fialhy findfrsym fracdo geomcent geomfu hybstat listchres main makbsatlist makspv nrutil otfunc psspee psspma reacdo reduc_polvectre refrfi_coo_mol2 refrfi_mol2_new reinfi relaic relaic_en rerefi_mol2 rosefr seedfr_ap seedfr simila solv_frag solv_frag_fast solv_lookup solv_util sort_all sort sqdisfrre_ps vwfren vwgrep write_charmm write_chm_clus write_mol2 
-SRCLIST = $(PRESRCLIST:%=%.c)
+PRESRCLIST = align_frag assire checkresn cofren cogrep conubu convert2pp count_heavy_atom extoutnam featres fialhy findfrsym fracdo geomcent geomfu hybstat listchres main makbsatlist makspv nrutil otfunc psspee psspma reacdo reduc_polvectre refrfi_coo_mol2 refrfi_mol2_new reinfi relaic relaic_en rerefi_mol2 rosefr seedfr_ap seedfr simila solv_frag solv_frag_fast solv_lookup solv_util sort_all sort sqdisfrre_ps vwfren vwgrep write_charmm write_chm_clus write_mol2
+SRCLIST = $(PRESRCLIST:%=%.cpp)
 #SRCS = $(SRCLIST:%=$(SRC_DIR)/%)
 SRCS = $(SRCLIST)
-OBJS = $(SRCLIST:%.c=$(BUILD_DIR)/%.o)
+OBJS = $(SRCLIST:%.cpp=$(BUILD_DIR)/%.o)
 DEPS = $(OBJS:%.o=%.d)
 
 # Commands:
@@ -30,14 +30,18 @@ RMDIR = rmdir
 ECHO = @echo
 
 # Targets:
+.PHONY: seed
 seed: $(TARGET_EXEC)
 
 $(TARGET_EXEC): $(OBJS)
 	$(CXX) $(OBJS) $(LDFLAGS) -o $@
 
-$(BUILD_DIR)/%.o: %.cpp
-	$(MKDIR_P) $(BUILD_DIR)
+# Using order-only prerequisite to build the directory
+$(BUILD_DIR)/%.o: %.cpp | $(BUILD_DIR)
 	$(CXX) -c $(CXXFLAGS) $(DEP_FLAGS) $< -o $@
+
+$(BUILD_DIR):
+	$(MKDIR_P) $@
 
 -include $(DEPS)
 
