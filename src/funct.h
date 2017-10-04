@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdio>
 #include "quaternion.h"
+#include "Parameter.h"
 #define sqrtf sqrt
 #define sinf sin
 #define cosf cos
@@ -54,18 +55,20 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
             char *CoGrFile,char *EvalEn,char *Solv_typ,
             char *SpPoCh_opt,double *SpPoCh_cent,double *SpPoCh_rad,
             double *SFDeso_fr,double *SFDeso_re,double *SFVWEn,double *SFIntElec,
-            int *NuClusMem,int *NuPosMem,double *RedRPV_rp,double *RedRPV_nkvDens,double *ScMaBump, /*int *RedRPV_nkv, dey new*/
+            int *NuClusMem,int *NuPosMem,double *RedRPV_rp,
+            double *RedRPV_nkvDens,double *ScMaBump, /*int *RedRPV_nkv, dey new*/
             double *MuFaVdWCoff_ap,int *NuLiEnClus,char *ApPoChoi,
             double *VWGrIn,double *VWGrSi,double *BumpFaCut,char *VWGrAcc,
             char *VWGrFile,int *MaxPosClus,int *PrintLev,
             int *NumbAT,char ***AtTyAr,int **AtENAr,double **VdWRad,
             double **VdWEne,double ***BLAtTy,int *distrPointBSNumb,
-	    double ***distrPointBS,double *angle_rmin,double *angle_rmax,
-	    double *mult_fact_rmin,double *mult_fact_rmax,char *EmpCorrB,
+	          double ***distrPointBS,double *angle_rmin,double *angle_rmax,
+	          double *mult_fact_rmin,double *mult_fact_rmax,char *EmpCorrB,
             char *gc_opt,int *gc_reprke,double *gc_cutclus,double *gc_endifclus,
             double *gc_weighneg,double *gc_weighpos,int *gc_maxwrite,
             char *write_pproc_opt,char *write_pproc_chm_opt,char *write_best_opt,
-            char *write_sumtab_opt,char *write_best_sumtab_opt,double **AtWei);
+            char *write_sumtab_opt,char *write_best_sumtab_opt,double **AtWei,
+            Parameter &seed_par);
 
 void ReReFi_mol2(char *RecFil,int *ReAtNu,int *ReBdNu,int *ReReNu,
                  char ***ReAtEl,double ***ReCoor,char ***ReAtTy,int **ReResN,

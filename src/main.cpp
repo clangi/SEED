@@ -21,6 +21,7 @@
 #else
 #include <map>
 #endif
+#include <Parameter.h> //parameter class
 /* CLANGINI 2016 END */
 #include "funct.h"
 
@@ -262,6 +263,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   int *CluIndex_sort; // Array Clu index number -> sorted Clu index number clangini
   std::string AlTySp;
   std::string FragNa_str; //C++ string equivalent to FragNa
+  Parameter seed_par;
 #if  __cplusplus > 199711L
   std::unordered_map<std::string, int> FragNa_map;
 #else
@@ -343,7 +345,6 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   /* CLANGINI 2016 END */
   /* Read the input and parameters files */
   InpFil=argv[1];
-
   /* Check presence of input file */
   CheckFile(InpFil,'r');
 
@@ -365,7 +366,8 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       &distrPointBS,&angle_rmin,&angle_rmax,&mult_fact_rmin,&mult_fact_rmax,
       EmpCorrB,gc_opt,&gc_reprke,&gc_cutclus,&gc_endifclus,&gc_weighneg,
       &gc_weighpos,&gc_maxwrite,write_pproc_opt,write_pproc_chm_opt,
-      write_best_opt,write_sumtab_opt,write_best_sumtab_opt,&AtWei);/*clangini*/
+      write_best_opt,write_sumtab_opt,write_best_sumtab_opt,&AtWei,
+      seed_par);/*clangini*/
 
   /* Check presence of parameter file */
   CheckFile(TREFiP,'r'); /* clangini This is superflous after already having read the parameters*/

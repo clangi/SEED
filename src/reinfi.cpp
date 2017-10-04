@@ -30,8 +30,8 @@
             char *VWGrFile,int *MaxPosClus,int *PrintLev,
             int *NumbAT,char ***AtTyAr,int **AtENAr,double **VdWRad,
             double **VdWEne,double ***BLAtTy,int *distrPointBSNumb,
-	    double ***distrPointBS,double *angle_rmin,double *angle_rmax,
-	    double *mult_fact_rmin,double *mult_fact_rmax,char *EmpCorrB,
+	          double ***distrPointBS,double *angle_rmin,double *angle_rmax,
+	          double *mult_fact_rmin,double *mult_fact_rmax,char *EmpCorrB,
             char *gc_opt,int *gc_reprke,double *gc_cutclus,double *gc_endifclus,
             double *gc_weighneg,double *gc_weighpos,int *gc_maxwrite,
             char *write_pproc_opt,char *write_pproc_chm_opt,int *CorrFiNumb)*/
@@ -58,12 +58,13 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
             char *VWGrFile,int *MaxPosClus,int *PrintLev,
             int *NumbAT,char ***AtTyAr,int **AtENAr,double **VdWRad,
             double **VdWEne,double ***BLAtTy,int *distrPointBSNumb,
-	    double ***distrPointBS,double *angle_rmin,double *angle_rmax,
-	    double *mult_fact_rmin,double *mult_fact_rmax,char *EmpCorrB,
+	          double ***distrPointBS,double *angle_rmin,double *angle_rmax,
+	          double *mult_fact_rmin,double *mult_fact_rmax,char *EmpCorrB,
             char *gc_opt,int *gc_reprke,double *gc_cutclus,double *gc_endifclus,
             double *gc_weighneg,double *gc_weighpos,int *gc_maxwrite,
             char *write_pproc_opt,char *write_pproc_chm_opt,char *write_best_opt,
-            char *write_sumtab_opt,char *write_best_sumtab_opt,double **AtWei)
+            char *write_sumtab_opt,char *write_best_sumtab_opt,double **AtWei,
+            Parameter &seed_par)
 /* This function reads the data of the input (InpFil) and parameters (TREFiP)
    files :
    OutFil  path of the file containing the output informations
@@ -136,7 +137,7 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
    RedRPV_nkv  maximal number of kept vectors in the reducing of the receptor
                polar vectors -> deprecated
    RedRPV_nkvRatio  Ratio  (kept vectors / (total number of donor & acceptor vectors))
-               to reduce number of polar vectors in binding site
+                    to reduce number of polar vectors in binding site
    ScMaBump  scaling factor for computing the maximal number of tolerated
              bumps
    MuFaVdWCoff_ap  multiplicative factor used for computing the van der Waals
@@ -145,7 +146,7 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
                sorted energies and the two clustering procedures
    ApPoChoi  user choice between apolar or polar seeding for each fragment
              type (a,p,n)
-   VWGrIn  van der Waals grid increase
+   VWGrIn van der Waals grid increase
    VWGrSi  van der Waals grid size
    BumpFaCut  cutoff (maximal vdW energy) for bump checking with fast energy
               evaluation
@@ -159,19 +160,17 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
    VdWRad  van der Waals radii
    VdWEne  van der Waals energies
    BLAtTy  bond lengths between atom types in the hydrogen bond making
-   distrPointBSNumb  number of points in the binding site used for the
-                     reduction of polar and apolar vectors using an
-		     angle criterion
+           distrPointBSNumb  number of points in the binding site used for the
+           reduction of polar and apolar vectors using an angle criterion
    distrPointBS  distribution of points in the binding site used for
-                 the reduction of polar and apolar vectors using an
-		 angle criterion
+                 the reduction of polar and apolar vectors using an angle criterion
    angle_rmin  angle cutoff for the reduction of vectors
    angle_rmax  angle cutoff for the reduction of vectors
    mult_fact_rmin  multiplicative factor for the reduction of vectors
    mult_fact_rmax  multiplicative factor for the reduction of vectors
    EmpCorrB  empirical correction term (y,n) to the Coulomb field
              approximation for the accurate screened interaction and
-	     fragment desolvation energies */
+	           fragment desolvation energies */
 {
     FILE *FilePa,*FilePa2;/* unused variable : ,*FilChk;*/
   /* char StrLin[_STRLENGTH], **FrFiNa_L,**ApPoChoi_L,**AtTyAr_L; */
@@ -535,7 +534,20 @@ written in output file*/ //clangini
    Printing level (0,1->preprocess,2->second clustering) */
   SkipComLin(FilePa,StrLin);
   sscanf(StrLin,"%d%d",NuLiEnClus,PrintLev);
+/* Parameters for MC run */
+  SkipComLin(FilePa, StrLin);
+  sscanf(StrLin, "%c", &(seed_par.do_mc));
 
+  if (seed_par.do_mc == 'y'){
+    SkipComLin(FilePa, StrLin);
+    sscanf(StrLin, "%lf", &(seed_par.mc_temp));
+    SkipComLin(FilePa, StrLin);
+    sscanf(StrLin, "%lf", &(seed_par.mc_max_tran_step));
+    SkipComLin(FilePa, StrLin);
+    sscanf(StrLin, "%lf", &(seed_par.mc_max_rot_step));
+    SkipComLin(FilePa, StrLin);
+    sscanf(StrLin, "%d", &(seed_par.mc_niter));
+  }
 /* CLANGINI 2016 END */
 
 /* Read NumbAT AtTyAr AtENAr VdWRad VdWEne */
@@ -602,21 +614,15 @@ written in output file*/ //clangini
   /*clangini START Read atomic weights */
   SkipComLin(FilePa,StrLin);
   sscanf(StrLin,"%d",&UsVal2); // Number of elements (without element 0)
-  //std::cout << "UsVal2 "<<UsVal2<<std::endl;
   *AtWei=dvector(0,UsVal2);
   for (k=0;k<=UsVal2;k++) {
     fgets_wrapper(StrLin,_STRLENGTH,FilePa);
     sscanf(StrLin,"%s%d%lf",dummyStr,&AtEl,&(*AtWei)[k]);
-    //std::cout << "dummyStr: "<<dummyStr
-    //          << " AtEl: "<< AtEl
-    //          << " k: " << k
-    //          << " (*AtWei)[k]" << (*AtWei)[k] << std::endl;
     if (k != AtEl){
       std::cerr << "Atom is missing in the atomic weight list! Exit program!" << std::endl;
       exit(12);
     }
   }
-  //std::cout << "Example Atom Weight[10]: " << (*AtWei)[10] << std::endl;
   /*clangini END*/
   fclose(FilePa);
 
