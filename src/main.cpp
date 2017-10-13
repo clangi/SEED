@@ -7,6 +7,8 @@
 #include <sys/time.h>
 /* CLANGINI 2016 */
 //#include <boost/math/constants/constants.hpp>
+#include "boost/random.hpp" // for random number generation
+#include "boost/generator_iterator.hpp"
 #include <sys/stat.h> /* to check for directory existence (consider changing using boost/system instead) */
 #include <iostream>
 #include <iomanip>
@@ -263,7 +265,16 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   int *CluIndex_sort; // Array Clu index number -> sorted Clu index number clangini
   std::string AlTySp;
   std::string FragNa_str; //C++ string equivalent to FragNa
+  /* params for MC run */
   Parameter seed_par;
+  int do_rot_move;
+  bool accept_move;
+  double old_mc_en, new_mc_en, **old_mc_FrCoor;
+  boost::mt11213b rng;
+  rng.seed(time(NULL));
+  boost::uniform_01<> accept_distrib;
+  boost::variate_generator<mt11213b&, boost::uniform_01<> > p_acc(rng,
+      accept_distrib); // glue together random number generator and distribution
 #if  __cplusplus > 199711L
   std::unordered_map<std::string, int> FragNa_map;
 #else
@@ -4293,7 +4304,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
          fclose(FPaOut);
        */
 
-      if (Solv_typ[0]=='p') {
+      if (Solv_typ[0]=='p') { // if we are in the post-process scheme -> now evaluate slow energy
 
         FPaOut=fopen(OutFil,"a");
 
@@ -4414,8 +4425,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 (ConfArr[ClusLi_sd[i1]]==Ind_num_cn)) {
 
               for (i2=1;i2<=FrAtNu;i2++) {
-                RoSFCo[i2][1]=FrCoPo[ClusLi_sd[i1]][i2][1];
-                RoSFCo[i2][2]=FrCoPo[ClusLi_sd[i1]][i2][2];
+                RoSFCo[i2][1]=FrCoPo[ClusLi_sd[i1]][i2][1]; // sets the coordinates RoSFCo
+                RoSFCo[i2][2]=FrCoPo[ClusLi_sd[i1]][i2][2]; // of the current pose we are analyzing. clangini
                 RoSFCo[i2][3]=FrCoPo[ClusLi_sd[i1]][i2][3];
               }
 
@@ -4461,6 +4472,46 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
               Df_s_ro[ClusLi_sd[i1]]=SFDeso_fr*FrDesoElec;
               To_s_ro[ClusLi_sd[i1]]=VW_s_ro[ClusLi_sd[i1]]+In_s_ro[ClusLi_sd[i1]]+
                                      Dr_s_ro[ClusLi_sd[i1]]+Df_s_ro[ClusLi_sd[i1]];
+
+              if (seed_par.do_mc == 'y'){
+                /* MC initialization */
+                if (seed_par.mc_rand_seed == -1)
+                  srand(time(NULL));
+                else {
+                  srand(seed_par.mc_rand_seed); // set random generator seed
+                  p_acc.engine.seed(seed_par.mc_rand_seed);
+                  p_acc.distribution.reset();
+                }
+
+                old_mc_en = To_s_ro[ClusLi_sd[i1]];
+                old_mc_FrCoor = dmatrix(RoSFCo, 1, FrAtNu, 1, 3);
+
+                /* main MC loop: */
+                std::cout << "Doing MC minimization... " << std::endl;
+                for (int cycle = 0; cycle < params.mc_niter; cycle++){
+                  accept_move = false;
+                  do_rot_move = rand() % 2; // doing a rotational move?
+
+                  if (do_rot_move){
+                    //do_rot_move();
+                  }
+                  else {
+                    //do_trans_move;
+                  }
+
+                  if (new_mc_en < old_mc_en){
+                    accept_move = true;
+                  } else {
+
+                  }
+
+                  if (!accept_move){
+                    // reset coord
+                  }
+
+                }
+                free_dmatrix(old_mc_FrCoor, 1, FrAtNu, 1, 3);
+              } // end of if (seed_par.do_mc == 'y')
 
             }
 

@@ -1,5 +1,6 @@
 //#include "quaternion.h"
 #include "math.h"
+#include "stdlib.h"
 
 template <class T>
 int Quaternion<T>::created = 0;
@@ -49,6 +50,17 @@ Quaternion<T>::Quaternion(const Quaternion<T>& q){//Copy constructor
 }
 
 template <class T>
+Quaternion<T>::Quaternion(const RndQuatExpr& rndq){//Copy constructor
+  srand(rndq.seed);
+  w = rand() % 100;
+  x = rand() % 100;
+  y = rand() % 100;
+  z = rand() % 100;
+  created++;
+  total_number++;
+}
+
+template <class T>
 Quaternion<T>::~Quaternion(){
   destroyed++;
   total_number--;
@@ -77,6 +89,16 @@ const Quaternion<T>& Quaternion<T>::operator=(const Quaternion<T>& q){
     y = q.y;
     z = q.z;
   //}
+  return *this;
+}
+
+template <class T>
+const Quaternion<T>& Quaternion<T>::operator=(const RndQuatExpr rhs){
+  srand(rhs.seed);
+  w = rand() % 100;
+  x = rand() % 100;
+  y = rand() % 100;
+  z = rand() % 100;
   return *this;
 }
 
@@ -163,10 +185,11 @@ Quaternion<T> Quaternion<T>::normalize(void){
 }
 template<class T>
 void Quaternion<T>::norm_inplace(void){
-  w = w/(this->norm());
-  x = x/(this->norm());
-  y = y/(this->norm());
-  z = z/(this->norm());
+  T norm_o = (this->norm());
+  w = w/norm_o;
+  x = x/norm_o;
+  y = y/norm_o;
+  z = z/norm_o;
 }
 
 template<class T>
@@ -252,4 +275,22 @@ const Quaternion<T>& Quaternion<T>::fromAngleAxis(T angle, T ax1, T ax2, T ax3){
   y = ax2*sin_half;
   z = ax3*sin_half;
   return (*this);
+}
+
+// template<class T>
+// const Quaternion<T> Quaternion<T>::randomQuaternion(){
+//   Quaternion<T> q(rand() % 100, rand()%100, rand()%100, rand()%100);
+//   return q;
+// }
+
+template<class T>
+const RndQuatExpr Quaternion<T>::randomQuaternion(int seed){
+  return RndQuatExpr(seed);
+}
+
+template<class T>
+Quaternion<T> Quaternion<T>::getRandom_MC_quaternion(){
+  Quaternion<T> q(rand()%100, rand()%100, rand()%100, rand()%100);
+  q.norm_inplace();
+  return q;
 }

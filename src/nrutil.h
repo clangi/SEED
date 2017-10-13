@@ -53,6 +53,9 @@ unsigned char *cvector(long nl, long nh);
 unsigned long *lvector(long nl, long nh);
 double *dvector(long nl, long nh);
 float **matrix(long nrl, long nrh, long ncl, long nch);
+double **dmatrix(double **s, long nrl, long nrh, long ncl, long nch);
+void copy_dmatrix(double **source, double **dest, long nrl, long nrh,
+                  long ncl, long nch);
 double **dmatrix(long nrl, long nrh, long ncl, long nch);
 int **imatrix(long nrl, long nrh, long ncl, long nch);
 float **submatrix(float **a, long oldrl, long oldrh, long oldcl, long oldch,

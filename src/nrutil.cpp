@@ -115,6 +115,49 @@ float **matrix(long nrl, long nrh, long ncl, long nch)
     }
   return NULL;
 }
+void copy_dmatrix(double **source, double **dest, long nrl, long nrh,
+                  long ncl, long nch)
+/* copy content of matrix source into matrix dest */
+{
+  for (int i = nrl; i <= nrh; i++){
+    for (int j = ncl; j <= nch; j++){
+      dest[i][j] = source[i][j];
+    }
+  }
+}
+double **dmatrix(double **s, long nrl, long nrh, long ncl, long nch)
+/* allocate a double matrix m with subscript range m[nrl..nrh][ncl..nch]
+   and copy the values of s in it. clangini */
+{
+  if(nrh>=nrl && nch>=ncl)
+    {
+      long i,j, nrow=nrh-nrl+1,ncol=nch-ncl+1;
+      double **m;
+
+      /* allocate pointers to rows */
+      m = (double **) malloc((size_t)((nrow+NR_END)*sizeof(double*)));
+      if (!m) nrerror("allocation failure 1 in matrix()");
+      m += NR_END;
+      m -= nrl;
+
+      /* allocate rows and set pointers to them */
+      m[nrl]=(double *) malloc((size_t)((nrow*ncol+NR_END)*sizeof(double)));
+      if (!m[nrl]) nrerror("allocation failure 2 in matrix()");
+      m[nrl] += NR_END;
+      m[nrl] -= ncl;
+
+      for(i=nrl+1;i<=nrh;i++) m[i]=m[i-1]+ncol;
+      /* copy content of s into m */
+      for (i = nrl; i <= nrh; i++){
+        for (j = ncl; j <= nch; j++){
+          m[i][j] = s[i][j];
+        }
+      }
+      /* return pointer to array of pointers to rows */
+      return m;
+    }
+  return NULL;
+}
 
 double **dmatrix(long nrl, long nrh, long ncl, long nch)
 /* allocate a double matrix with subscript range m[nrl..nrh][ncl..nch] */

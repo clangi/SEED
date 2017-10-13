@@ -21,7 +21,7 @@ void PsSpEE(int FrAtNu,int ReAtNu,double *ReVdWE_sr,double *FrVdWE_sr,
 
       if (RFSqDi>=0.0) {
 
-        if (RFSqDi>(1.e-4)) {
+        if (RFSqDi>(1.e-4)) { // is it necessary? maybe to avoid overflow. clangini.
 
           RFSqDi_p3=RFSqDi*RFSqDi*RFSqDi;
           SumRad=ReVdWR[j]+FrVdWR[i];

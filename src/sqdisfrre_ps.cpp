@@ -61,10 +61,6 @@ void SqDisFrRe_ps(int FrAtNu,double **RoSFCo,double **ReCoor,double *ReMinC,
    fragment atom is */
     for (j=1;j<=3;j++)
       CubAto[j]=ffloor((RoSFCo[i][j]-ReMinC[j])/GrSiCu_en)+1;
-    //clangini debug start
-    //std::cout << "CubAto[xyz] = " << CubAto[1] << "  " << CubAto[2] << "  "
-    //          << CubAto[3] << "  " << std::endl;
-    //clangini debug end
 
 /* Loop over the cube of the pseudo-sphere */
     for (j=-PsSpNC;j<=PsSpNC;j++) {
@@ -72,6 +68,7 @@ void SqDisFrRe_ps(int FrAtNu,double **RoSFCo,double **ReCoor,double *ReMinC,
         for (m=-PsSpNC;m<=PsSpNC;m++) {
 
 /* The cube of the pseudo-sphere must have a value of 1 */
+/* This means that I should be within the pseudo-sphere. clangini */
           if (PsSphe[j+PsSpNC+1][k+PsSpNC+1][m+PsSpNC+1]) {
 
 /* Check whether the list of residue-representative atoms cube exists */
@@ -94,14 +91,16 @@ void SqDisFrRe_ps(int FrAtNu,double **RoSFCo,double **ReCoor,double *ReMinC,
 /* Take the residue into account only if this distance (between the current
    fragment atom and the current residue-representative atom) is smaller or
    equal to the pseudo-sphere radius */
+/* Residue is taken into account only if it is within the cut-off distance
+   from the current fragment atom. clangini */
                   if (RFSqDi<=PsSpRa_sq) {
                     ResFlag[CubLiA_en[n]]=1;
 /* Loop over the current residue atoms */
                     for (p=FiAtRes[CubLiA_en[n]];p<=LaAtRes[CubLiA_en[n]];p++) {
                       RFSqDi=DistSq(RoSFCo[i][1],RoSFCo[i][2],RoSFCo[i][3],
                                     ReCoor[p][1],ReCoor[p][2],ReCoor[p][3]);
-                      SDFrRe_ps[i][p]=RFSqDi;
-                      SDFrRe_ps_elec[i][p]=RFSqDi;
+                      SDFrRe_ps[i][p] = RFSqDi;
+                      SDFrRe_ps_elec[i][p] = RFSqDi;
                     }
                   }
 
@@ -110,11 +109,6 @@ void SqDisFrRe_ps(int FrAtNu,double **RoSFCo,double **ReCoor,double *ReMinC,
               }
 
             }
-            //clangini debug start:
-            //else{
-            //  std::cout << "Out of the grid list" << std::endl;
-            //}
-            //clangini debug end
           }
 
         }

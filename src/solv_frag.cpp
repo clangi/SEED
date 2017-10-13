@@ -27,7 +27,7 @@ void ElecFrag(int ReAtNu,double **ReCoor,double *RePaCh,
               int nymaxBS,int nzmaxBS,double corr_scrint,
               double corr_fr_deso,double *PReDesoElec,
               double *PReFrIntElec,double *PFrDesoElec,double *ReSelfVol_corrB,
-	      char *EmpCorrB, FILE * FPaOut)
+	            char *EmpCorrB, FILE * FPaOut)
 /*########################################################################
 Continuum Electrostatics: it calculates the rec and frag desolvation,
 as well as the screened interaction. Slow and precise method
@@ -243,7 +243,7 @@ struct point *surfpt_fr - Coor of points over frag SAS1 (relative to RoSFCo)
    his receptor neighbours)
   printf("\tNew arrays for the ''Extended fragment''...\n"); */
 
-  ExFrAtNu = FrAtNu + NNeigh1;
+  ExFrAtNu = FrAtNu + NNeigh1; // receptor neighbours from NNeigh1. clangini
   ExRoSFCo = dmatrix(1,ExFrAtNu,1,3);
   ExFrRad = dvector(1,ExFrAtNu);
   ExFrRadOut = dvector(1,ExFrAtNu);
@@ -286,11 +286,12 @@ struct point *surfpt_fr - Coor of points over frag SAS1 (relative to RoSFCo)
    enclosed by the SAS of the "extended fragment"
   printf("\tMap of volume enclosed by the SAS for the fragment...\n");
   ntime = clock(); */
-  FrGridMat = c3tensor(nxminFr,nxmaxFr+1,nyminFr,nymaxFr+1,nzminFr,nzmaxFr+1);
+  FrGridMat = c3tensor(nxminFr,nxmaxFr+1,nyminFr,nymaxFr+1,nzminFr,nzmaxFr+1); // Why do we use +1? clangini
   for (ix=nxminFr;ix<=nxmaxFr+1;ix++)
     for (iy=nyminFr;iy<=nymaxFr+1;iy++)
       for (iz=nzminFr;iz<=nzmaxFr+1;iz++)
         FrGridMat[ix][iy][iz] = 'e';
+
   nn = SAS_Volume_Fr(ExFrAtNu,ExRoSFCo,ExFrRadOut,ExFrRadOut2,Min,GrSiSo,
                      nxminFr,nyminFr,nzminFr,nxmaxFr,nymaxFr,nzmaxFr,
                      FrGridMat,GridMat,FrOut);
@@ -318,8 +319,8 @@ struct point *surfpt_fr - Coor of points over frag SAS1 (relative to RoSFCo)
   nxmax_big = (nxmaxFr > NGridx) ? nxmaxFr : NGridx;
   nymax_big = (nymaxFr > NGridy) ? nymaxFr : NGridy;
   nzmax_big = (nzmaxFr > NGridz) ? nzmaxFr : NGridz;
-/* Check if fragment is out of the grid: if yes cut the part that is out */
 //clangini debug start
+/* Check if fragment is out of the grid: if yes cut the part that is out */
   // //nxmin_sma = (nxminFr > nxminBS) ? nxminFr : nxminBS;
   // if (nxminFr > nxminBS){
   //   std::cout << "nxminFr > nxminBS" << std::endl;
@@ -425,12 +426,12 @@ struct point *surfpt_fr - Coor of points over frag SAS1 (relative to RoSFCo)
   printf("\n\tProtein desolvation...\n");
   printf("\tOut %d\n",FrOut); */
   *PReDesoElec = 0.;
-  if ( FrOut != 2 )
+  if ( FrOut != 2 ) // if fragment is not completely out of BS
     for (ix=nxmin_sma;ix<=nxmax_sma;ix++)
       for (iy=nymin_sma;iy<=nymax_sma;iy++)
         for (iz=nzmin_sma;iz<=nzmax_sma;iz++)
           if (FrGridMat[ix][iy][iz] == 'o')
-            *PReDesoElec += DeltaPrDeso[ix][iy][iz];
+            *PReDesoElec += DeltaPrDeso[ix][iy][iz]; // eq. (5) from SEED 3.3.6 manual
 
 /* Calculate the effective volumes of the receptor in presence of the ligand
   printf("\n\tEffective volumes of the receptor...\n");
@@ -469,7 +470,7 @@ struct point *surfpt_fr - Coor of points over frag SAS1 (relative to RoSFCo)
 /* Calculate the effective radii of the receptor
   printf("\n\tEffective radii of the receptor...\n"); */
   ReEffRad=dvector(1,ReAtNu);
-  for (iat=1;iat<=NNeigh3;iat++)
+  for (iat=1;iat<=NNeigh3;iat++) // calculate the ReEffRad only for atoms within the cutoff. clangini
   {
     if (EmpCorrB[0]!='y')
       ReEffRad[NeighList3[iat]] = 1. / ( 1./ReRadOut[NeighList3[iat]] -
@@ -1482,10 +1483,13 @@ int Get_Self_Vol_Re(int ReAtNu,double **ReCoor,int NFrNeigh,int *FrNeighList,
                     int NStartGridx,int NStartGridy,int NStartGridz,
                     int NGridx,int NGridy,int NGridz,
                     double UnitVol,char ***GridMat,double *SelfVol,
-		    double *SelfVol_corrB,char *EmpCorrB)
+		                double *SelfVol_corrB,char *EmpCorrB)
 /*##########################################
 For rec atoms: Add to the integral of 1/r^4 resulting from
 the isolated rec the contribution due to the presence of the frag
+
+SelfVol has already been calculated for the isolated receptor. Here we add the
+integral on the volume occupied by the fragment.
 ###########################################*/
 
 /*##########################################
@@ -1751,16 +1755,16 @@ double *SelfVol --------- SelfVol[iat] = integral of 1/r^4 over the solute
                      r2 > FrRad2[iat] && r2 <= FrRadOut2[iat] ) {
                   r4 = r2 * r2;
                   SelfVol[iat] -= UnitVol / r4;
-		  if (EmpCorrB[0]=='y')
-		    SelfVol_corrB[iat] -= UnitVol / (r4*sqrt(r2));
+		              if (EmpCorrB[0]=='y')
+		                SelfVol_corrB[iat] -= UnitVol / (r4*sqrt(r2));
                 }
                 else if ( (FrGridMat[ix][iy][iz] == 'o' ||
                            GridMat[ix][iy][iz] == 'o') &&
                            r2 > FrRadOut2[iat] ) {
                   r4 = r2 * r2;
                   SelfVol[iat] += UnitVol / r4;
-		  if (EmpCorrB[0]=='y')
-		    SelfVol_corrB[iat] += UnitVol / (r4*sqrt(r2));
+		              if (EmpCorrB[0]=='y')
+		                SelfVol_corrB[iat] += UnitVol / (r4*sqrt(r2));
                 }
               }
               else if ( (ix >= nxminFr && ix <= nxmaxFr+1 &&
@@ -1777,8 +1781,8 @@ double *SelfVol --------- SelfVol[iat] = integral of 1/r^4 over the solute
                 if ( r2 > FrRadOut2[iat] && r2 < cutoff1sq) {
                   r4 = r2 * r2;
                   SelfVol[iat] += UnitVol / r4;
-		  if (EmpCorrB[0]=='y')
-		    SelfVol_corrB[iat] += UnitVol / (r4*sqrt(r2));
+		              if (EmpCorrB[0]=='y')
+		                SelfVol_corrB[iat] += UnitVol / (r4*sqrt(r2));
                 }
               }
             }

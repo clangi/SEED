@@ -5,6 +5,12 @@
 //#include <math.h>
 //#include "nrutil.h"
 
+class RndQuatExpr {
+  public:
+    int seed;
+    RndQuatExpr(int seed_): seed(seed_) { }
+};
+
 template <class T>
 class Quaternion {
   private:
@@ -19,6 +25,7 @@ class Quaternion {
     Quaternion(T w_i,T x_i,T y_i, T z_i);
     Quaternion(T *v);
     Quaternion(const Quaternion<T>& q); //copy constructor
+    Quaternion(const RndQuatExpr& rndq);
     //default destructor
     ~Quaternion();
     //static methods:
@@ -85,7 +92,13 @@ class Quaternion {
     const Quaternion<T>& Set(T, T, T, T);
     const Quaternion<T>& fromAngleAxis(T angle,const T *axis);
     const Quaternion<T>& fromAngleAxis(T angle,T ax1,T ax2,T ax3);
+
+    static const RndQuatExpr randomQuaternion(int seed);
+    const Quaternion<T>& operator=(const RndQuatExpr rhs);
+
+    static Quaternion<T> getRandom_MC_quaternion();
 };
+
 
 #include "quaternion_class_test.cpp"
 #endif

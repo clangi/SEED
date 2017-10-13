@@ -547,6 +547,8 @@ written in output file*/ //clangini
     sscanf(StrLin, "%lf", &(seed_par.mc_max_rot_step));
     SkipComLin(FilePa, StrLin);
     sscanf(StrLin, "%d", &(seed_par.mc_niter));
+    SkipComLin(FilePa,StrLin);
+    sscanf(StrLin, "%d", &(seed_par.mc_rand_seed));
   }
 /* CLANGINI 2016 END */
 

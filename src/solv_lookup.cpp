@@ -37,9 +37,9 @@ void Solvation(int ReAtNu,double **ReCoor,double *ReVdWE_sr,double *ReVdWR,
                int *PNapol_Vect_re,double **SelfVol,
                double *PKelec,double *PKsolv,double *PUnitVol,double pi4,
                double corr_re_desoco,double corr_re_desofd,double corr_fast_deso,
-	       int distrPointBSNumb,double **distrPointBS,double angle_rmin,
-	       double angle_rmax,double mult_fact_rmin,double mult_fact_rmax,
-	       FILE *FPaOut,double **SelfVol_corrB,char *EmpCorrB)
+	             int distrPointBSNumb,double **distrPointBS,double angle_rmin,
+	             double angle_rmax,double mult_fact_rmin,double mult_fact_rmax,
+	             FILE *FPaOut,double **SelfVol_corrB,char *EmpCorrB)
 
 /*#####################################################################################
 Continuum Electrostatics: It sets up grids and precalculates many quantities
@@ -316,7 +316,7 @@ struct point len ----------- ReMaxC - ReMinC
   printf("\tover the volume enclosed by the MS...\n");
   nn = Get_Self_Vol(ReAtNu,ReCoor,ReRadOut2,GrSiSo,*XGrid,*YGrid,*ZGrid,1,1,1,
                     NGridx,NGridy,NGridz,*PUnitVol,*GridMat,*SelfVol,
-		    *SelfVol_corrB,EmpCorrB);
+		                *SelfVol_corrB,EmpCorrB);
 
 /* Evaluation of the self energy */
   EffRad=dvector(1,ReAtNu);
@@ -328,14 +328,14 @@ struct point len ----------- ReMaxC - ReMinC
 
 
     if (EmpCorrB[0]!='y')
-      EffRad[iat] = 1. / ( 1./ReRadOut[iat] - (*SelfVol)[iat]/pi4 );
+      EffRad[iat] = 1. / ( 1./ReRadOut[iat] - (*SelfVol)[iat]/pi4 ); // eq. (14) from [Scarsi et al. 1997]. clangini
     else
     {
 
-	EffRad[iat] = 1./( (-1.*(1./ReRadOut[iat] - (*SelfVol)[iat]/pi4))
-			   + 3.0*sqrt( (1./(2.*ReRadOut[iat]*ReRadOut[iat])) -
+	     EffRad[iat] = 1./( (-1.*(1./ReRadOut[iat] - (*SelfVol)[iat]/pi4))
+			    + 3.0*sqrt( (1./(2.*ReRadOut[iat]*ReRadOut[iat])) -
 				       ((*SelfVol_corrB)[iat]/pi4) ) )
-	    + 0.215;
+	        + 0.215;
 
 
 	/*
@@ -346,20 +346,19 @@ struct point len ----------- ReMaxC - ReMinC
 	  to "nan" values or the effective born radius is smaller than 0
 
 	*/
-	if(EffRad[iat]<=0 || isnan(EffRad[iat]))
-	{
+	     if(EffRad[iat]<=0 || isnan(EffRad[iat])) {
 #ifndef NOWARN
-	    fprintf(FPaOut,"WARNING could not calculate effective born radius for atom %d, using standard approach\n",iat);
+	       fprintf(FPaOut,"WARNING could not calculate effective born radius for atom %d, using standard approach\n",iat);
 #endif
-	    EffRad[iat] = 1. / ( 1./ReRadOut[iat] - (*SelfVol)[iat]/pi4 );
-	}
+	       EffRad[iat] = 1. / ( 1./ReRadOut[iat] - (*SelfVol)[iat]/pi4 );
+	     }
 
 
 
     }
 
 
-    SelfEn[iat] = *PKsolv * RePaCh[iat] * RePaCh[iat] / (2. * EffRad[iat]);
+    SelfEn[iat] = *PKsolv * RePaCh[iat] * RePaCh[iat] / (2. * EffRad[iat]); // eq. (12) in [Scarsi et al. 1997]. clangini
     SelfEnTot += SelfEn[iat];
 
   }
@@ -496,9 +495,9 @@ struct point len ----------- ReMaxC - ReMinC
                   nsurf_re_apol,pointsrf_re_apol,*DeltaPrDeso,
                   ReSurf_apol_loc,/*NCutapol,*/NCutapolRatio,ScaleDeso,
                   isurf_More_apol,PNapol_Vect_re,Nsurfpt_re_apol_BS,
-		  iatsrf_re_apol,distrPointBSNumb,distrPointBS,angle_rmin,
-		  angle_rmax,mult_fact_rmin,mult_fact_rmax,ReCoor,
-		  FPaOut);
+		              iatsrf_re_apol,distrPointBSNumb,distrPointBS,angle_rmin,
+		              angle_rmax,mult_fact_rmin,mult_fact_rmax,ReCoor,
+		              FPaOut);
 
 /* Creation of vectors for the placement of apolar fragments */
   printf("\n\tCreate vectors for the placement of apolar fragments\n");
@@ -563,11 +562,11 @@ double *PUnitVol -------- Volume of the rec (frag) grid element for cont. elec.
 
   vect1=dvector(1,ReAtNu);
   vect2=dvector(1,ReAtNu);
-  for (i=1;i<=3;i++) {
+  for (i=1; i<=3; i++) {
     getColumnFrom2DArray(ReCoor, i, 1, ReAtNu, vect1);
     SumVectors(vect1, ReVdWR, 1, ReAtNu, vect2);
     if (i == 1) {
-      PMax->x=MaxDVector(vect2, 1, ReAtNu);
+      PMax->x = MaxDVector(vect2, 1, ReAtNu);
       PMax->x += (WaMoRa + GrInSo);
     }
     else if (i == 2) {
@@ -780,7 +779,7 @@ char ****GridMat -------- Matrix telling if a grid point is occupied (o),
   double xtemp,x2temp,ytemp,xy2temp,ztemp,r2;
 
 /* Calculate grid points occupied by volume enclosed in SAS */
-  for (iat=1;iat<=ReAtNu;iat++) {
+  for (iat=1;iat<=ReAtNu;iat++) { // for each atom, mark the occupied locations. clangini
     ixmin = ( (ReCoor[iat][1] - ReRadOut[iat] - Min.x) / GrSiSo + 1 );
     iymin = ( (ReCoor[iat][2] - ReRadOut[iat] - Min.y) / GrSiSo + 1 );
     izmin = ( (ReCoor[iat][3] - ReRadOut[iat] - Min.z) / GrSiSo + 1 );
@@ -1768,7 +1767,7 @@ int Get_Self_Vol(int ReAtNu,double **ReCoor,double *ReRadOut2,
                  int NStartGridx,int NStartGridy,int NStartGridz,
                  int NGridx,int NGridy,int NGridz,
                  double UnitVol,char ***GridMat,double *SelfVol,
-		 double *SelfVol_corrB,char *EmpCorrB)
+		             double *SelfVol_corrB,char *EmpCorrB)
 /*##########################################
 Calculate the integral of 1/r^4 for each atom over the
 solute volume defined by GridMat
@@ -1820,9 +1819,9 @@ point or not.
  NeighList gives the list af atoms that are close to a 27-element cube */
 
 /* Loop over the centers of the cubes of 27 elements */
-  for (ix=NStartGridx+1;ix<=NGridx;ix+=3) {
-    for (iy=NStartGridy+1;iy<=NGridy;iy+=3) {
-      for (iz=NStartGridz+1;iz<=NGridz;iz+=3) {
+  for (ix=NStartGridx+1; ix<=NGridx; ix+=3) {
+    for (iy=NStartGridy+1; iy<=NGridy; iy+=3) {
+      for (iz=NStartGridz+1; iz<=NGridz; iz+=3) {
         filled = 0;
         dolist = 0;
         if (GridMat[ix][iy][iz] == 'o') {
@@ -1836,7 +1835,7 @@ point or not.
               for (izf=iz-1;izf<=iz+1;izf++) {
                 if (GridMat[ixf][iyf][izf] == 'o') {
                   dolist = 1;
-                  goto do_neigh_list;
+                  goto do_neigh_list; // I think this goto is simply a "multiple break to get out of the nested loops. clangini
                 }
               }
             }
@@ -1854,20 +1853,18 @@ to the integral of 1/r^4 */
                  (YGrid[iy]-ReCoor[iat][2])*(YGrid[iy]-ReCoor[iat][2])+
                  (ZGrid[iz]-ReCoor[iat][3])*(ZGrid[iz]-ReCoor[iat][3]);
             if ( r2 > cutoff2_grid ) {
-              if (filled)
-	      {
+              if (filled) {
                 SelfVolTmp[iat] += UnitVol27 / (r2 * r2);
-		if (EmpCorrB[0]=='y')
-		  SelfVolTmp_corrB[iat] += UnitVol27 / (r2 * r2 * sqrt(r2));
+		            if (EmpCorrB[0]=='y')
+		              SelfVolTmp_corrB[iat] += UnitVol27 / (r2 * r2 * sqrt(r2));
               }
             }
             else if (r2 < cutoff2_grid && r2 > cutoff2) {
-              if (filled)
-	      {
+              if (filled) {
                 SelfVolTmp[iat] += UnitVol27 / (r2 * r2);
-		if (EmpCorrB[0]=='y')
-		  SelfVolTmp_corrB[iat] += UnitVol27 / (r2 * r2 * sqrt(r2));
-	      }
+		          if (EmpCorrB[0]=='y')
+		            SelfVolTmp_corrB[iat] += UnitVol27 / (r2 * r2 * sqrt(r2));
+	            }
               ++Neigh;
               NeighList[Neigh] = iat;
             }
@@ -1887,12 +1884,11 @@ to the integral of 1/r^4 */
                          (YGrid[iyf]-ReCoor[NeighList[jat]][2]) +
                          (ZGrid[izf]-ReCoor[NeighList[jat]][3]) *
                          (ZGrid[izf]-ReCoor[NeighList[jat]][3]);
-                    if ( r2 < cutoff2 && r2 > ReRadOut2[NeighList[jat]] )
-		    {
+                    if ( r2 < cutoff2 && r2 > ReRadOut2[NeighList[jat]] ) {
                       SelfVolTmp[NeighList[jat]] += UnitVol / (r2 * r2);
-		      if (EmpCorrB[0]=='y')
-		        SelfVolTmp_corrB[NeighList[jat]] += UnitVol / (r2 * r2 * sqrt(r2));
-		    }
+		                  if (EmpCorrB[0]=='y')
+		                    SelfVolTmp_corrB[NeighList[jat]] += UnitVol / (r2 * r2 * sqrt(r2));
+		                }
                   }
                 }
               }
@@ -1949,7 +1945,7 @@ double *PIntEnTot ------- Tot interaction energy
           Rij = EffRad[iat] * EffRad[jat];
 
 
-          Inte = Chiat*RePaCh[jat] / sqrtf (d2 + Rij * exp(-d2/(4.*Rij)));
+          Inte = Chiat*RePaCh[jat] / sqrtf (d2 + Rij * exp(-d2/(4.*Rij))); // eq. (15) of [Scarsi et. al 1997]. clangini
           *PIntEnTot += Inte;
         }
       }
@@ -2144,9 +2140,9 @@ int Desol_Surf(int ReAtNu,struct point Min,double Sphere_apol,
                double ***DeltaPrDeso,double *ReSurf_apol,double NCutapolRatio,/*int NCutapol,*/
                double ScaleDeso,int *isurf_More_apol,
                int *PNapol_Vect_re,int *Nsurfpt_re_apol_BS,
-	       int *iatsrf_re_apol,int distrPointBSNumb,double **distrPointBS,
-	       double angle_rmin,double angle_rmax,double mult_fact_rmin,
-	       double mult_fact_rmax,double **ReCoor,FILE *FPaOut)
+	             int *iatsrf_re_apol,int distrPointBSNumb,double **distrPointBS,
+	             double angle_rmin,double angle_rmax,double mult_fact_rmin,
+	             double mult_fact_rmax,double **ReCoor,FILE *FPaOut)
 /*##########################################
 Calculate the desolvation operated by a sphere rolled over the rec surface
 ###########################################*/
@@ -3222,7 +3218,7 @@ double ***DeltaPrDeso --- Elec rec (frag) desolvation due to the occupation
           DeltaPrDeso[ix][iy][iz] = Kdesol *
                                   ( Dx[ix][iy][iz] * Dx[ix][iy][iz] +
                                     Dy[ix][iy][iz] * Dy[ix][iy][iz] +
-                                    Dz[ix][iy][iz] * Dz[ix][iy][iz] );
+                                    Dz[ix][iy][iz] * Dz[ix][iy][iz] ); // eq. (5) of SEED3.3.6 manual. clangini
 /* Free memory */
   free_d3tensor(Dx,nxminBS,nxmaxBS,nyminBS,nymaxBS,nzminBS,nzmaxBS);
   free_d3tensor(Dy,nxminBS,nxmaxBS,nyminBS,nymaxBS,nzminBS,nzmaxBS);
