@@ -132,8 +132,7 @@ void ReReFi_mol2(char *RecFil,int *ReAtNu,int *ReBdNu,int *ReReNu,
   std::string StrLin, AlTySp, firstToken, ResNa_tmp, ResNa;
   std::size_t found;
   bool AtNu_flag;
-  int CuAtNu, AtCount;
-
+  int CuAtNu, AtCount, ReReNu_prev;
   char **ReAtEl_L,**ReAtTy_L;//dummy2[10];
   int ReReNu_count;
   //char dummy_AtTy[10];
@@ -185,8 +184,9 @@ void ReReFi_mol2(char *RecFil,int *ReAtNu,int *ReBdNu,int *ReReNu,
     std::cerr << "No Atoms in receptor found.\nProgram exits!\n" << std::endl;
     exit(13);
   }
-  //Read atom section
+  /* Read atom section */
   ReReNu_count = 0; //Initialize residue number counter
+  ReReNu_prev = -1; 
   for (i=1; i<=(*ReAtNu); i++ ){
     std::getline(inStream,StrLin);
     //std::cout << "atom line "<<i<<": "<< StrLin << std::endl;
@@ -212,8 +212,9 @@ void ReReFi_mol2(char *RecFil,int *ReAtNu,int *ReBdNu,int *ReReNu,
     ReResN_L[i] = boost::lexical_cast<int> (*itItem);
     ++itItem;
     ResNa_tmp = *itItem;
-    if (ResNa_tmp != ResNa){
+    if ((ResNa_tmp != ResNa) || (ReResN_L[i] > ReReNu_prev)){ // change res if res name or res num change
       ++ReReNu_count;
+      ReReNu_prev = ReResN_L[i];
       ResNa = ResNa_tmp;
     }
     ++itItem;
