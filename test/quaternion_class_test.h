@@ -2,6 +2,7 @@
 #define _QUATERNION_TEST_H
 
 #include <iostream>
+#include "boost/random.hpp"
 //#include <math.h>
 //#include "nrutil.h"
 
@@ -18,7 +19,7 @@ class Quaternion {
     //static members to count objects:
     static int created;
     static int destroyed;
-    static int total_number;
+    static int total_number; 
   public:
     // Constructors
     Quaternion(); // Default constructor: creates a zero quaternion.
@@ -92,6 +93,10 @@ class Quaternion {
     const Quaternion<T>& Set(T, T, T, T);
     const Quaternion<T>& fromAngleAxis(T angle,const T *axis);
     const Quaternion<T>& fromAngleAxis(T angle,T ax1,T ax2,T ax3);
+
+    /* Random Quaternions */
+    const setRandom_mc();
+    const setRandom();
 
     static const RndQuatExpr randomQuaternion(int seed);
     const Quaternion<T>& operator=(const RndQuatExpr rhs);

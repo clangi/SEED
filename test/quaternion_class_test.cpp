@@ -185,11 +185,11 @@ Quaternion<T> Quaternion<T>::normalize(void){
 }
 template<class T>
 void Quaternion<T>::norm_inplace(void){
-  T norm_o = (this->norm());
-  w = w/norm_o;
-  x = x/norm_o;
-  y = y/norm_o;
-  z = z/norm_o;
+  T my_norm = (this->norm());
+  w = w/my_norm;
+  x = x/my_norm;
+  y = y/my_norm;
+  z = z/my_norm;
 }
 
 template<class T>
