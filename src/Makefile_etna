@@ -3,10 +3,11 @@
 #SHELL = /bin/bash
 # Folders:
 #SRC_DIR = .
+BIN_DIR = ../bin
 BUILD_DIR = build
 BUILD_DIR_MPI = build/mpi
-TARGET_EXEC = seed_4
-TARGET_EXEC_MPI = seed_4_mpi
+TARGET_EXEC = $(BIN_DIR)/seed_4
+TARGET_EXEC_MPI = $(BIN_DIR)/seed_4_mpi
 
 # Flags:
 CXX = g++
@@ -42,7 +43,7 @@ ECHO = @echo
 .PHONY: seed
 seed: $(TARGET_EXEC)
 
-.PHONY: seed_4_mpi
+.PHONY: seed_mpi
 seed_mpi: $(TARGET_EXEC_MPI)
 
 $(TARGET_EXEC): $(OBJS)
