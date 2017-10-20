@@ -30,16 +30,21 @@ int main(int argc,char *argv[]){
   double mc_step = 5.0;
 
   q1 = Quaternion<double>::unitRandom();
-  q1.print_quat();
+  // q1.print_quat();
   q1.get_AngleAxis(my_axis, my_angle);
-  cout << q1.norm() << "\n";
-  cout << "Axis: [" << my_axis.x << " " << my_axis.y << " " << my_axis.z << "]\n";
-  cout << "Angle: " << my_angle << " \n";
+  // cout << q1.norm() << "\n";
+  // cout << "Axis: [" << my_axis.x << " " << my_axis.y << " " << my_axis.z << "]\n";
+  // cout << "Angle: " << my_angle << " \n";
 
-  q2 = Quaternion<double>::unitRandom(mc_step);
-  q2.print_quat();
-  cout << q2.norm() << "\n";
-  q2.get_AngleAxis(my_axis, my_angle);
-  cout << "Axis: [" << my_axis.x << " " << my_axis.y << " " << my_axis.z << "]\n";
-  cout << "Angle: " << my_angle << " \n";
+  // q2 = Quaternion<double>::unitRandom(mc_step);
+  // q2.print_quat();
+  // cout << q2.norm() << "\n";
+  // q2.get_AngleAxis(my_axis, my_angle);
+  // cout << "Axis: [" << my_axis.x << " " << my_axis.y << " " << my_axis.z << "]\n";
+  // cout << "Angle: " << my_angle << " \n";
+  for (int i = 0; i < 10000; i++){
+    q1 = Quaternion<double>::unitRandom(mc_step);
+    q1.get_AngleAxis(my_axis, my_angle);
+    cout << my_axis.x << " " << my_axis.y << " " << my_axis.z << "\n";
+  }
 }
