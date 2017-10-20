@@ -81,7 +81,7 @@ void ExtOutNam(char *FrFiNa,char *FrFiNa_out)
 
    for (j=0;j<=(LasCha-FirCha);j++)
     FrFiNa_out[j]=FrFiNa[FirCha-&FrFiNa[0]+j];
-  FrFiNa_out[LasCha-FirCha+2]='\0';
+  FrFiNa_out[LasCha-FirCha+1]='\0';
 
   //std::cout << "FrFiNa_out: " << FrFiNa_out <<"aaa"<< std::endl;
 
