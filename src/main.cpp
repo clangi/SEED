@@ -4472,19 +4472,19 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
               if (seed_par.do_mc == 'y'){
                 /* MC initialization */
                 if (seed_par.mc_rand_seed == -1)
-
+                  rnd_gen::set_rng_seed(time(NULL));
                 else {
-
+                  rnd_gen::set_rng_sed(seed_par.mc_rand_seed);
                 }
 
                 old_mc_en = To_s_ro[ClusLi_sd[i1]];
                 old_mc_FrCoor = dmatrix(RoSFCo, 1, FrAtNu, 1, 3);
 
                 /* main MC loop: */
-                std::cout << "Doing MC minimization... " << std::endl;
+                std::cout << "Doing MC minimization... \n";
                 for (int cycle = 0; cycle < params.mc_niter; cycle++){
                   accept_move = false;
-                  do_rot_move = rand() % 2; // doing a rotational move?
+                  do_rot_move = rng_gen::get_uniform_int0(1); // doing a rotational move?
 
                   if (do_rot_move){
                     //do_rot_move();

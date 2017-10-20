@@ -1,5 +1,6 @@
 //#include "quaternion.h"
 #include "math.h"
+#include "rnd_namespace.h"
 
 template <class T>
 Quaternion<T>::Quaternion(){
@@ -219,4 +220,46 @@ const Quaternion<T>& Quaternion<T>::fromAngleAxis(T angle, T ax1, T ax2, T ax3){
   y = ax2*sin_half;
   z = ax3*sin_half;
   return (*this);
+}
+
+template<class T>
+void Quaternion<T>::get_AngleAxis(point& axis, T& theta) {
+  T sin_theta_half = sqrt(1 - w*w);
+  theta = acos(w)*2;
+  axis.x = x/sin_theta_half;
+  axis.y = y/sin_theta_half;
+  axis.z = z/sin_theta_half;
+}
+
+
+template<class T>
+Quaternion<T> Quaternion<T>::unitRandom() {
+  T x0, x1, x2, theta1, theta2, r1, r2;
+  x0 = rnd_gen::get_uniform(0, 1);
+  x1 = rnd_gen::get_uniform(0, 1);
+  x2 = rnd_gen::get_uniform(0, 1);
+
+  theta1 = 2*M_PI*x1;
+  theta2 = 2*M_PI*x2;
+
+  r1 = sqrt(1 - x0);
+  r2 = sqrt(x0);
+
+
+  return Quaternion(cos(theta2) * r2, sin(theta1) * r1,
+                    cos(theta1) * r1, sin(theta2) * r2);
+
+}
+
+template<class T>
+Quaternion<T> Quaternion<T>::unitRandom(T mc_rot_step) {
+  T theta, u, u1;
+  Quaternion<T> qt;
+  theta = rnd_gen::get_uniform(0, 2*M_PI);
+  u = rnd_gen::get_uniform(-1, 1);
+
+  u1 = sqrt(1 - u*u);
+
+  qt.fromAngleAxis(mc_rot_step, u1 * cos(theta), u1 * sin(theta), u);
+  return qt;
 }

@@ -21,5 +21,9 @@ namespace rnd_gen {
     return dist(rnd_gen::rng);
   }
 
+  bool toss_coin(){
+    boost::random::bernoulli_distribution<> dist;
+    return dist(rnd_gen::rng);
+  }
 
 }

@@ -2,6 +2,7 @@
 #define _QUATERNION_H
 
 #include <iostream>
+#include "point.h"
 //#include <math.h>
 //#include "nrutil.h"
 
@@ -77,6 +78,11 @@ class Quaternion {
     const Quaternion<T>& Set(T, T, T, T);
     const Quaternion<T>& fromAngleAxis(T angle,const T *axis);
     const Quaternion<T>& fromAngleAxis(T angle,T ax1,T ax2,T ax3);
+
+    void get_AngleAxis(point& axis, T& theta);
+
+    static Quaternion<T> unitRandom();
+    static Quaternion<T> unitRandom(T mc_rot_step);
 };
 
 #include "quaternion.cpp"

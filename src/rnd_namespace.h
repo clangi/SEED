@@ -9,9 +9,9 @@ namespace rnd_gen {
   double get_uniform(double min, double max);
   int get_uniform_int0(int max);
   int get_uniform_int(int min, int max);
-  //double get_randint();
+  bool toss_coin();
 }
 
-#include "rnd_namespace.cpp"
+ #include "rnd_namespace.cpp"
 
 #endif

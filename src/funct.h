@@ -1,5 +1,9 @@
+#ifndef _FUNCT_H
+#define _FUNCT_H
+
 #include <iostream>
 #include <cstdio>
+#include "point.h"
 #include "quaternion.h"
 #include "Parameter.h"
 #define sqrtf sqrt
@@ -309,11 +313,7 @@ void GeomCenter_FFLD(int CurFra,char **FrFiNa_out,int FrAtNu,int *FrAtEl_nu,
 
 
 
-struct point {
-  double x;
-  double y;
-  double z;
-};
+
 void Solvation(int ReAtNu,double **ReCoor,double *ReVdWE_sr,double *ReVdWR,
                double *ReRad,double *ReRad2,double *ReRadOut,double *ReRadOut2,
                double *ReMaxC,double *ReMinC,double *RePaCh,double DielRe,
@@ -597,3 +597,4 @@ int Fast_Desol_Receptor(int AtNu,double **Coor,double *RadOut,double *RadOut2,
 			double * minC,double *maxC, double ** xcoor,double maxrad,double WaMoRa);
 int CheckFile(char*name,char type);
 int CheckMol2File(char*name);
+#endif
