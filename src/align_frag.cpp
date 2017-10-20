@@ -105,14 +105,9 @@ void struct_align(double **FrCoor,int FrAtNu, double **FrAlRef,
   double cto[4] - Old centroid of the alignment set
   double ctn[4] - New centroid of the alignment set
   ########################*/
-  //cout << "before align 3D" << endl;
   align_3D(AlAtNu,FrAlSet,FrAlRef,&qrot,tvec,cto,ctn);
-  //cout << "after align 3D" << endl;
-  //qrot->print_quat();
   qrot->norm_inplace();
-  //qrot->print_quat();
 
-  //cout << "qrot normalized" << endl;
   for(iat=1;iat<=FrAtNu;iat++){
     qrot->quatConjugateVecRef(&FrCoor[iat][0],cto); // Quaternion conjugation
     //with reference vector
