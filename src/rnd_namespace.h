@@ -7,7 +7,11 @@ namespace rnd_gen {
   boost::random::mt19937 rng;
   void set_rng_seed();
   double get_uniform(double min, double max);
+  int get_uniform_int0(int max);
+  int get_uniform_int(int min, int max);
   //double get_randint();
 }
+
+#include "rnd_namespace.cpp"
 
 #endif

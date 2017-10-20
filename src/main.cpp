@@ -23,7 +23,8 @@
 #else
 #include <map>
 #endif
-#include <Parameter.h> //parameter class
+#include "Parameter.h" //parameter class
+#include "rnd_namespace.h"
 /* CLANGINI 2016 END */
 #include "funct.h"
 
@@ -270,11 +271,6 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   int do_rot_move;
   bool accept_move;
   double old_mc_en, new_mc_en, **old_mc_FrCoor;
-  boost::mt11213b rng;
-  rng.seed(time(NULL));
-  boost::uniform_01<> accept_distrib;
-  boost::variate_generator<mt11213b&, boost::uniform_01<> > p_acc(rng,
-      accept_distrib); // glue together random number generator and distribution
 #if  __cplusplus > 199711L
   std::unordered_map<std::string, int> FragNa_map;
 #else
@@ -4476,11 +4472,9 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
               if (seed_par.do_mc == 'y'){
                 /* MC initialization */
                 if (seed_par.mc_rand_seed == -1)
-                  srand(time(NULL));
+
                 else {
-                  srand(seed_par.mc_rand_seed); // set random generator seed
-                  p_acc.engine.seed(seed_par.mc_rand_seed);
-                  p_acc.distribution.reset();
+
                 }
 
                 old_mc_en = To_s_ro[ClusLi_sd[i1]];
