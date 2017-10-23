@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h> /* for exit-fct.*/
 #include "funct.h"
+#include "math.h"
 
 #ifndef _STRLENGTH
 #define _STRLENGTH 500
@@ -181,6 +182,7 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
   int AtEl; //clangini
   //double AtWei_k; // clangini
   char dummyStr[5]; //clangini
+  double dummy_double;
 /* ----------------------------------------- */
 /* ---------- Read the input file ---------- */
 /* ----------------------------------------- */
@@ -544,7 +546,8 @@ written in output file*/ //clangini
     SkipComLin(FilePa, StrLin);
     sscanf(StrLin, "%lf", &(seed_par.mc_max_tran_step));
     SkipComLin(FilePa, StrLin);
-    sscanf(StrLin, "%lf", &(seed_par.mc_max_rot_step));
+    sscanf(StrLin, "%lf", &dummy_double);
+    seed_par.mc_max_rot_step = dummy_double * M_PI/180;
     SkipComLin(FilePa, StrLin);
     sscanf(StrLin, "%d", &(seed_par.mc_niter));
     SkipComLin(FilePa,StrLin);
