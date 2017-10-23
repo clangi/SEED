@@ -26,6 +26,7 @@
 #include "Parameter.h" //parameter class
 #include "rnd_namespace.h"
 #include "montecarlo.h"
+const double k_Boltzmann = 1.38064852e-23;
 /* CLANGINI 2016 END */
 #include "funct.h"
 
@@ -4482,7 +4483,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 old_mc_FrCoor = dmatrix(RoSFCo, 1, FrAtNu, 1, 3);
 
                 /* main MC loop: */
-                std::cout << "Doing MC minimization... \n";
+                fprintf(FPaOut,"Doing MC Minimization:");
                 for (int cycle = 0; cycle < seed_par.mc_niter; cycle++){
                   accept_prob = 0.0;
                   // do_rot_move = rng_gen::get_uniform_int0(1); // doing a rotational move?
@@ -4513,24 +4514,32 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                         pi4,nxminBS,nyminBS,nzminBS,nxmaxBS,nymaxBS,
                         nzmaxBS,corr_scrint,corr_fr_deso,&ReDesoElec,
                         &ReFrIntElec,&FrDesoElec,ReSelfVol_corrB,EmpCorrB,FPaOut);
-                    new_mc_en = SFVWEn*VWEnEv_ps + SFIntElec*ReFrIntElec +
-                                SFDeso_re*ReDesoElec + SFDeso_fr*FrDesoElec;
-
                   }
                   else {
                     //do_trans_move;
                   }
 
+                  new_mc_en = SFVWEn*VWEnEv_ps + SFIntElec*ReFrIntElec +
+                              SFDeso_re*ReDesoElec + SFDeso_fr*FrDesoElec;
+
                   accept_prob = exp(- k_Boltzmann/seed_par.mc_temp * (new_mc_en - old_mc_en));
-                  if (rng_gen::get_uniform(0, 1) <= accept_prob){
+                  if (rnd_gen::get_uniform(0, 1) <= accept_prob){
                     old_mc_en = new_mc_en;
                     copy_dmatrix(RoSFCo, old_mc_FrCoor, 1, FrAtNu, 1, 3);
+                    /* Update final energies */
+                    VW_s_ro[ClusLi_sd[i1]] = SFVWEn*VWEnEv_ps;
+                    In_s_ro[ClusLi_sd[i1]] = SFIntElec*ReFrIntElec;
+                    Dr_s_ro[ClusLi_sd[i1]] = SFDeso_re*ReDesoElec;
+                    Df_s_ro[ClusLi_sd[i1]] = SFDeso_fr*FrDesoElec;
+                    To_s_ro[ClusLi_sd[i1]] = new_mc_en;
                   }
                   else {
                     copy_dmatrix(old_mc_FrCoor, RoSFCo, 1, FrAtNu, 1, 3);
+                    new_mc_en = old_mc_en;
                   }
-
-                }
+                  /* print MC cycle summary */
+                  fprintf(FPaOut,"Step: %10d TotEn: %.2f\n", cycle+1, new_mc_en);
+                } // end of MC cycle
                 free_dmatrix(old_mc_FrCoor, 1, FrAtNu, 1, 3);
               } // end of if (seed_par.do_mc == 'y')
 
