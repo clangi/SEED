@@ -2,6 +2,8 @@
 
 namespace rnd_gen {
 
+  boost::random::mt19937 rng;
+
   void set_rng_seed(int s){
     rnd_gen::rng.seed(s);
   }

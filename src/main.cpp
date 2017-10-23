@@ -25,6 +25,7 @@
 #endif
 #include "Parameter.h" //parameter class
 #include "rnd_namespace.h"
+#include "montecarlo.h"
 /* CLANGINI 2016 END */
 #include "funct.h"
 
@@ -269,7 +270,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   /* params for MC run */
   Parameter seed_par;
   int do_rot_move;
-  bool accept_move;
+  double accept_prob;
   double old_mc_en, new_mc_en, **old_mc_FrCoor;
 #if  __cplusplus > 199711L
   std::unordered_map<std::string, int> FragNa_map;
@@ -4474,7 +4475,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 if (seed_par.mc_rand_seed == -1)
                   rnd_gen::set_rng_seed(time(NULL));
                 else {
-                  rnd_gen::set_rng_sed(seed_par.mc_rand_seed);
+                  rnd_gen::set_rng_seed(seed_par.mc_rand_seed);
                 }
 
                 old_mc_en = To_s_ro[ClusLi_sd[i1]];
@@ -4482,25 +4483,51 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
                 /* main MC loop: */
                 std::cout << "Doing MC minimization... \n";
-                for (int cycle = 0; cycle < params.mc_niter; cycle++){
-                  accept_move = false;
-                  do_rot_move = rng_gen::get_uniform_int0(1); // doing a rotational move?
-
+                for (int cycle = 0; cycle < seed_par.mc_niter; cycle++){
+                  accept_prob = 0.0;
+                  // do_rot_move = rng_gen::get_uniform_int0(1); // doing a rotational move?
+                  do_rot_move = 1;
                   if (do_rot_move){
-                    //do_rot_move();
+                    rot_move(RoSFCo, FrAtNu, seed_par);
+                    /* Energy evaluation: */
+                    Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);
+                    SqDisFrRe_ps(FrAtNu,RoSFCo,ReCoor,ReMinC,GrSiCu_en,
+                        CubNum_en,CubFAI_en,CubLAI_en,CubLiA_en,
+                        PsSpNC,PsSphe,SDFrRe_ps,ReAtNu,PsSpRa,
+                        RePaCh,ReReNu,AtReprRes,FiAtRes,LaAtRes,
+                        TotChaRes,NuChResEn,LiChResEn,
+                        SDFrRe_ps_elec,ChFrRe_ps_elec);
+                    PsSpEE(FrAtNu,ReAtNu,ReVdWE_sr,FrVdWE_sr,
+                           ReVdWR,FrVdWR,&VWEnEv_ps,SDFrRe_ps);
+                    ElecFrag(ReAtNu,ReCoor,RePaCh,ChFrRe_ps_elec,
+                        ReRad,ReRad2,ReRadOut,
+                        ReRadOut2,surfpt_re,nsurf_re,
+                        pointsrf_re,ReSelfVol,FrAtNu,RoSFCo,FrCoor,
+                        FrPaCh,FrRad,FrRad2,FrRadOut,FrRadOut2,
+                        Frdist2,SDFrRe_ps_elec,FrMinC,FrMaxC,&FrSolvEn,
+                        Nsurfpt_fr,surfpt_fr,
+                        nsurf_fr,pointsrf_fr,surfpt_ex,Tr,U1,U2,WaMoRa,
+                        GrSiSo,NPtSphere,Min,Max,XGrid,YGrid,ZGrid,
+                        NGridx,NGridy,NGridz,GridMat,
+                        DeltaPrDeso,Kelec,Ksolv,UnitVol,
+                        pi4,nxminBS,nyminBS,nzminBS,nxmaxBS,nymaxBS,
+                        nzmaxBS,corr_scrint,corr_fr_deso,&ReDesoElec,
+                        &ReFrIntElec,&FrDesoElec,ReSelfVol_corrB,EmpCorrB,FPaOut);
+                    new_mc_en = SFVWEn*VWEnEv_ps + SFIntElec*ReFrIntElec +
+                                SFDeso_re*ReDesoElec + SFDeso_fr*FrDesoElec;
+
                   }
                   else {
                     //do_trans_move;
                   }
 
-                  if (new_mc_en < old_mc_en){
-                    accept_move = true;
-                  } else {
-
+                  accept_prob = exp(- k_Boltzmann/seed_par.mc_temp * (new_mc_en - old_mc_en));
+                  if (rng_gen::get_uniform(0, 1) <= accept_prob){
+                    old_mc_en = new_mc_en;
+                    copy_dmatrix(RoSFCo, old_mc_FrCoor, 1, FrAtNu, 1, 3);
                   }
-
-                  if (!accept_move){
-                    // reset coord
+                  else {
+                    copy_dmatrix(old_mc_FrCoor, RoSFCo, 1, FrAtNu, 1, 3);
                   }
 
                 }
