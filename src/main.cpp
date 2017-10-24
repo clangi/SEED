@@ -26,7 +26,7 @@
 #include "Parameter.h" //parameter class
 #include "rnd_namespace.h"
 #include "montecarlo.h"
-const double k_Boltzmann = 1.38064852e-23;
+const double R_constant = 1.9872036e-3;
 /* CLANGINI 2016 END */
 #include "funct.h"
 
@@ -4493,7 +4493,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 old_mc_FrCoor = dmatrix(RoSFCo, 1, FrAtNu, 1, 3);
 
                 /* main MC loop: */
-                fprintf(FPaOut,"Doing MC Minimization:");
+                fprintf(FPaOut,"Doing MC Minimization:\n");
                 for (int cycle = 0; cycle < seed_par.mc_niter; cycle++){
                   accept_prob = 0.0;
                   do_rot_move = rnd_gen::get_uniform_int0(1); // doing a rotational move?
@@ -4555,7 +4555,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                   new_mc_en = SFVWEn*VWEnEv_ps + SFIntElec*ReFrIntElec +
                               SFDeso_re*ReDesoElec + SFDeso_fr*FrDesoElec;
 
-                  accept_prob = exp(-1/(k_Boltzmann*seed_par.mc_temp) * (new_mc_en - old_mc_en));
+                  accept_prob = exp(-1/(R_constant*seed_par.mc_temp) * (new_mc_en - old_mc_en));
                   if (rnd_gen::get_uniform(0, 1) <= accept_prob){
                     old_mc_en = new_mc_en;
                     copy_dmatrix(RoSFCo, old_mc_FrCoor, 1, FrAtNu, 1, 3);
@@ -4571,7 +4571,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     new_mc_en = old_mc_en;
                   }
                   /* print MC cycle summary */
-                  fprintf(FPaOut,"Step: %10d TotEn: %.2f\n", cycle+1, new_mc_en);
+                  fprintf(FPaOut,"Step: %10d TotEn: %.4f\n", cycle+1, new_mc_en);
                 } // end of MC cycle
                 /* Update pose coordinates */
                 for (i2=1;i2<=FrAtNu;i2++) {
