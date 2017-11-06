@@ -16,6 +16,7 @@ class Parameter // This is much more like a POD struct than a class
   double mc_max_tran_step;
   double mc_max_rot_step;
   int mc_niter;
+  double sa_alpha;
   int mc_rand_seed;
 };
 

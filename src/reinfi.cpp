@@ -550,6 +550,8 @@ written in output file*/ //clangini
     seed_par.mc_max_rot_step = dummy_double * M_PI/180;
     SkipComLin(FilePa, StrLin);
     sscanf(StrLin, "%d", &(seed_par.mc_niter));
+    SkipComLin(FilePa, StrLin);
+    sscanf(StrLin, "%lf", &(seed_par.sa_alpha));
     SkipComLin(FilePa,StrLin);
     sscanf(StrLin, "%d", &(seed_par.mc_rand_seed));
   }
