@@ -4494,7 +4494,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 sa_temp = seed_par.mc_temp; //T_0
                 /* main MC loop: */
                 fprintf(FPaOut,"Doing MC Minimization:\n");
-                fprintf(FPaOut, "Step       Temp    TotEn\n");
+                fprintf(FPaOut, "%8s%10s%10s%10s%10s%10s%10s\n",
+                        "Step","Temp","Tot","ElinW","rec_des","frg_des", "vdW");
                 for (int cycle = 0; cycle < seed_par.mc_niter; cycle++){
                   accept_prob = 0.0;
                   do_rot_move = rnd_gen::get_uniform_int0(1); // doing a rotational move?
@@ -4572,7 +4573,11 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     new_mc_en = old_mc_en;
                   }
                   /* print MC cycle summary */
-                  fprintf(FPaOut,"%10d %4.2f %.4f\n", cycle+1, sa_temp, new_mc_en);
+                  fprintf(FPaOut,"%8d%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f\n",
+                          cycle+1, sa_temp, new_mc_en, In_s_ro[ClusLi_sd[i1]],
+                          Dr_s_ro[ClusLi_sd[i1]], Df_s_ro[ClusLi_sd[i1]],
+                          VW_s_ro[ClusLi_sd[i1]]);
+
                   sa_temp = seed_par.sa_alpha * sa_temp; //T_(n+1)
                 } // end of MC cycle
                 /* Update pose coordinates */
