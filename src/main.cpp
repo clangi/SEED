@@ -271,6 +271,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   /* params for MC run */
   Parameter seed_par;
   int do_rot_move, n_rot, n_trans, n_accept_rot, n_accept_trans;
+  bool is_rot_move;
   double accept_prob;
   double old_mc_en, new_mc_en, **old_mc_FrCoor, sa_temp, mc_accept_rate;
   struct timeval time_mc_start, time_mc_end;
@@ -4489,7 +4490,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 old_mc_FrCoor = dmatrix(RoSFCo, 1, FrAtNu, 1, 3);
                 sa_temp = seed_par.mc_temp; //T_0
                 mc_accept_rate = 0.0;
-                n_rot = 0;
+                n_rot = 0; /* counters for the num of MC moves */
                 n_accept_rot = 0;
                 n_trans = 0;
                 n_accept_trans = 0;
@@ -4529,6 +4530,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                         Df_s_ro[ClusLi_sd[i1]] = SFDeso_fr*FrDesoElec;
                   }
                   if (do_rot_move == true){
+                    is_rot_move = true;
+                    n_rot++;
                     rot_move(RoSFCo, FrAtNu, seed_par);
                     /* Energy evaluation: */
                     Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);
@@ -4558,6 +4561,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     //   }
                   }
                   else {
+                    is_rot_move = false;
+                    n_trans++;
                     trans_move(RoSFCo, FrAtNu, seed_par);
                     /* Energy evaluation: */
                     Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);
@@ -4600,7 +4605,9 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     //Dr_s_ro[ClusLi_sd[i1]] = SFDeso_re*ReDesoElec;
                     //Df_s_ro[ClusLi_sd[i1]] = SFDeso_fr*FrDesoElec;
                     To_s_ro[ClusLi_sd[i1]] = new_mc_en;
-                    //fprintf(FPaOut, "ACCEPT\n");
+
+                    if (is_rot_move) { n_accept_rot++; }
+                    else { n_accept_trans++; }
                   }
                   else {
                     copy_dmatrix(old_mc_FrCoor, RoSFCo, 1, FrAtNu, 1, 3);
@@ -4621,6 +4628,19 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                   FrCoPo[ClusLi_sd[i1]][i2][3] = RoSFCo[i2][3];
                 }
                 free_dmatrix(old_mc_FrCoor, 1, FrAtNu, 1, 3);
+                /* Summary info of MC run */
+                fprintf(FPaOut, "---- MC Summary ----\n");
+                fprintf(FPaOut, "%8s%10s%24s\n", " ", "#Moves", "#Accept (Acc. rate)");
+                fprintf(FPaOut, "%8s%8d (%6.2f)%8d (%6.2f)\n", "Total:", n_rot + n_trans,
+                        1.0, (n_accept_rot + n_accept_trans),
+                        (n_accept_rot + n_accept_trans)/(double)seed_par.mc_niter);
+                fprintf(FPaOut, "%8s%8d (%6.2f)%8d (%6.2f)\n", "Rot:", n_rot,
+                        n_rot/(double)seed_par.mc_niter, n_accept_rot,
+                        n_accept_rot/(double)n_rot);
+                fprintf(FPaOut, "%8s%8d (%6.2f)%8d (%6.2f)\n", "Trans:", n_trans,
+                        n_trans/(double)seed_par.mc_niter, n_accept_trans,
+                        n_accept_trans/(double)n_trans);
+
                 gettimeofday(&time_mc_end,NULL);
                 fprintf(FPaOut,"CPU time in sec. for MC optimization: %.2f\n",
                     ((time_mc_end.tv_sec  - time_mc_start.tv_sec) * 1000000u +
