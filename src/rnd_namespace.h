@@ -10,6 +10,7 @@ namespace rnd_gen {
   int get_uniform_int0(int max);
   int get_uniform_int(int min, int max);
   bool toss_coin();
+  bool get_bernoulli(double p);
 }
 
 // #include "rnd_namespace.cpp"

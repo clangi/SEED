@@ -270,9 +270,9 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   std::string FragNa_str; //C++ string equivalent to FragNa
   /* params for MC run */
   Parameter seed_par;
-  int do_rot_move;
+  int do_rot_move, n_rot, n_trans, n_accept_rot, n_accept_trans;
   double accept_prob;
-  double old_mc_en, new_mc_en, **old_mc_FrCoor, sa_temp;
+  double old_mc_en, new_mc_en, **old_mc_FrCoor, sa_temp, mc_accept_rate;
   struct timeval time_mc_start, time_mc_end;
 #if  __cplusplus > 199711L
   std::unordered_map<std::string, int> FragNa_map;
@@ -4488,13 +4488,18 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 old_mc_en = To_s_ro[ClusLi_sd[i1]];
                 old_mc_FrCoor = dmatrix(RoSFCo, 1, FrAtNu, 1, 3);
                 sa_temp = seed_par.mc_temp; //T_0
+                mc_accept_rate = 0.0;
+                n_rot = 0;
+                n_accept_rot = 0;
+                n_trans = 0;
+                n_accept_trans = 0;
                 /* main MC loop: */
                 fprintf(FPaOut,"Doing MC Minimization:\n");
                 fprintf(FPaOut, "%8s%10s%10s%10s%10s%10s%10s\n",
                         "Step","Temp","Tot","ElinW","rec_des","frg_des", "vdW");
                 for (int cycle = 0; cycle < seed_par.mc_niter; cycle++){
                   accept_prob = 0.0;
-                  do_rot_move = rnd_gen::get_uniform_int0(1); // doing a rotational move?
+                  do_rot_move = rnd_gen::get_bernoulli(seed_par.mc_rot_freq); // doing a rotational move?
                   if ((cycle % seed_par.mc_el_freq) == 0){
                     //Elec. terms get updated every n iterations
                     Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);
@@ -4523,7 +4528,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                         Dr_s_ro[ClusLi_sd[i1]] = SFDeso_re*ReDesoElec;
                         Df_s_ro[ClusLi_sd[i1]] = SFDeso_fr*FrDesoElec;
                   }
-                  if (do_rot_move){
+                  if (do_rot_move == true){
                     rot_move(RoSFCo, FrAtNu, seed_par);
                     /* Energy evaluation: */
                     Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);

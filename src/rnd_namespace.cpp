@@ -28,4 +28,9 @@ namespace rnd_gen {
     return dist(rnd_gen::rng);
   }
 
+  bool get_bernoulli(double p = 0.5){
+    boost::random::bernoulli_distribution<> dist(p);
+    return dist(rnd_gen::rng);
+  }
+
 }

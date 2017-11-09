@@ -15,6 +15,7 @@ class Parameter // This is much more like a POD struct than a class
   double mc_temp;
   double mc_max_tran_step;
   double mc_max_rot_step;
+  double mc_rot_freq;
   int mc_niter;
   int mc_el_freq;
   double sa_alpha;
