@@ -549,7 +549,7 @@ written in output file*/ //clangini
     sscanf(StrLin, "%lf", &dummy_double);
     seed_par.mc_max_rot_step = dummy_double * M_PI/180;
     SkipComLin(FilePa, StrLin);
-    sscanf(StrLin, "%d", &(seed_par.mc_niter));
+    sscanf(StrLin, "%d%d", &(seed_par.mc_niter), &(seed_par.mc_el_freq));
     SkipComLin(FilePa, StrLin);
     sscanf(StrLin, "%lf", &(seed_par.sa_alpha));
     SkipComLin(FilePa,StrLin);

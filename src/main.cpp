@@ -4495,7 +4495,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 for (int cycle = 0; cycle < seed_par.mc_niter; cycle++){
                   accept_prob = 0.0;
                   do_rot_move = rnd_gen::get_uniform_int0(1); // doing a rotational move?
-                  if ((cycle % 10) == 0){
+                  if ((cycle % seed_par.mc_el_freq) == 0){
                     //Elec. terms get updated every n iterations
                     Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);
                     SqDisFrRe_ps(FrAtNu,RoSFCo,ReCoor,ReMinC,GrSiCu_en,
