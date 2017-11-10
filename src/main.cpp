@@ -4612,7 +4612,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
                     if (is_rot_move) { n_accept_rot++; }
                     else { n_accept_trans++; }
-                    //fprintf(FPaOut, "ACCEPT\n");
+                    fprintf(FPaOut, "ACCEPT %d\n", cycle + 1);
                     /* dump pose for checking */
                     sprintf(WriPat,"%s","outputs/mc_poses.mol2\0"); // clangini
                     FilePa=fopen(WriPat,"a");
@@ -4628,7 +4628,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     new_mc_en = old_mc_en;
                   }
                   /* print MC cycle summary */
-                  fprintf(FPaOut,"%8d%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f\n",
+                  // fprintf(FPaOut,"%8d%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f\n",
+                  fprintf(FPaOut,"%8d%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f\n",
                           cycle+1, sa_temp, new_mc_en, In_s_ro[ClusLi_sd[i1]],
                           Dr_s_ro[ClusLi_sd[i1]], Df_s_ro[ClusLi_sd[i1]],
                           VW_s_ro[ClusLi_sd[i1]]);
