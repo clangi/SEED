@@ -4528,6 +4528,10 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                         In_s_ro[ClusLi_sd[i1]] = SFIntElec*ReFrIntElec;
                         Dr_s_ro[ClusLi_sd[i1]] = SFDeso_re*ReDesoElec;
                         Df_s_ro[ClusLi_sd[i1]] = SFDeso_fr*FrDesoElec;
+                        /* When change the elec terms, also update the tot energy */
+                        To_s_ro[ClusLi_sd[i1]] = VW_s_ro[ClusLi_sd[i1]]+In_s_ro[ClusLi_sd[i1]]+
+                                               Dr_s_ro[ClusLi_sd[i1]]+Df_s_ro[ClusLi_sd[i1]];
+                        old_mc_en = To_s_ro[ClusLi_sd[i1]];
                   }
                   if (do_rot_move == true){
                     is_rot_move = true;
@@ -4608,6 +4612,16 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
                     if (is_rot_move) { n_accept_rot++; }
                     else { n_accept_trans++; }
+                    //fprintf(FPaOut, "ACCEPT\n");
+                    /* dump pose for checking */
+                    sprintf(WriPat,"%s","outputs/mc_poses.mol2\0"); // clangini
+                    FilePa=fopen(WriPat,"a");
+                    append_pose_to_mol2(FilePa,FragNa,FrAtNu,FrBdNu,1,FrAtEl,
+                                        RoSFCo,
+                                        1,FrSyAtTy,FrAtTy,CurFra,FrBdAr,
+                                        FrBdTy,1,0.0,
+                                        FrPaCh,SubNa,AlTySp);
+                    fclose(FilePa);
                   }
                   else {
                     copy_dmatrix(old_mc_FrCoor, RoSFCo, 1, FrAtNu, 1, 3);
@@ -4640,7 +4654,6 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 fprintf(FPaOut, "%8s%8d (%6.2f)%8d (%6.2f)\n", "Trans:", n_trans,
                         n_trans/(double)seed_par.mc_niter, n_accept_trans,
                         n_accept_trans/(double)n_trans);
-
                 gettimeofday(&time_mc_end,NULL);
                 fprintf(FPaOut,"CPU time in sec. for MC optimization: %.2f\n",
                     ((time_mc_end.tv_sec  - time_mc_start.tv_sec) * 1000000u +
