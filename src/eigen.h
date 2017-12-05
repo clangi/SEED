@@ -8,7 +8,7 @@
 #include <limits>
 #include <cmath>
 
-/* Class for Jacobi diagonalization as explained in "Numerical Recipes in C++" */
+/* Class for Jacobi diagonalization adapted from Numerical Recipes in C++ */
 class Jacobi
 {
   private:
