@@ -4501,38 +4501,38 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 for (int cycle = 0; cycle < seed_par.mc_niter; cycle++){
                   accept_prob = 0.0;
                   do_rot_move = rnd_gen::get_bernoulli(seed_par.mc_rot_freq); // doing a rotational move?
-                  if ((cycle % seed_par.mc_el_freq) == 0){
-                    //Elec. terms get updated every n iterations
-                    Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);
-                    SqDisFrRe_ps(FrAtNu,RoSFCo,ReCoor,ReMinC,GrSiCu_en,
-                        CubNum_en,CubFAI_en,CubLAI_en,CubLiA_en,
-                        PsSpNC,PsSphe,SDFrRe_ps,ReAtNu,PsSpRa,
-                        RePaCh,ReReNu,AtReprRes,FiAtRes,LaAtRes,
-                        TotChaRes,NuChResEn,LiChResEn,
-                        SDFrRe_ps_elec,ChFrRe_ps_elec);
-                    ElecFrag(ReAtNu,ReCoor,RePaCh,ChFrRe_ps_elec,
-                        ReRad,ReRad2,ReRadOut,
-                        ReRadOut2,surfpt_re,nsurf_re,
-                        pointsrf_re,ReSelfVol,FrAtNu,RoSFCo,FrCoor,
-                        FrPaCh,FrRad,FrRad2,FrRadOut,FrRadOut2,
-                        Frdist2,SDFrRe_ps_elec,FrMinC,FrMaxC,&FrSolvEn,
-                        Nsurfpt_fr,surfpt_fr,
-                        nsurf_fr,pointsrf_fr,surfpt_ex,Tr,U1,U2,WaMoRa,
-                        GrSiSo,NPtSphere,Min,Max,XGrid,YGrid,ZGrid,
-                        NGridx,NGridy,NGridz,GridMat,
-                        DeltaPrDeso,Kelec,Ksolv,UnitVol,
-                        pi4,nxminBS,nyminBS,nzminBS,nxmaxBS,nymaxBS,
-                        nzmaxBS,corr_scrint,corr_fr_deso,&ReDesoElec,
-                        &ReFrIntElec,&FrDesoElec,ReSelfVol_corrB,EmpCorrB,FPaOut);
-
-                        In_s_ro[ClusLi_sd[i1]] = SFIntElec*ReFrIntElec;
-                        Dr_s_ro[ClusLi_sd[i1]] = SFDeso_re*ReDesoElec;
-                        Df_s_ro[ClusLi_sd[i1]] = SFDeso_fr*FrDesoElec;
-                        /* When change the elec terms, also update the tot energy */
-                        To_s_ro[ClusLi_sd[i1]] = VW_s_ro[ClusLi_sd[i1]]+In_s_ro[ClusLi_sd[i1]]+
-                                               Dr_s_ro[ClusLi_sd[i1]]+Df_s_ro[ClusLi_sd[i1]];
-                        old_mc_en = To_s_ro[ClusLi_sd[i1]];
-                  }
+                  // if ((cycle % seed_par.mc_el_freq) == 0){
+                  //   //Elec. terms get updated every n iterations
+                  //   Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);
+                  //   SqDisFrRe_ps(FrAtNu,RoSFCo,ReCoor,ReMinC,GrSiCu_en,
+                  //       CubNum_en,CubFAI_en,CubLAI_en,CubLiA_en,
+                  //       PsSpNC,PsSphe,SDFrRe_ps,ReAtNu,PsSpRa,
+                  //       RePaCh,ReReNu,AtReprRes,FiAtRes,LaAtRes,
+                  //       TotChaRes,NuChResEn,LiChResEn,
+                  //       SDFrRe_ps_elec,ChFrRe_ps_elec);
+                  //   ElecFrag(ReAtNu,ReCoor,RePaCh,ChFrRe_ps_elec,
+                  //       ReRad,ReRad2,ReRadOut,
+                  //       ReRadOut2,surfpt_re,nsurf_re,
+                  //       pointsrf_re,ReSelfVol,FrAtNu,RoSFCo,FrCoor,
+                  //       FrPaCh,FrRad,FrRad2,FrRadOut,FrRadOut2,
+                  //       Frdist2,SDFrRe_ps_elec,FrMinC,FrMaxC,&FrSolvEn,
+                  //       Nsurfpt_fr,surfpt_fr,
+                  //       nsurf_fr,pointsrf_fr,surfpt_ex,Tr,U1,U2,WaMoRa,
+                  //       GrSiSo,NPtSphere,Min,Max,XGrid,YGrid,ZGrid,
+                  //       NGridx,NGridy,NGridz,GridMat,
+                  //       DeltaPrDeso,Kelec,Ksolv,UnitVol,
+                  //       pi4,nxminBS,nyminBS,nzminBS,nxmaxBS,nymaxBS,
+                  //       nzmaxBS,corr_scrint,corr_fr_deso,&ReDesoElec,
+                  //       &ReFrIntElec,&FrDesoElec,ReSelfVol_corrB,EmpCorrB,FPaOut);
+                  //
+                  //       In_s_ro[ClusLi_sd[i1]] = SFIntElec*ReFrIntElec;
+                  //       Dr_s_ro[ClusLi_sd[i1]] = SFDeso_re*ReDesoElec;
+                  //       Df_s_ro[ClusLi_sd[i1]] = SFDeso_fr*FrDesoElec;
+                  //       /* When change the elec terms, also update the tot energy */
+                  //       To_s_ro[ClusLi_sd[i1]] = VW_s_ro[ClusLi_sd[i1]]+In_s_ro[ClusLi_sd[i1]]+
+                  //                              Dr_s_ro[ClusLi_sd[i1]]+Df_s_ro[ClusLi_sd[i1]];
+                  //       old_mc_en = To_s_ro[ClusLi_sd[i1]];
+                  // }
                   if (do_rot_move == true){
                     is_rot_move = true;
                     n_rot++;
@@ -4548,20 +4548,20 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     PsSpEE(FrAtNu,ReAtNu,ReVdWE_sr,FrVdWE_sr,
                            ReVdWR,FrVdWR,&VWEnEv_ps,SDFrRe_ps);
                     // if ((cycle % 5) == 0){
-                    //   ElecFrag(ReAtNu,ReCoor,RePaCh,ChFrRe_ps_elec,
-                    //       ReRad,ReRad2,ReRadOut,
-                    //       ReRadOut2,surfpt_re,nsurf_re,
-                    //       pointsrf_re,ReSelfVol,FrAtNu,RoSFCo,FrCoor,
-                    //       FrPaCh,FrRad,FrRad2,FrRadOut,FrRadOut2,
-                    //       Frdist2,SDFrRe_ps_elec,FrMinC,FrMaxC,&FrSolvEn,
-                    //       Nsurfpt_fr,surfpt_fr,
-                    //       nsurf_fr,pointsrf_fr,surfpt_ex,Tr,U1,U2,WaMoRa,
-                    //       GrSiSo,NPtSphere,Min,Max,XGrid,YGrid,ZGrid,
-                    //       NGridx,NGridy,NGridz,GridMat,
-                    //       DeltaPrDeso,Kelec,Ksolv,UnitVol,
-                    //       pi4,nxminBS,nyminBS,nzminBS,nxmaxBS,nymaxBS,
-                    //       nzmaxBS,corr_scrint,corr_fr_deso,&ReDesoElec,
-                    //       &ReFrIntElec,&FrDesoElec,ReSelfVol_corrB,EmpCorrB,FPaOut);
+                      ElecFrag(ReAtNu,ReCoor,RePaCh,ChFrRe_ps_elec,
+                          ReRad,ReRad2,ReRadOut,
+                          ReRadOut2,surfpt_re,nsurf_re,
+                          pointsrf_re,ReSelfVol,FrAtNu,RoSFCo,FrCoor,
+                          FrPaCh,FrRad,FrRad2,FrRadOut,FrRadOut2,
+                          Frdist2,SDFrRe_ps_elec,FrMinC,FrMaxC,&FrSolvEn,
+                          Nsurfpt_fr,surfpt_fr,
+                          nsurf_fr,pointsrf_fr,surfpt_ex,Tr,U1,U2,WaMoRa,
+                          GrSiSo,NPtSphere,Min,Max,XGrid,YGrid,ZGrid,
+                          NGridx,NGridy,NGridz,GridMat,
+                          DeltaPrDeso,Kelec,Ksolv,UnitVol,
+                          pi4,nxminBS,nyminBS,nzminBS,nxmaxBS,nymaxBS,
+                          nzmaxBS,corr_scrint,corr_fr_deso,&ReDesoElec,
+                          &ReFrIntElec,&FrDesoElec,ReSelfVol_corrB,EmpCorrB,FPaOut);
                     //   }
                   }
                   else {
@@ -4579,20 +4579,20 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     PsSpEE(FrAtNu,ReAtNu,ReVdWE_sr,FrVdWE_sr,
                            ReVdWR,FrVdWR,&VWEnEv_ps,SDFrRe_ps);
                     // if ((cycle % 5) == 0){
-                    //   ElecFrag(ReAtNu,ReCoor,RePaCh,ChFrRe_ps_elec,
-                    //       ReRad,ReRad2,ReRadOut,
-                    //       ReRadOut2,surfpt_re,nsurf_re,
-                    //       pointsrf_re,ReSelfVol,FrAtNu,RoSFCo,FrCoor,
-                    //       FrPaCh,FrRad,FrRad2,FrRadOut,FrRadOut2,
-                    //       Frdist2,SDFrRe_ps_elec,FrMinC,FrMaxC,&FrSolvEn,
-                    //       Nsurfpt_fr,surfpt_fr,
-                    //       nsurf_fr,pointsrf_fr,surfpt_ex,Tr,U1,U2,WaMoRa,
-                    //       GrSiSo,NPtSphere,Min,Max,XGrid,YGrid,ZGrid,
-                    //       NGridx,NGridy,NGridz,GridMat,
-                    //       DeltaPrDeso,Kelec,Ksolv,UnitVol,
-                    //       pi4,nxminBS,nyminBS,nzminBS,nxmaxBS,nymaxBS,
-                    //       nzmaxBS,corr_scrint,corr_fr_deso,&ReDesoElec,
-                    //       &ReFrIntElec,&FrDesoElec,ReSelfVol_corrB,EmpCorrB,FPaOut);
+                      ElecFrag(ReAtNu,ReCoor,RePaCh,ChFrRe_ps_elec,
+                          ReRad,ReRad2,ReRadOut,
+                          ReRadOut2,surfpt_re,nsurf_re,
+                          pointsrf_re,ReSelfVol,FrAtNu,RoSFCo,FrCoor,
+                          FrPaCh,FrRad,FrRad2,FrRadOut,FrRadOut2,
+                          Frdist2,SDFrRe_ps_elec,FrMinC,FrMaxC,&FrSolvEn,
+                          Nsurfpt_fr,surfpt_fr,
+                          nsurf_fr,pointsrf_fr,surfpt_ex,Tr,U1,U2,WaMoRa,
+                          GrSiSo,NPtSphere,Min,Max,XGrid,YGrid,ZGrid,
+                          NGridx,NGridy,NGridz,GridMat,
+                          DeltaPrDeso,Kelec,Ksolv,UnitVol,
+                          pi4,nxminBS,nyminBS,nzminBS,nxmaxBS,nymaxBS,
+                          nzmaxBS,corr_scrint,corr_fr_deso,&ReDesoElec,
+                          &ReFrIntElec,&FrDesoElec,ReSelfVol_corrB,EmpCorrB,FPaOut);
                     //   }
                   }
 
@@ -4605,9 +4605,9 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     copy_dmatrix(RoSFCo, old_mc_FrCoor, 1, FrAtNu, 1, 3);
                     /* Update energies */
                     VW_s_ro[ClusLi_sd[i1]] = SFVWEn*VWEnEv_ps;
-                    //In_s_ro[ClusLi_sd[i1]] = SFIntElec*ReFrIntElec;
-                    //Dr_s_ro[ClusLi_sd[i1]] = SFDeso_re*ReDesoElec;
-                    //Df_s_ro[ClusLi_sd[i1]] = SFDeso_fr*FrDesoElec;
+                    In_s_ro[ClusLi_sd[i1]] = SFIntElec*ReFrIntElec;
+                    Dr_s_ro[ClusLi_sd[i1]] = SFDeso_re*ReDesoElec;
+                    Df_s_ro[ClusLi_sd[i1]] = SFDeso_fr*FrDesoElec;
                     To_s_ro[ClusLi_sd[i1]] = new_mc_en;
 
                     if (is_rot_move) { n_accept_rot++; }
