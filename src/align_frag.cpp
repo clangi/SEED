@@ -196,7 +196,7 @@ void align_3D(int n,double **FrAlSet,double **FrAlRef,Quaternion<T> **qrot,
     }
   } //end of loop over atoms
   //cout << "before eigen" << endl;
-  Jacobi eigmatn(matn,4); // Run Jacobi diagonalization
+  Jaco eigmatn(matn,4); // Run Jacobi diagonalization
   //cout << "before eigen 1" << endl;
   eigv = eigmatn.eigenvectors();
   //cout << "before eigen 2" << endl;
