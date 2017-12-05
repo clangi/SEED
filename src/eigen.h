@@ -1,5 +1,6 @@
-#ifndef _EIGEN_CLANGINI_H
-#define _EIGEN_CLANGINI_H
+/* Implementation of eigenvalues routines */
+#ifndef _EIGEN_SEED_H
+#define _EIGEN_SEED_H
 
 #define MAXITERJAC 50
 
@@ -7,6 +8,7 @@
 #include <limits>
 #include <cmath>
 
+/* Jacobi diagonalization, as explained in "Numerical Recipes in C++" */
 class Jacobi
 {
   private:
