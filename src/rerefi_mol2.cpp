@@ -13,7 +13,7 @@
 #ifndef _STRLENGTH
 #define _STRLENGTH 500
 #endif
-
+/* The code for the mol2 reader was partially inspired by RDKIT http://www.rdkit.org/ */
 // /* Older version, rewritten (see below) by clangini 2017 to read ALT_TYPE_SET */
 // void ReReFi_mol2(char *RecFil,int *ReAtNu,int *ReBdNu,int *ReReNu,
 //                  char ***ReAtEl,double ***ReCoor,char ***ReAtTy,int **ReResN,
@@ -186,7 +186,7 @@ void ReReFi_mol2(char *RecFil,int *ReAtNu,int *ReBdNu,int *ReReNu,
   }
   /* Read atom section */
   ReReNu_count = 0; //Initialize residue number counter
-  ReReNu_prev = -1; 
+  ReReNu_prev = -1;
   for (i=1; i<=(*ReAtNu); i++ ){
     std::getline(inStream,StrLin);
     //std::cout << "atom line "<<i<<": "<< StrLin << std::endl;

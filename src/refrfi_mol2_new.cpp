@@ -10,7 +10,7 @@
 #ifndef _STRLENGTH
 #define _STRLENGTH 500
 #endif
-
+/* The code for the mol2 reader was partially inspired by RDKIT http://www.rdkit.org/ */
 /* 	We reimplemented this function in C++ to take advantage of the more advanced
 	parsing functions of this language (in particular we make extensive use of boost/tokenizer)
 */
