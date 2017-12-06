@@ -18,11 +18,11 @@ Run SEED with the following command:
 
 ### Citation ###
 Kindly reference the original paper if you use SEED:
-* N. Majeux, M. Scarsi, J. Apostolakis, C. Ehrhardt, and A. Caflisch. Exhaustive docking of
+*N. Majeux, M. Scarsi, J. Apostolakis, C. Ehrhardt, and A. Caflisch. Exhaustive docking of
 molecular fragments on protein binding sites with electrostatic solvation.
 Proteins: Structure, Function and Genetics, 37:88-105, 1999.
 
 The description of the fast energy evaluation is in the second SEED paper:
-* N. Majeux, M. Scarsi, and A. Caflisch. Efficient electrostatic solvation model for protein-
+*N. Majeux, M. Scarsi, and A. Caflisch. Efficient electrostatic solvation model for protein-
 fragment docking.
 Proteins: Structure, Function and Genetics, 42:256-268, 2001.
