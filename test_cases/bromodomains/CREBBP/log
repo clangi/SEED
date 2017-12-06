@@ -1,0 +1,44 @@
+
+	Number of Residues in receptor: 123
+Receptor part of the coulombic interaction -> done
+Receptor part of the van der Waals interaction -> done
+
+	Evaluation of grid dimension...
+
+	Cartesian coords of the grid...
+
+	Charge radii...
+
+	Map of volume enclosed by the SAS...
+
+	Generation of the SAS of the receptor...
+
+	Generation of volume enclosed by the MS...
+
+	Calculation of the integral 1 over r4 for each atom
+	over the volume enclosed by the MS...
+
+	Self Energy -5075.769790
+
+	Electrostatic interactions...
+
+	Solvation Interaction Energy 4197.764811
+
+	Get Binding Site Infos...
+
+	Electric Displacement and receptor desolvation...
+
+	Fast method to evaluate receptor desolvation
+
+	Generation of the SAS for the Desolvation Surface
+
+	vdW Interaction Surface
+
+	Desolvation Surface
+
+	Create vectors for the placement of apolar fragments
+
+	End Solv
+
+	End of fragment library was reached!
+	No more fragments in input file crebbp_ligands.mol2
