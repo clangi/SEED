@@ -6,15 +6,15 @@ Please refer to the documentation (seed_4.0.0_doc.pdf) to understand how to set 
 
 ### Installation ###
 cd to directory src and make SEED with the following command (you may have to modify the Makefile.local):
-'''sh
+```sh
 make seed
-'''
+```
 
 ### Run SEED ###
 Run SEED with the following command:
-'''sh
+```sh
 ./seed_4.0.0 seed.inp >& log
-'''
+```
 You can find an example seed.inp and seed.par, along with the results of simple study cases, 
 in the test_cases folder.
 ### Citation ###
