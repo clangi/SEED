@@ -15,7 +15,8 @@ Run SEED with the following command:
 '''sh
 ./seed_4.0.0 seed.inp >& log
 '''
-
+You can find an example seed.inp and seed.par, along with the results of simple study cases, 
+in the test_cases folder.
 ### Citation ###
 Kindly reference the original paper if you use SEED:
  * N. Majeux, M. Scarsi, J. Apostolakis, C. Ehrhardt, and A. Caflisch. Exhaustive docking of
