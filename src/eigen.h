@@ -54,7 +54,7 @@ class Jaco
    [The Jacobi Method for Real Symmetric Matrices, H. Rutishauser, 1971] */
 Jaco::Jaco(double **aa, int a_size){
   int i, j, p, q; //indexes
-  double sm, c, s, t, h, g, tau, thera, tresh; // sm = sum of off diagonal moduli
+  double sm, c, s, t, h, g, tau, theta, tresh; // sm = sum of off diagonal moduli
   double *b, *z;
   // Member initialization:
   n = a_size;
