@@ -260,6 +260,11 @@ void SqDisFrRe_ps(int FrAtNu,double **RoSFCo,double **ReCoor,double *ReMinC,
             int ReAtNu,double PsSpRa,double *RePaCh,int ReReNu,int *AtReprRes,
             int *FiAtRes,int *LaAtRes,double *TotChaRes,int NuChResEn,
             int *LiChResEn,double **SDFrRe_ps_elec,double **ChFrRe_ps_elec);
+void SqDisFrRe_ps_vdW(int FrAtNu,double **RoSFCo,double **ReCoor,double *ReMinC,
+            double GrSiCu_en,int *CubNum_en,int ***CubFAI_en,int ***CubLAI_en,
+            int *CubLiA_en,int PsSpNC,int ***PsSphe,double **SDFrRe_ps,
+            int ReAtNu,double PsSpRa,double *RePaCh,int ReReNu,int *AtReprRes,
+            int *FiAtRes,int *LaAtRes); // clangini
 /* void ExtOutNam(int FragNu,char **FrFiNa,char **FrFiNa_out); clangini */
 void ExtOutNam(char *FrFiNa,char *FrFiNa_out); /* clangini */
 void FindFrSym(int FrAtNu,double **FrCoor,char **FrAtTy,int *UndisAt_fr);

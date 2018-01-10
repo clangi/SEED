@@ -135,3 +135,106 @@ void SqDisFrRe_ps(int FrAtNu,double **RoSFCo,double **ReCoor,double *ReMinC,
   free_ivector(ResFlag,1,ReReNu);
 
 }
+
+void SqDisFrRe_ps_vdW(int FrAtNu,double **RoSFCo,double **ReCoor,double *ReMinC,
+            double GrSiCu_en,int *CubNum_en,int ***CubFAI_en,int ***CubLAI_en,
+            int *CubLiA_en,int PsSpNC,int ***PsSphe,double **SDFrRe_ps,
+            int ReAtNu,double PsSpRa,double *RePaCh,int ReReNu,int *AtReprRes,
+            int *FiAtRes,int *LaAtRes)
+/* This function is identical to SqDisFrRe_ps() but for the vdW energy only.
+   This function computes the squared distances between the fragment atoms and
+   the corresponding receptor atoms of the pseudo-sphere procedure, for the vdW
+   energy only.
+   It will be used in MC run. clangini
+
+   SDFrRe_ps  array of squared distances between the fragment atoms and the
+              corresponding receptor atoms of the pseudo-sphere procedure
+              for the evaluation of the vdW energy
+   ResFlag  residue flag (1 if taken into account, 0 if not)
+   CubAto  cube number in which the current atom is (1->along x,2->y,3->z)
+   RFSqDi  squared distance between one atom of the receptor and one atom
+           of the fragment
+   PsSpRa_sq  squared pseudo-sphere radius */
+{
+  int i,j,k,m,n,CubAto[4],p,*ResFlag;
+  double RFSqDi,PsSpRa_sq;
+
+  PsSpRa_sq = PsSpRa*PsSpRa; // squared pseudo-sphere radius
+  ResFlag=ivector(1,ReReNu);
+
+/* Initialization of SDFrRe_ps */
+  for (i=1;i<=FrAtNu;i++) {
+    for (j=1;j<=ReAtNu;j++) {
+      SDFrRe_ps[i][j]=-1.0;
+    }
+  }
+/* ---------------------------- */
+/* Loop over the fragment atoms */
+/* ---------------------------- */
+  for (i=1;i<=FrAtNu;i++) {
+
+/* Initialization of ResFlag */
+    for (j=1;j<=ReReNu;j++)
+      ResFlag[j]=0;
+
+/* Find the cube or pseudo-cube (negative assignation) in which the current
+   fragment atom is */
+    for (j=1;j<=3;j++)
+      CubAto[j]=ffloor((RoSFCo[i][j]-ReMinC[j])/GrSiCu_en)+1;
+
+/* Loop over the cube of the pseudo-sphere */
+    for (j=-PsSpNC;j<=PsSpNC;j++) {
+      for (k=-PsSpNC;k<=PsSpNC;k++) {
+        for (m=-PsSpNC;m<=PsSpNC;m++) {
+
+/* The cube of the pseudo-sphere must have a value of 1 */
+/* This means that I should be within the pseudo-sphere. clangini */
+          if (PsSphe[j+PsSpNC+1][k+PsSpNC+1][m+PsSpNC+1]) {
+
+/* Check whether the list of residue-representative atoms cube exists */
+            if (((CubAto[1]+j)>=1)&&((CubAto[1]+j)<=CubNum_en[1])&&
+                ((CubAto[2]+k)>=1)&&((CubAto[2]+k)<=CubNum_en[2])&&
+                ((CubAto[3]+m)>=1)&&((CubAto[3]+m)<=CubNum_en[3])) {
+
+/* Check whether the list of residue-representative atoms cube contains at
+   least one residue-representative atom */
+              if (CubFAI_en[CubAto[1]+j][CubAto[2]+k][CubAto[3]+m]!=0) {
+
+                for (n=CubFAI_en[CubAto[1]+j][CubAto[2]+k][CubAto[3]+m];
+                     n<=CubLAI_en[CubAto[1]+j][CubAto[2]+k][CubAto[3]+m];n++) {
+
+                  RFSqDi=DistSq(RoSFCo[i][1],RoSFCo[i][2],RoSFCo[i][3],
+                                ReCoor[AtReprRes[CubLiA_en[n]]][1],
+                                ReCoor[AtReprRes[CubLiA_en[n]]][2],
+                                ReCoor[AtReprRes[CubLiA_en[n]]][3]);
+
+/* Take the residue into account only if this distance (between the current
+   fragment atom and the current residue-representative atom) is smaller or
+   equal to the pseudo-sphere radius */
+/* Residue is taken into account only if it is within the cut-off distance
+   from the current fragment atom. clangini */
+                  if (RFSqDi <= PsSpRa_sq) {
+                    ResFlag[CubLiA_en[n]]=1;
+/* Loop over the current residue atoms */
+                    for (p = FiAtRes[CubLiA_en[n]];p <= LaAtRes[CubLiA_en[n]]; p++) {
+                      RFSqDi = DistSq(RoSFCo[i][1],RoSFCo[i][2],RoSFCo[i][3],
+                                     ReCoor[p][1],ReCoor[p][2],ReCoor[p][3]);
+                      SDFrRe_ps[i][p] = RFSqDi;
+                    }
+                  }
+
+                }
+
+              }
+
+            }
+          }
+
+        } // loop over cubes of pseudo-sphere: x
+      } // loop over cubes of pseudo-sphere: y
+    } // loop over cubes of pseudo-sphere: z
+  } // loop over frag atom
+
+  free_ivector(ResFlag,1,ReReNu);
+
+}
