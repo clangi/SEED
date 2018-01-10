@@ -182,7 +182,7 @@ void ReInFi(char *InpFil,char *RecFil,int *BSResN,int **BSReNu,
   int AtEl; //clangini
   //double AtWei_k; // clangini
   char dummyStr[5]; //clangini
-  double dummy_double;
+  double dummy_double, dummy_double_fine; // dummy var for reading with scanf
 /* ----------------------------------------- */
 /* ---------- Read the input file ---------- */
 /* ----------------------------------------- */
@@ -544,10 +544,11 @@ written in output file*/ //clangini
     SkipComLin(FilePa, StrLin);
     sscanf(StrLin, "%lf", &(seed_par.mc_temp));
     SkipComLin(FilePa, StrLin);
-    sscanf(StrLin, "%lf", &(seed_par.mc_max_tran_step));
+    sscanf(StrLin, "%lf%lf", &(seed_par.mc_max_tran_step), &(seed_par.mc_max_tran_step_fine));
     SkipComLin(FilePa, StrLin);
-    sscanf(StrLin, "%lf", &dummy_double);
-    seed_par.mc_max_rot_step = dummy_double * M_PI/180;
+    sscanf(StrLin, "%lf%lf", &dummy_double, &dummy_double_fine);
+    seed_par.mc_max_rot_step = dummy_double * M_PI/180.0;
+    seed_par.mc_max_rot_step_fine = dummy_double_fine * M_PI/180.0;
     SkipComLin(FilePa, StrLin);
     sscanf(StrLin, "%lf", &seed_par.mc_rot_freq);
     SkipComLin(FilePa, StrLin);
