@@ -4537,64 +4537,38 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     is_rot_move = true;
                     n_rot++;
                     rot_move(RoSFCo, FrAtNu, seed_par);
-                    /* Energy evaluation: */
-                    Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);
-                    SqDisFrRe_ps(FrAtNu,RoSFCo,ReCoor,ReMinC,GrSiCu_en,
-                        CubNum_en,CubFAI_en,CubLAI_en,CubLiA_en,
-                        PsSpNC,PsSphe,SDFrRe_ps,ReAtNu,PsSpRa,
-                        RePaCh,ReReNu,AtReprRes,FiAtRes,LaAtRes,
-                        TotChaRes,NuChResEn,LiChResEn,
-                        SDFrRe_ps_elec,ChFrRe_ps_elec);
-                    PsSpEE(FrAtNu,ReAtNu,ReVdWE_sr,FrVdWE_sr,
-                           ReVdWR,FrVdWR,&VWEnEv_ps,SDFrRe_ps);
-                    // if ((cycle % 5) == 0){
-                      ElecFrag(ReAtNu,ReCoor,RePaCh,ChFrRe_ps_elec,
-                          ReRad,ReRad2,ReRadOut,
-                          ReRadOut2,surfpt_re,nsurf_re,
-                          pointsrf_re,ReSelfVol,FrAtNu,RoSFCo,FrCoor,
-                          FrPaCh,FrRad,FrRad2,FrRadOut,FrRadOut2,
-                          Frdist2,SDFrRe_ps_elec,FrMinC,FrMaxC,&FrSolvEn,
-                          Nsurfpt_fr,surfpt_fr,
-                          nsurf_fr,pointsrf_fr,surfpt_ex,Tr,U1,U2,WaMoRa,
-                          GrSiSo,NPtSphere,Min,Max,XGrid,YGrid,ZGrid,
-                          NGridx,NGridy,NGridz,GridMat,
-                          DeltaPrDeso,Kelec,Ksolv,UnitVol,
-                          pi4,nxminBS,nyminBS,nzminBS,nxmaxBS,nymaxBS,
-                          nzmaxBS,corr_scrint,corr_fr_deso,&ReDesoElec,
-                          &ReFrIntElec,&FrDesoElec,ReSelfVol_corrB,EmpCorrB,FPaOut);
-                    //   }
                   }
                   else {
                     is_rot_move = false;
                     n_trans++;
                     trans_move(RoSFCo, FrAtNu, seed_par);
-                    /* Energy evaluation: */
-                    Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);
-                    SqDisFrRe_ps(FrAtNu,RoSFCo,ReCoor,ReMinC,GrSiCu_en,
-                        CubNum_en,CubFAI_en,CubLAI_en,CubLiA_en,
-                        PsSpNC,PsSphe,SDFrRe_ps,ReAtNu,PsSpRa,
-                        RePaCh,ReReNu,AtReprRes,FiAtRes,LaAtRes,
-                        TotChaRes,NuChResEn,LiChResEn,
-                        SDFrRe_ps_elec,ChFrRe_ps_elec);
-                    PsSpEE(FrAtNu,ReAtNu,ReVdWE_sr,FrVdWE_sr,
-                           ReVdWR,FrVdWR,&VWEnEv_ps,SDFrRe_ps);
-                    // if ((cycle % 5) == 0){
-                      ElecFrag(ReAtNu,ReCoor,RePaCh,ChFrRe_ps_elec,
-                          ReRad,ReRad2,ReRadOut,
-                          ReRadOut2,surfpt_re,nsurf_re,
-                          pointsrf_re,ReSelfVol,FrAtNu,RoSFCo,FrCoor,
-                          FrPaCh,FrRad,FrRad2,FrRadOut,FrRadOut2,
-                          Frdist2,SDFrRe_ps_elec,FrMinC,FrMaxC,&FrSolvEn,
-                          Nsurfpt_fr,surfpt_fr,
-                          nsurf_fr,pointsrf_fr,surfpt_ex,Tr,U1,U2,WaMoRa,
-                          GrSiSo,NPtSphere,Min,Max,XGrid,YGrid,ZGrid,
-                          NGridx,NGridy,NGridz,GridMat,
-                          DeltaPrDeso,Kelec,Ksolv,UnitVol,
-                          pi4,nxminBS,nyminBS,nzminBS,nxmaxBS,nymaxBS,
-                          nzmaxBS,corr_scrint,corr_fr_deso,&ReDesoElec,
-                          &ReFrIntElec,&FrDesoElec,ReSelfVol_corrB,EmpCorrB,FPaOut);
-                    //   }
                   }
+                  /* Energy evaluation: */
+                  Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);
+                  SqDisFrRe_ps(FrAtNu,RoSFCo,ReCoor,ReMinC,GrSiCu_en,
+                      CubNum_en,CubFAI_en,CubLAI_en,CubLiA_en,
+                      PsSpNC,PsSphe,SDFrRe_ps,ReAtNu,PsSpRa,
+                      RePaCh,ReReNu,AtReprRes,FiAtRes,LaAtRes,
+                      TotChaRes,NuChResEn,LiChResEn,
+                      SDFrRe_ps_elec,ChFrRe_ps_elec);
+                  PsSpEE(FrAtNu,ReAtNu,ReVdWE_sr,FrVdWE_sr,
+                         ReVdWR,FrVdWR,&VWEnEv_ps,SDFrRe_ps);
+                  // if ((cycle % 5) == 0){
+                    ElecFrag(ReAtNu,ReCoor,RePaCh,ChFrRe_ps_elec,
+                        ReRad,ReRad2,ReRadOut,
+                        ReRadOut2,surfpt_re,nsurf_re,
+                        pointsrf_re,ReSelfVol,FrAtNu,RoSFCo,FrCoor,
+                        FrPaCh,FrRad,FrRad2,FrRadOut,FrRadOut2,
+                        Frdist2,SDFrRe_ps_elec,FrMinC,FrMaxC,&FrSolvEn,
+                        Nsurfpt_fr,surfpt_fr,
+                        nsurf_fr,pointsrf_fr,surfpt_ex,Tr,U1,U2,WaMoRa,
+                        GrSiSo,NPtSphere,Min,Max,XGrid,YGrid,ZGrid,
+                        NGridx,NGridy,NGridz,GridMat,
+                        DeltaPrDeso,Kelec,Ksolv,UnitVol,
+                        pi4,nxminBS,nyminBS,nzminBS,nxmaxBS,nymaxBS,
+                        nzmaxBS,corr_scrint,corr_fr_deso,&ReDesoElec,
+                        &ReFrIntElec,&FrDesoElec,ReSelfVol_corrB,EmpCorrB,FPaOut);
+                  //   }
 
                   new_mc_en = SFVWEn*VWEnEv_ps + SFIntElec*ReFrIntElec +
                               SFDeso_re*ReDesoElec + SFDeso_fr*FrDesoElec;
