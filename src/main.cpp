@@ -4535,11 +4535,21 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                   // }
                   if (do_rot_move == true){
                     n_rot++;
-                    rot_move(RoSFCo, FrAtNu, seed_par.mc_max_rot_step);
+                    do_fine_move = rnd_gen::get_bernoulli(seed_par.mc_rot_fine_freq);
+                    if(do_fine_move){//fine or coarse?
+                      rot_move(RoSFCo, FrAtNu, seed_par.mc_max_rot_step_fine);
+                    } else {
+                      rot_move(RoSFCo, FrAtNu, seed_par.mc_max_rot_step);
+                    }
                   }
                   else {
                     n_trans++;
-                    trans_move(RoSFCo, FrAtNu, seed_par.mc_max_tran_step);
+                    do_fine_move = rnd_gen::get_bernoulli(seed_par.mc_tran_fine_freq);
+                    if(do_fine_move){//fine or coarse?
+                      trans_move(RoSFCo, FrAtNu, seed_par.mc_max_tran_step_fine);
+                    } else {
+                      trans_move(RoSFCo, FrAtNu, seed_par.mc_max_tran_step);
+                    }
                   }
                   /* Energy evaluation: */
                   Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);
