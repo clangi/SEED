@@ -15,9 +15,14 @@ class Parameter // This is much more like a POD struct than a class
   double mc_temp;
   double mc_max_tran_step;
   double mc_max_tran_step_fine; // for finer trans move
+  double mc_tran_freq; // freq for tran move
+  double mc_tran_fine_freq; // rel. freq for finer trans move
+
   double mc_max_rot_step;
   double mc_max_rot_step_fine; // for finer rot move
-  double mc_rot_freq;
+  double mc_rot_freq; // freq for rot move (tran_freq = 1 - mc_rot_freq)
+  double mc_rot_fine_freq; // rel. freq for finer rot move
+
   int mc_niter;
   int mc_el_freq;
   double sa_alpha;
