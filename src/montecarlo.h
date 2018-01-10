@@ -4,7 +4,7 @@
 #include "quaternion.h"
 #include "Parameter.h"
 
-void rot_move(double **RoSFCo, int FrAtNu, Parameter& seed_par);
-void trans_move(double **coord, int num_at, Parameter& par);
+void rot_move(double **RoSFCo, int FrAtNu, double max_step);
+void trans_move(double **coord, int num_at, double max_step);
 
 #endif

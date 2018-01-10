@@ -271,7 +271,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   /* params for MC run */
   Parameter seed_par;
   int n_rot, n_trans, n_accept_rot, n_accept_trans;
-  bool do_rot_move;
+  bool do_rot_move, do_fine_move;
   double accept_prob;
   double old_mc_en, new_mc_en, **old_mc_FrCoor, sa_temp, mc_accept_rate;
   struct timeval time_mc_start, time_mc_end;
@@ -4535,11 +4535,11 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                   // }
                   if (do_rot_move == true){
                     n_rot++;
-                    rot_move(RoSFCo, FrAtNu, seed_par);
+                    rot_move(RoSFCo, FrAtNu, seed_par.mc_max_rot_step);
                   }
                   else {
                     n_trans++;
-                    trans_move(RoSFCo, FrAtNu, seed_par);
+                    trans_move(RoSFCo, FrAtNu, seed_par.mc_max_tran_step);
                   }
                   /* Energy evaluation: */
                   Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);

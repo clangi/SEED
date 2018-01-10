@@ -2,10 +2,10 @@
 #include "rnd_namespace.h"
 #include "funct.h"
 
-void rot_move(double** RoSFCo, int FrAtNu, Parameter & seed_par) {
+void rot_move(double** RoSFCo, int FrAtNu, double max_step) {
   double mc_rot_step;
   double ct[4]; // centroid -> centre of rotation
-  mc_rot_step = rnd_gen::get_uniform(0.0, seed_par.mc_max_rot_step);
+  mc_rot_step = rnd_gen::get_uniform(0.0, max_step);
   Quaternion<double> q = Quaternion<double>::unitRandom(mc_rot_step);
 
   CentroidCalc(RoSFCo, FrAtNu, ct);
@@ -15,10 +15,10 @@ void rot_move(double** RoSFCo, int FrAtNu, Parameter & seed_par) {
   }
 }
 
-void trans_move(double **coord, int num_at, Parameter& par) {
+void trans_move(double **coord, int num_at, double max_step) {
   double t[4];
   for (int i = 1; i <= 3; i++) {
-    t[i] = rnd_gen::get_uniform(-par.mc_max_tran_step, par.mc_max_tran_step);
+    t[i] = rnd_gen::get_uniform(-max_step, max_step);
   }
   for (int i = 1; i <= num_at; i++){
     coord[i][1] = coord[i][1] + t[1];
