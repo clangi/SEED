@@ -270,7 +270,8 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   std::string FragNa_str; //C++ string equivalent to FragNa
   /* params for MC run */
   Parameter seed_par;
-  int n_rot, n_trans, n_accept_rot, n_accept_trans;
+  int n_rot, n_trans, n_accept_rot, n_accept_trans, // counters for mc moves
+      n_rot_fine, n_trans_fine, n_accept_rot_fine, n_accept_trans_fine;
   bool do_rot_move, do_fine_move;
   double accept_prob;
   double old_mc_en, new_mc_en, **old_mc_FrCoor, sa_temp, mc_accept_rate;
@@ -4492,8 +4493,10 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 mc_accept_rate = 0.0;
                 n_rot = 0; /* counters for the num of MC moves */
                 n_accept_rot = 0;
+                n_rot_fine = n_accept_rot_fine = 0;
                 n_trans = 0;
                 n_accept_trans = 0;
+                n_trans_fine = n_accept_trans_fine = 0;
                 /* main MC loop: */
                 fprintf(FPaOut,"Doing MC Minimization:\n");
                 fprintf(FPaOut, "%8s%10s%10s%10s%10s%10s%10s\n",
@@ -4533,10 +4536,11 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                   //                              Dr_s_ro[ClusLi_sd[i1]]+Df_s_ro[ClusLi_sd[i1]];
                   //       old_mc_en = To_s_ro[ClusLi_sd[i1]];
                   // }
-                  if (do_rot_move == true){
+                  if (do_rot_move){
                     n_rot++;
                     do_fine_move = rnd_gen::get_bernoulli(seed_par.mc_rot_fine_freq);
                     if(do_fine_move){//fine or coarse?
+                      n_rot_fine++;
                       rot_move(RoSFCo, FrAtNu, seed_par.mc_max_rot_step_fine);
                     } else {
                       rot_move(RoSFCo, FrAtNu, seed_par.mc_max_rot_step);
@@ -4546,6 +4550,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     n_trans++;
                     do_fine_move = rnd_gen::get_bernoulli(seed_par.mc_tran_fine_freq);
                     if(do_fine_move){//fine or coarse?
+                      n_trans_fine++;
                       trans_move(RoSFCo, FrAtNu, seed_par.mc_max_tran_step_fine);
                     } else {
                       trans_move(RoSFCo, FrAtNu, seed_par.mc_max_tran_step);
@@ -4592,8 +4597,16 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     Df_s_ro[ClusLi_sd[i1]] = SFDeso_fr*FrDesoElec;
                     To_s_ro[ClusLi_sd[i1]] = new_mc_en;
 
-                    if (do_rot_move) { n_accept_rot++; }
-                    else { n_accept_trans++; }
+                    if (do_rot_move) {
+                      n_accept_rot++;
+                      if(do_fine_move)
+                        n_accept_rot_fine++;
+                    }
+                    else {
+                      n_accept_trans++;
+                      if(do_fine_move)
+                        n_accept_trans_fine++;
+                    }
                     fprintf(FPaOut, "ACCEPT %d\n", cycle + 1);
                     /* dump pose for checking */
                     sprintf(WriPat,"%s","outputs/mc_poses.mol2\0"); // clangini
@@ -4634,9 +4647,21 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 fprintf(FPaOut, "%8s%8d (%6.2f)%8d (%6.2f)\n", "Rot:", n_rot,
                         n_rot/(double)seed_par.mc_niter, n_accept_rot,
                         n_accept_rot/(double)n_rot);
+                fprintf(FPaOut, "%8s%8d (%6.2f)%8d (%6.2f)\n", "Rot(f):", n_rot_fine,
+                        n_rot_fine/(double)n_rot, n_accept_rot_fine,
+                        n_accept_rot_fine/(double)n_rot_fine);
+                fprintf(FPaOut, "%8s%8d (%6.2f)%8d (%6.2f)\n", "Rot(c):", n_rot - n_rot_fine,
+                        (n_rot-n_rot_fine)/(double)n_rot, (n_accept_rot - n_accept_rot_fine),
+                        (n_accept_rot-n_accept_rot_fine)/(double)(n_rot-n_rot_fine));
                 fprintf(FPaOut, "%8s%8d (%6.2f)%8d (%6.2f)\n", "Trans:", n_trans,
                         n_trans/(double)seed_par.mc_niter, n_accept_trans,
                         n_accept_trans/(double)n_trans);
+                fprintf(FPaOut, "%8s%8d (%6.2f)%8d (%6.2f)\n", "Trans(f):", n_trans_fine,
+                        n_trans_fine/(double)n_trans, n_accept_trans_fine,
+                        n_accept_trans_fine/(double)n_trans_fine);
+                fprintf(FPaOut, "%8s%8d (%6.2f)%8d (%6.2f)\n", "Trans(c):", (n_trans-n_trans_fine),
+                        (n_trans-n_trans_fine)/(double)n_trans, (n_accept_trans-n_accept_trans_fine),
+                        (n_accept_trans-n_accept_trans_fine)/(double)(n_trans-n_trans_fine));
                 gettimeofday(&time_mc_end,NULL);
                 fprintf(FPaOut,"CPU time in sec. for MC optimization: %.2f\n",
                     ((time_mc_end.tv_sec  - time_mc_start.tv_sec) * 1000000u +
