@@ -270,8 +270,8 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   std::string FragNa_str; //C++ string equivalent to FragNa
   /* params for MC run */
   Parameter seed_par;
-  int do_rot_move, n_rot, n_trans, n_accept_rot, n_accept_trans;
-  bool is_rot_move;
+  int n_rot, n_trans, n_accept_rot, n_accept_trans;
+  bool do_rot_move;
   double accept_prob;
   double old_mc_en, new_mc_en, **old_mc_FrCoor, sa_temp, mc_accept_rate;
   struct timeval time_mc_start, time_mc_end;
@@ -4534,12 +4534,10 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                   //       old_mc_en = To_s_ro[ClusLi_sd[i1]];
                   // }
                   if (do_rot_move == true){
-                    is_rot_move = true;
                     n_rot++;
                     rot_move(RoSFCo, FrAtNu, seed_par);
                   }
                   else {
-                    is_rot_move = false;
                     n_trans++;
                     trans_move(RoSFCo, FrAtNu, seed_par);
                   }
@@ -4584,7 +4582,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     Df_s_ro[ClusLi_sd[i1]] = SFDeso_fr*FrDesoElec;
                     To_s_ro[ClusLi_sd[i1]] = new_mc_en;
 
-                    if (is_rot_move) { n_accept_rot++; }
+                    if (do_rot_move) { n_accept_rot++; }
                     else { n_accept_trans++; }
                     fprintf(FPaOut, "ACCEPT %d\n", cycle + 1);
                     /* dump pose for checking */
