@@ -23,8 +23,8 @@ class Parameter // This is much more like a POD struct than a class
   double mc_rot_freq; // freq for rot move (tran_freq = 1 - mc_rot_freq)
   double mc_rot_fine_freq; // rel. freq for finer rot move
 
-  int mc_niter;
-  int mc_el_freq;
+  int mc_niter_out;
+  int mc_niter_in;
   double sa_alpha;
   int mc_rand_seed;
 };

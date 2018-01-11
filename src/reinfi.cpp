@@ -557,7 +557,7 @@ written in output file*/ //clangini
     SkipComLin(FilePa, StrLin);
     sscanf(StrLin, "%lf", &seed_par.mc_tran_fine_freq);
     SkipComLin(FilePa, StrLin);
-    sscanf(StrLin, "%d%d", &(seed_par.mc_niter), &(seed_par.mc_el_freq));
+    sscanf(StrLin, "%d%d", &(seed_par.mc_niter_out), &(seed_par.mc_niter_in));
     SkipComLin(FilePa, StrLin);
     sscanf(StrLin, "%lf", &(seed_par.sa_alpha));
     SkipComLin(FilePa,StrLin);
