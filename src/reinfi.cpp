@@ -552,7 +552,9 @@ written in output file*/ //clangini
     SkipComLin(FilePa, StrLin);
     sscanf(StrLin, "%lf", &seed_par.mc_rot_freq);
     seed_par.mc_tran_freq = 1.0 - seed_par.mc_rot_freq;
+    SkipComLin(FilePa, StrLin);
     sscanf(StrLin, "%lf", &seed_par.mc_rot_fine_freq);
+    SkipComLin(FilePa, StrLin);
     sscanf(StrLin, "%lf", &seed_par.mc_tran_fine_freq);
     SkipComLin(FilePa, StrLin);
     sscanf(StrLin, "%d%d", &(seed_par.mc_niter), &(seed_par.mc_el_freq));
