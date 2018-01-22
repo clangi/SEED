@@ -17,6 +17,12 @@ Run SEED with the following command:
 ```
 You can find an example seed.inp and seed.par, along with the results of simple study cases,
 in the test_cases folder.
+
+In the scripts directory you can find separate_poses.py, that can be used to extract selected poses from the concatenated
+mol2 output files. For using it type:
+```sh
+python separate_poses.py -h
+```
 ### Citation ###
 Kindly reference the original paper if you use SEED:
  * N. Majeux, M. Scarsi, J. Apostolakis, C. Ehrhardt, and A. Caflisch. Exhaustive docking of
