@@ -484,7 +484,7 @@ void Reduc_polvectre(int ReAtNu,double **ReCoor,double *ReVdWR,double *ReVdWE_sr
 
 
 
-/* Desallocate the memory */
+/* Deallocate the memory */
   free_ivector(SortArray,1,ReAcNu+ReDoNu);
   free_dvector(VdWEn_prob_arr,1,ReAcNu+ReDoNu);
   free_dvector(VdWEn_prob_arr_in,1,ReAcNu+ReDoNu);
