@@ -9,13 +9,13 @@ cd to directory src and make SEED with the following command (you may have to mo
 ```sh
 make seed
 ```
-
+The binary is compiled into the bin directory.
 ### Run SEED ###
 Run SEED with the following command:
 ```sh
 ./seed_4.0.0 seed.inp >& log
 ```
-You can find an example seed.inp and seed.par, along with the results of simple study cases, 
+You can find an example seed.inp and seed.par, along with the results of simple study cases,
 in the test_cases folder.
 ### Citation ###
 Kindly reference the original paper if you use SEED:

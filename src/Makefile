@@ -4,7 +4,8 @@
 # Folders:
 #SRC_DIR = .
 BUILD_DIR = build
-TARGET_EXEC = seed_4.0.0
+BIN_DIR = ../bin
+TARGET_EXEC = $(BIN_DIR)/seed_4.0.0
 
 # Flags:
 CXXFLAGS = -std=c++11 -O3 -pedantic -Wall -march=native
