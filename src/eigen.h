@@ -1,5 +1,24 @@
-#ifndef _EIGEN_CLANGINI_H
-#define _EIGEN_CLANGINI_H
+/*
+*    This file is part of SEED.
+*
+*    Copyright (C) 2017, Caflisch Lab, University of Zurich
+*
+*    SEED is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+*    SEED is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/* Eigenvalues routines */
+#ifndef _EIGEN_SEED_H
+#define _EIGEN_SEED_H
 
 #define MAXITERJAC 50
 
@@ -7,135 +26,145 @@
 #include <limits>
 #include <cmath>
 
-class Jacobi
+/* Class for Jacobi diagonalization adapted from Numerical Recipes in C++ */
+void rotate(double ** const a,const double s,const double tau,const int i,
+  const int j, const int k, const int l);
+
+class Jaco
 {
   private:
     int n;
     double **a,**v;
-    double *d;
-    int nrot;
-    const static double EPS;
+    double *eigvals;
+    int rot;
+    const static double EPSILON;
 
     void deallocate(void);
-    void rot(double ** const a,const double s,const double tau,const int i,
-      const int j, const int k, const int l);
-    void eigsrt(void);
+    void eigen_sort(void);
 
   public:
-    Jacobi(double **aa, int sz);
-    ~Jacobi();
+    Jaco(double **aa, int a_size);
+    ~Jaco();
     const double * eigenvalues(void);
     const double ** eigenvectors(void);
     //double ** diagonalized(void);
 };
 
-Jacobi::Jacobi(double **aa, int sz){
-  int i,j,ip,iq;
-  double tresh, theta, tau, t, sm, s, h, g, c;
-  double *b,*z;
+/* Adapted from ALGOL code in
+   [The Jacobi Method for Real Symmetric Matrices, H. Rutishauser, 1971] */
+Jaco::Jaco(double **aa, int a_size){
+  int i, j, p, q; //indexes
+  double sm, c, s, t, h, g, tau, theta, tresh; // sm = sum of off diagonal moduli
+  double *b, *z;
   // Member initialization:
-  n = sz;
+  n = a_size;
   a = dmatrix(1,n,1,n);
   v = dmatrix(1,n,1,n);
-  d = dvector(1,n);
+  eigvals = dvector(1,n);
 
-  for(i = 1;i <= n;i++){
-    for(j=1;j<=n;j++){
-      a[i][j] = aa[i][j];
-      v[i][j] = 0.0;
+  // inizialization
+  for(p = 1; p <= n; p++){
+    for(q = 1; q <= n; q++){
+      a[p][q] = aa[p][q]; // copy aa not to modify the original data
+      v[p][q] = 0.0;
     }
-    v[i][i] = 1.0;
+    v[p][p] = 1.0;
   }
-  nrot = 0;
+  rot = 0;
   // Initialization of supporting variables:
   b = dvector(1,n);
   z = dvector(1,n);
-  for(i=1;i<=n;i++){
-    b[i] = d[i] = a[i][i];
-    z[i] = 0.0;
+  for(p = 1; p <= n; p++){
+    b[p] = eigvals[p] = a[p][p];
+    z[p] = 0.0;
   }
-  // Iterations:
-  for (i=1; i <= MAXITERJAC;i++) {
-    sm=0.0;
-    for(ip=1;ip <= (n-1); ip++) {
-      for (iq = ip+1; iq <= n; iq++){
-        sm += std::abs(a[ip][iq]);
+  // swp:
+  for (i=1; i <= MAXITERJAC; i++) {
+    sm = 0.0;
+    for(p = 1;p <= (n-1); p++) {
+      for (q = p+1; q <= n; q++){
+        sm += std::abs(a[p][q]);
       }
     }
+    // exit condition:
     if (sm == 0.0) {
-      free_dvector(b,1,n);
-      free_dvector(z,1,n);
-      eigsrt(); // implement this
+      free_dvector(b, 1, n);
+      free_dvector(z, 1, n);
+      eigen_sort(); // sort eigenvalues
       return;
     }
     if (i < 4)
-      tresh=0.2*sm/(n*n);
+      tresh = 0.2 * sm/(n*n);
     else
       tresh = 0.0;
-    for (ip=1;ip<=n-1;ip++) {
-      for (iq=ip+1;iq<=n;iq++) {
-        g=100.0*std::abs(a[ip][iq]); //Only rotates if diagonal element is small
-        if (i > 4 && g <= EPS*std::abs(d[ip]) && g <= EPS*std::abs(d[iq]))
-          a[ip][iq]=0.0;
-        else if (std::abs(a[ip][iq]) > tresh) {
-          h=d[iq]-d[ip];
-          if (g <= EPS*std::abs(h))
-            t=(a[ip][iq])/h;
-          else {
-            theta=0.5*h/(a[ip][iq]);
-            t=1.0/(std::abs(theta)+std::sqrt(1.0+theta*theta));
+    for (p = 1; p <= (n-1); p++) {
+      for (q = (p + 1); q <= n; q++) {
+        g = 100.0 * std::abs(a[p][q]); //Only rotates if diagonal element is small
+        if (i > 4 && g <= EPSILON * std::abs(eigvals[p]) &&
+            g <= EPSILON * std::abs(eigvals[q])) // As in NR in C++
+          a[p][q] = 0.0; // set elem to zero and skip the iteration
+        else if (std::abs(a[p][q]) > tresh) { // rotate
+          h = eigvals[q] - eigvals[p];
+          if (g <= EPSILON*std::abs(h))
+            t = (a[p][q])/h;
+          else { // computing tan of rotation angle
+            theta = 0.5 * h/a[p][q];
+            t = 1.0/(std::abs(theta) + std::sqrt(1.0 + theta*theta));
             if (theta < 0.0)
               t = -t;
           }
-          c=1.0/std::sqrt(1+t*t);
-          s=t*c;
-          tau=s/(1.0+c);
-          h=t*a[ip][iq];
-          z[ip] -= h;
-          z[iq] += h;
-          d[ip] -= h;
-          d[iq] += h;
-          a[ip][iq]=0.0;
-          for (j=1;j<ip;j++)
-            rot(a,s,tau,j,ip,j,iq);
-          for(j=ip+1;j<iq;j++)
-            rot(a,s,tau,ip,j,j,iq);
-          for (j=iq+1;j<=n;j++)
-            rot(a,s,tau,ip,j,iq,j);
-          for (j=1;j<=n;j++)
-            rot(v,s,tau,j,ip,j,iq);
-          ++nrot;
-        }
+          c = 1.0 / std::sqrt(1 + t*t);
+          s = t * c; // ~angle
+          tau = s / (1.0 + c);
+
+          h = t * a[p][q];
+          z[p] -= h;
+          z[q] += h;
+          eigvals[p] -= h;
+          eigvals[q] += h;
+          // note the a is diagonal so we evaluate
+          // elements only in the upper triangular half
+          a[p][q] = 0.0;
+          for (j = 1; j <= p-1; j++)
+            rotate(a, s, tau, j, p, j, q);
+          for(j = p+1; j <= q-1; j++)
+            rotate(a, s, tau, p, j, j, q);
+          for (j = q + 1; j <= n; j++)
+            rotate(a, s, tau, p, j, q, j);
+          for (j = 1; j <= n; j++)
+            rotate(v, s, tau, j, p, j, q);
+          ++rot;
+        } // end rotate
       }
     }
-    for (ip=1;ip<=n;ip++) {
-      b[ip] += z[ip];
-      d[ip]=b[ip];
-      z[ip]=0.0;
+    for (p = 1; p <= n; p++) {
+      b[p] += z[p];
+      eigvals[p] = b[p];
+      z[p] = 0.0;
     }
   }
-  throw("Too many iterations in routine jacobi");
+  throw("Maximum number of iterations exceeded in Jacobi diagonalization");
 }
 
-Jacobi::~Jacobi(){
+Jaco::~Jaco(){
   deallocate();
 }
 
-void Jacobi::deallocate(void){
+void Jaco::deallocate(void){
   free_dmatrix(a,1,n,1,n);
   free_dmatrix(v,1,n,1,n);
-  free_dvector(d,1,n);
+  free_dvector(eigvals,1,n);
 }
 
-inline void Jacobi::rot(double ** const a, const double s, const double tau,
+inline void rotate(double ** const mat, const double angle, const double tau,
   const int i, const int j, const int k, const int l){
-    double g = a[i][j];
-    double h = a[k][l];
-    a[i][j] = g - s*(h+g*tau);
-    a[k][l] = h+s*(g-h*tau);
+    double m_ij = mat[i][j]; // temporaries
+    double m_kl = mat[k][l];
+    mat[i][j] = m_ij - angle*(m_kl + m_ij*tau);
+    mat[k][l] = m_kl + angle*(m_ij - m_kl*tau);
   }
 
-// void Jacobi::eigsrt(void){//classic implementation of insertion sort
+// void Jaco::eigsrt(void){//classic implementation of insertion sort
 //   int i,j,k;
 //   double temp;
 //   for (i = 2; i <= n; i++){
@@ -157,22 +186,22 @@ inline void Jacobi::rot(double ** const a, const double s, const double tau,
 //   }
 // }
 
-void Jacobi::eigsrt(void){//straight insertion sort as in Numerical Recipes
+void Jaco::eigen_sort(void){//straight insertion sort as in Numerical Recipes
   //Sort eigenvalues (and eigenvectors), from larger to smaller.
   int i,j,k;
   double temp;
   for(i = 1; i < n; i++){
-    temp = d[i];
+    temp = eigvals[i];
     k = i;
     for(j = i+1; j <= n; j++){
-      if (d[j] >= temp){
-        temp = d[j];
+      if (eigvals[j] >= temp){
+        temp = eigvals[j];
         k = j;
       }
     }
     if (k != i){
-      d[k] = d[i];
-      d[i] = temp;
+      eigvals[k] = eigvals[i];
+      eigvals[i] = temp;
       for (j=1;j<=n;j++){
         temp = v[j][i];
         v[j][i] = v[j][k];
@@ -182,20 +211,20 @@ void Jacobi::eigsrt(void){//straight insertion sort as in Numerical Recipes
   }
 }
 
-const double * Jacobi::eigenvalues(void){
-  const double * d_ptr = &d[0];
+const double * Jaco::eigenvalues(void){
+  const double * d_ptr = &eigvals[0];
   return d_ptr;
 }
-const double ** Jacobi::eigenvectors(void){
+const double ** Jaco::eigenvectors(void){
   const double ** v_ptr = const_cast<const double **> (&v[0]);
   return v_ptr;
 }
-// double ** Jacobi::diagonalized(void){
+// double ** Jaco::diagonalized(void){
 //     double ** a_ptr = &a[0];
 //     return a_ptr;
 // }
 
-const double Jacobi::EPS = std::numeric_limits<double>::epsilon();
+const double Jaco::EPSILON = std::numeric_limits<double>::epsilon();
 
 
 

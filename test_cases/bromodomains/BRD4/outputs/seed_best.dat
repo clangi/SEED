@@ -1,0 +1,3 @@
+Name                              Pose   Cluster     Fr_nu       Tot     ElinW   rec_des   frg_des       vdW     DElec   DG_hydr   Tot_eff   vdW_eff  Elec_eff       HAC        MW
+4pci_ligand                          1         1       111    -25.97     -9.58      5.16      4.31    -25.86     -5.34     -4.24     -1.37     -1.36     -0.50        19  252.3170
+4pci_ligand_inverted                 1         1       117    -14.01     -0.91      2.94      0.43    -16.46      2.87     -3.78     -0.74     -0.87     -0.05        19  252.3170

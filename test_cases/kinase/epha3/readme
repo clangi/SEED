@@ -1,0 +1,19 @@
+* SEED 4.0.0   Testcase:  EphA3 kinase  (PDB code 4gk2)
+* Authors:  J.R. Marchand and Amedeo Caflisch
+* Date:     June 28, 2017
+* Revised: 
+*
+
+EphA3 kinase inhibitors and structures of complexes are described in 
+Dong J, Zhao H, Zhou T, Spiliotopoulos D, Rajendran C, Li XD, Huang D, Caflisch A,
+Structural Analysis of the Binding of Type I, I1/2, and II Inhibitors to Eph Tyrosine Kinases,
+ACS Med Chem Lett. 6, 79, 2015.
+
+IMPORTANT:
+SEED was developed to dock small (< 20 heavy atoms) and mainly rigid fragments.
+Thus, SEED fails to correctly dock large kinase inhibitors, e.g., 4gk2 (31 heavy atoms) which is not included in this test case
+as ligand, while SEED correctly docks the xanthine scaffold of 4gk2 (17 heavy atoms).
+In general, the pose predicted by SEED tends to be less buried than the binding mode in the crystal structure.
+This is evident in all ligands of this test case, and particularly for 4pqc. 
+
+

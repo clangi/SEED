@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
     cout << "\n";
   }
 
-  Jacobi mymatrix_d(mymatrix,n);
+  Jaco mymatrix_d(mymatrix,n);
   cout << "Eigenvector Matrix:\n";
   //m_diag = mymatrix_d.diagonalized();
   for(i=1;i<=n;i++){
