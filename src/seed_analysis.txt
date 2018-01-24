@@ -135,6 +135,30 @@ int *SdClusAr_pproc [1-NuPosSdCl]:  array containing the number of the second cl
 float *TotEnSdClus_pproc [1-NuPosSdCl]:  array containing the total energy (slow method) of 
                                          the second cluster (kept positions) 
                                          for the postprocessing
+#### for example: ####
+FWrNu = 20
+j = 1 ClusLi_sd[j] = 111 ClusLi_sd_pproc[j] = 2
+j = 2 ClusLi_sd[j] = 112 ClusLi_sd_pproc[j] = 0
+j = 3 ClusLi_sd[j] = 110 ClusLi_sd_pproc[j] = 0
+j = 4 ClusLi_sd[j] = 116 ClusLi_sd_pproc[j] = 1
+j = 5 ClusLi_sd[j] = 117 ClusLi_sd_pproc[j] = 0
+j = 6 ClusLi_sd[j] = 115 ClusLi_sd_pproc[j] = 0
+j = 7 ClusLi_sd[j] = 1631 ClusLi_sd_pproc[j] = 1
+j = 8 ClusLi_sd[j] = 1630 ClusLi_sd_pproc[j] = 0
+j = 9 ClusLi_sd[j] = 113 ClusLi_sd_pproc[j] = 0
+j = 10 ClusLi_sd[j] = 1210 ClusLi_sd_pproc[j] = 0
+j = 11 ClusLi_sd[j] = 1149 ClusLi_sd_pproc[j] = 2
+j = 12 ClusLi_sd[j] = 1148 ClusLi_sd_pproc[j] = 0
+j = 13 ClusLi_sd[j] = 1101 ClusLi_sd_pproc[j] = 2
+j = 14 ClusLi_sd[j] = 1100 ClusLi_sd_pproc[j] = 0
+j = 15 ClusLi_sd[j] = 668 ClusLi_sd_pproc[j] = 1
+j = 16 ClusLi_sd[j] = 795 ClusLi_sd_pproc[j] = 1
+j = 17 ClusLi_sd[j] = 1080 ClusLi_sd_pproc[j] = 0
+j = 18 ClusLi_sd[j] = 64 ClusLi_sd_pproc[j] = 2
+j = 19 ClusLi_sd[j] = 92 ClusLi_sd_pproc[j] = 1
+j = 20 ClusLi_sd[j] = 63 ClusLi_sd_pproc[j] = 1
+####
+
 int *FlagAr [1-NuPosSdCl]: flag array
 int *Index_pproc [1-NuPosSdCl]:  array of indexes for the postprocessing (sorting step)
 int *FrPosAr_sort [1-NuPosSdCl]:  array containing the number of the fragment position (Fr_nu) 

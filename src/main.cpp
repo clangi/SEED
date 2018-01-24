@@ -26,7 +26,7 @@
 #include "Parameter.h" //parameter class
 #include "rnd_namespace.h"
 #include "montecarlo.h"
-#include "Energy.h"
+#include "energy.h"
 const double R_constant = 1.9872036e-3;
 /* CLANGINI 2016 END */
 #include "funct.h"
@@ -276,6 +276,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   bool do_rot_move, do_fine_move;
   double old_mc_en, new_mc_en, **old_mc_FrCoor, sa_temp, mc_accept_rate,
          old_mc_vdW, new_mc_vdW, **old_mc_FrCoor_in, accept_prob, accept_prob_in;
+  Energy start_en;
   struct timeval time_mc_start, time_mc_end;
 #if  __cplusplus > 199711L
   std::unordered_map<std::string, int> FragNa_map;
@@ -4486,8 +4487,16 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                                      Dr_s_ro[ClusLi_sd[i1]]+Df_s_ro[ClusLi_sd[i1]];
 
               if (seed_par.do_mc == 'y'){
-                /* MC initialization -- outer chain */
+
                 gettimeofday(&time_mc_start,NULL);
+                /* Store starting energy */
+                start_en.tot_en = To_s_ro[ClusLi_sd[i1]];
+                start_en.vdW_en = VW_s_ro[ClusLi_sd[i1]];
+                start_en.elec_en = In_s_ro[ClusLi_sd[i1]];
+                start_en.rec_des = Dr_s_ro[ClusLi_sd[i1]];
+                start_en.frg_des = Df_s_ro[ClusLi_sd[i1]];
+
+                /* MC initialization -- outer chain */
                 old_mc_en = To_s_ro[ClusLi_sd[i1]];
                 old_mc_FrCoor = dmatrix(RoSFCo, 1, FrAtNu, 1, 3);
                 sa_temp = seed_par.mc_temp; //T_0
@@ -4648,7 +4657,6 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     new_mc_en = old_mc_en;
                   }
                   /* print MC cyc_out summary */
-                  // fprintf(FPaOut,"%8d%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f\n",
                   fprintf(FPaOut,"%8d%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f\n",
                           cyc_out+1, sa_temp, new_mc_en, In_s_ro[ClusLi_sd[i1]],
                           Dr_s_ro[ClusLi_sd[i1]], Df_s_ro[ClusLi_sd[i1]],
@@ -4725,10 +4733,10 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
         /* Compute NuSdClKe and NuPosSdCl */
         NuSdClKe=0;
-        NuPosSdCl=0;
+        NuPosSdCl=0; // this will be the total number of poses kept for postprocessing after the second clustering
         //std::cout << "SFWrNu = " << SFWrNu << std::endl; //clangini
         for (j=1;j<=SFWrNu;j++) {
-          //std::cout << "j = " << j << " ClusLi_sd_pproc[j] = " <<ClusLi_sd_pproc[j]<< std::endl; //clangini
+          //std::cout << "j = " << j << " ClusLi_sd[j] = " << ClusLi_sd[j]<< " ClusLi_sd_pproc[j] = " << ClusLi_sd_pproc[j] << std::endl; //clangini
           if (ClusLi_sd_pproc[j]==2) { // if it is a first cluster representative
             NuSdClKe=NuSdClKe+1;
             NuPosSdCl=NuPosSdCl+1;
@@ -4740,13 +4748,13 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
         /* Prepare lists of kept positions in second clusters for sorting
            IntVar1 numbering on kept positions
            IntVar2 numbering on clusters */
-        FrPosAr_pproc=ivector(1,NuPosSdCl);
-        SdClusAr_pproc=ivector(1,NuPosSdCl);
+        FrPosAr_pproc=ivector(1,NuPosSdCl); // number of fragment position
+        SdClusAr_pproc=ivector(1,NuPosSdCl); // number of fragment second cluster
         TotEnSdClus_pproc=dvector(1,NuPosSdCl);
 
         IntVar1=0;
         IntVar2=0;
-        for (j=1;j<=SFWrNu;j++) {
+        for (j=1;j<=SFWrNu;j++) { // Fragments are ordered by cluster
           if (ClusLi_sd_pproc[j]==2) { // if representative of first clustering
                                        //(and hence of second as well) clangini
             IntVar1=IntVar1+1;
@@ -4758,9 +4766,9 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
           if (ClusLi_sd_pproc[j]==1) {// if representative of second clustering
                                       //only but not of first. clangini
             IntVar1=IntVar1+1;
-            FrPosAr_pproc[IntVar1]=ClusLi_sd[j];
-            SdClusAr_pproc[IntVar1]=IntVar2;
-            TotEnSdClus_pproc[IntVar1]=To_s_ro[ClusLi_sd[j]];
+            FrPosAr_pproc[IntVar1] = ClusLi_sd[j];
+            SdClusAr_pproc[IntVar1] = IntVar2;
+            TotEnSdClus_pproc[IntVar1] = To_s_ro[ClusLi_sd[j]];
           }
         }
 
@@ -4850,7 +4858,6 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
             CurFra,&FrFiNa_out[CurFra][1]); clangini*/
         fprintf(FPaOut,"Postprocessed clusters for fragment type %d (%s) :\n\n",
             CurFra,FragNa); /* clangini */
-        /* This part of seed.out should also go in the summary table. clangini */
         fprintf(FPaOut,"                             intermolecular       ");
         fprintf(FPaOut,"electrostat_desolv.       Total\n");
 
