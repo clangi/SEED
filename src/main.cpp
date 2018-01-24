@@ -26,6 +26,7 @@
 #include "Parameter.h" //parameter class
 #include "rnd_namespace.h"
 #include "montecarlo.h"
+#include "Energy.h"
 const double R_constant = 1.9872036e-3;
 /* CLANGINI 2016 END */
 #include "funct.h"
