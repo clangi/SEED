@@ -1,0 +1,10 @@
+CXXFLAGS = -O3 -pedantic -Wall -march=native -DUSE_QUATERNION_ROTATION
+CXX = g++
+LDFLAGS = -lm -O3 -static
+
+INC_FLAGS = -I. -I/home/clangini/software/boost_1_63_0
+
+# For seed MPI:
+MPICXXFLAGS = -O3 -pedantic -Wall -march=native -DUSE_QUATERNION_ROTATION -DENABLE_MPI
+MPICXX = mpic++
+MPILDFLAGS = -lm -O3 -lmpi

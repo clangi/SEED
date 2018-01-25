@@ -286,6 +286,7 @@ void SqDisFrRe_ps_vdW(int FrAtNu,double **RoSFCo,double **ReCoor,double *ReMinC,
             int *FiAtRes,int *LaAtRes); // clangini
 /* void ExtOutNam(int FragNu,char **FrFiNa,char **FrFiNa_out); clangini */
 void ExtOutNam(char *FrFiNa,char *FrFiNa_out); /* clangini */
+void ExtOutNam(char *FrFiNa,char *FrFiNa_out, int myrank); /* clangini */
 void FindFrSym(int FrAtNu,double **FrCoor,char **FrAtTy,int *UndisAt_fr);
 void write_chm_clus_reduc(int CurFra,int SFWrNu,int FrAtNu,int *AliHyd,
                           double *Coulo_ro,double *Vande_ro,double *TotEn_ro,

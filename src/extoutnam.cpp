@@ -19,6 +19,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <iostream>
+
+#ifndef _STRLENGTH
+  #define _STRLENGTH 500
+#endif
 /* void ExtOutNam(int FragNu,char **FrFiNa,char **FrFiNa_out) clangini*/
 /* This function extracts the output name for each fragment type from the
    fragments paths :
@@ -70,12 +74,12 @@ void ExtOutNam(char *FrFiNa,char *FrFiNa_out)
   char *FirCha,*LasCha;
   int /*i,*/LengStr,j;
 
-  LengStr=strlen(&FrFiNa[0]);
+  LengStr = strlen(&FrFiNa[0]);
   //std::cout << "LengStr: " << LengStr << std::endl;
 
-  FirCha=strrchr(&FrFiNa[0],'/');
+  FirCha = strrchr(&FrFiNa[0],'/');
   if (FirCha)
-    FirCha=FirCha+1;
+    FirCha = FirCha+1;
   else
     FirCha=&FrFiNa[0];
 
@@ -95,9 +99,45 @@ void ExtOutNam(char *FrFiNa,char *FrFiNa_out)
 
    for (j=0;j<=(LasCha-FirCha);j++)
     FrFiNa_out[j]=FrFiNa[FirCha-&FrFiNa[0]+j];
-  FrFiNa_out[LasCha-FirCha+2]='\0';
+  FrFiNa_out[LasCha-FirCha+1]='\0';
 
   //std::cout << "FrFiNa_out: " << FrFiNa_out <<"aaa"<< std::endl;
 
+}
+
+/* Overloaded version in case we use MPI
+   it adds a suffix _partMY_RANK before the .mol2 ending */
+void ExtOutNam(char *FrFiNa,char *FrFiNa_out, int myrank)
+/* This function extracts the output name for each fragment type from the
+   fragments paths :
+   FrFiNa_out  output name for each fragment type
+   LengStr  length of the fragment file path (FrFiNa)
+   FirCha  pointer on the first character of the name
+   LasCha  pointer on the last character of the name */
+{
+  char *LasCha;
+  char suffix[_STRLENGTH];
+  char extension[10];
+  int LengStr,j;
+
+  // first we modify FrFiNa to add the _partMYRANK
+  sprintf(suffix, "_part%d", myrank);
+  LengStr = strlen(&FrFiNa[0]);
+
+  LasCha = strrchr(&FrFiNa[0], '.');
+  if (LasCha != NULL) {
+    LasCha = LasCha - 1;
+    strcpy(extension, LasCha + 1);
+  }
+  else {
+    LasCha = &FrFiNa[0] + LengStr - 1;
+    extension[0] = '\0';
+  }
+  strcpy(LasCha + 1, suffix);
+  LengStr = strlen(&FrFiNa[0]);
+  strcpy(&FrFiNa[0 + LengStr], extension);
+
+  // Then we simply call the normal version of ExtOutNam
+  ExtOutNam(FrFiNa, FrFiNa_out);
 }
 /* clangini 2016 end */
