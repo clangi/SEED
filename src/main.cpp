@@ -294,7 +294,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   bool do_rot_move, do_fine_move;
   double old_mc_en, new_mc_en, **old_mc_FrCoor, sa_temp, mc_accept_rate,
          old_mc_vdW, new_mc_vdW, **old_mc_FrCoor_in, accept_prob, accept_prob_in;
-  Energy start_en;
+  // Energy start_en;
   struct timeval time_mc_start, time_mc_end;
 #if  __cplusplus > 199711L
   std::unordered_map<std::string, int> FragNa_map;
@@ -4536,11 +4536,11 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
                 gettimeofday(&time_mc_start,NULL);
                 /* Store starting energy */
-                start_en.tot_en = To_s_ro[ClusLi_sd[i1]];
-                start_en.vdW_en = VW_s_ro[ClusLi_sd[i1]];
-                start_en.elec_en = In_s_ro[ClusLi_sd[i1]];
-                start_en.rec_des = Dr_s_ro[ClusLi_sd[i1]];
-                start_en.frg_des = Df_s_ro[ClusLi_sd[i1]];
+                // start_en.tot_en = To_s_ro[ClusLiL_sd[i1]];
+                // start_en.vdW_en = VW_s_ro[ClusLi_sd[i1]];
+                // start_en.elec_en = In_s_ro[ClusLi_sd[i1]];
+                // start_en.rec_des = Dr_s_ro[ClusLi_sd[i1]];
+                // start_en.frg_des = Df_s_ro[ClusLi_sd[i1]];
 
                 /* MC initialization -- outer chain */
                 old_mc_en = To_s_ro[ClusLi_sd[i1]];
@@ -4556,9 +4556,9 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 n_trans_fine = n_accept_trans_fine = 0;
 
                 /* double chain (hybrid) MC */
-                fprintf(FPaOut,"Doing MC Minimization:\n");
-                fprintf(FPaOut, "%8s%10s%10s%10s%10s%10s%10s\n",
-                        "Step","Temp","Tot","ElinW","rec_des","frg_des", "vdW");
+                fprintf(FPaOut,"Doing MC Minimization of pose: %d\n", ClusLi_sd[i1]);
+                // fprintf(FPaOut, "%8s%10s%10s%10s%10s%10s%10s\n",
+                        // "Step","Temp","Tot","ElinW","rec_des","frg_des", "vdW");
 
                 for (int cyc_out = 0; cyc_out < seed_par.mc_niter_out; cyc_out++){ /* outer chain */
                   accept_prob = 0.0;
@@ -4637,7 +4637,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     //         VW_s_ro[ClusLi_sd[i1]]);
 
                     // sa_temp = seed_par.sa_alpha * sa_temp; //T_(n+1)
-                  }
+                  } // end of inner chain
 
                   /* Energy evaluation: -- outer chain */
                   Rot_Tran(FrAtNu,FrCoor,RoSFCo,Tr,U1,U2);
@@ -4688,7 +4688,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     //   if(do_fine_move)
                     //     n_accept_trans_fine++;
                     // }
-                    fprintf(FPaOut, "ACCEPT %d\n", cyc_out + 1);
+               // fprintf(FPaOut, "ACCEPT %d\n", cyc_out + 1);
                     // /* dump pose for checking */
                     // sprintf(WriPat,"%s","outputs/mc_poses.mol2\0"); // clangini
                     // FilePa=fopen(WriPat,"a");
@@ -4703,10 +4703,10 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     new_mc_en = old_mc_en;
                   }
                   /* print MC cyc_out summary */
-                  fprintf(FPaOut,"%8d%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f\n",
-                          cyc_out+1, sa_temp, new_mc_en, In_s_ro[ClusLi_sd[i1]],
-                          Dr_s_ro[ClusLi_sd[i1]], Df_s_ro[ClusLi_sd[i1]],
-                          VW_s_ro[ClusLi_sd[i1]]);
+                  // fprintf(FPaOut,"%8d%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f\n",
+                  //         cyc_out+1, sa_temp, new_mc_en, In_s_ro[ClusLi_sd[i1]],
+                  //         Dr_s_ro[ClusLi_sd[i1]], Df_s_ro[ClusLi_sd[i1]],
+                  //         VW_s_ro[ClusLi_sd[i1]]);
 
                   sa_temp = seed_par.sa_alpha * sa_temp; //T_(n+1)
                 } // end of MC cyc_out
