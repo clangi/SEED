@@ -32,6 +32,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <vector>
 
 #ifdef USE_QUATERNION_ROTATION
   #include <quaternion.h>
@@ -218,7 +219,8 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       *ClusLi_sd_01_reduc,/*unused variable RedRPV_nkv,*/ *PolVect_rec_01,*ReAtoTyp_nu,
       *FrAtoTyp_nu,FrNuVdW_ap,NuLiEnClus,ClusVa_wr,*FiAtRes,*LaAtRes,
       *AtReprRes,*LiChResEn,NuChResEn,ChkExit,FrCoNu,Ind_num_cn,*ConfArr,
-      /*unused variables *Index_both, :LoopTe,*/*ClusLi_sd_pproc,NuSdClKe,NuPosSdCl,*FrPosAr_pproc,
+      /*unused variables *Index_both, :LoopTe,*/*ClusLi_sd_pproc,NuSdClKe,NuPosSdCl,
+      *FrPosAr_pproc,
        *SdClusAr_pproc,IntVar1,IntVar2,*Index_pproc,*FrPosAr_sort,
        *SdClusAr_sort,*FlagAr,*ReprSdClAr,MaxPosClus,SFWrNu_init,PrintLev,
        ToNFrP_ap,ij,distrPointBSNumb,gc_reprke,gc_maxwrite,ChkInGrid; /*,CorrFiNumb; clangini*/
@@ -275,6 +277,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
                *surfpt_fr_deso_orig,*surfpt_fr_deso,*surfpt_ex,*surfpt_re_deso,
                cbmid_re;
   /* CLANGINI 2016 */
+  std::vector<int> PosToRem;
   struct stat DirExist;
   char TabLin[_STRLENGTH]; //clangini
   std::ofstream TabOutStream; //clangini
@@ -4636,6 +4639,9 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
             FrPosAr_pproc[IntVar1]=ClusLi_sd[j];
             SdClusAr_pproc[IntVar1]=IntVar2;
             TotEnSdClus_pproc[IntVar1]=To_s_ro[ClusLi_sd[j]];
+            if(To_s_ro[ClusLi_sd[j]] > FrMaEn){
+              PosToRem.push_back(IntVar1);
+            }
           }
           if (ClusLi_sd_pproc[j]==1) {// if representative of second clustering
                                       //only but not of first. clangini
@@ -4643,6 +4649,9 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
             FrPosAr_pproc[IntVar1]=ClusLi_sd[j];
             SdClusAr_pproc[IntVar1]=IntVar2;
             TotEnSdClus_pproc[IntVar1]=To_s_ro[ClusLi_sd[j]];
+            if(To_s_ro[ClusLi_sd[j]] > FrMaEn){
+              PosToRem.push_back(IntVar1);
+            }
           }
         }
 
@@ -4669,14 +4678,15 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
           FlagAr[j]=1;
         }
 
-        IntVar1=0;
-        IntVar2=0;
+        IntVar1=0; // index of cluster (energy ordered)
+        IntVar2=0; // index
         for (i1=1;i1<=NuPosSdCl;i1++) {
           if (FlagAr[Index_pproc[i1]]) {
             IntVar2=IntVar2+1;
+            // std::cout << "IntVar2 " << IntVar2 << "\n";
             CluIndex_sort[SdClusAr_pproc[Index_pproc[i1]]]=IntVar2; //clangini
-            //std::cout<<"CluIndex_sort["<<SdClusAr_pproc[Index_pproc[i1]]<<"] = "
-            //         <<IntVar2<<std::endl;//clangini
+            // std::cout<<"CluIndex_sort["<<SdClusAr_pproc[Index_pproc[i1]]<<"] = "
+                    //  <<IntVar2<<std::endl;//clangini
             for (i2=1;i2<=NuPosSdCl;i2++) {
               if ((FlagAr[Index_pproc[i2]])&&
                   (SdClusAr_pproc[Index_pproc[i2]]==SdClusAr_pproc[Index_pproc[i1]])) {
@@ -4684,6 +4694,9 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                 FrPosAr_sort[IntVar1]=FrPosAr_pproc[Index_pproc[i2]];
                 SdClusAr_sort[IntVar1]=IntVar2;
                 FlagAr[Index_pproc[i2]]=0;
+                // std::cout << "IntVar1 " << IntVar1 << "\n";
+                // std::cout << "FrPosAr_sort[IntVar1] " << FrPosAr_sort[IntVar1] << "\n";
+                // std::cout << "SdClusAr_sort[IntVar1] " << SdClusAr_sort[IntVar1] << "\n";
               }
             }
           }
@@ -4774,6 +4787,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
           //  IntVar1=SdClusAr_sort[j];
           //  fprintf(FPaOut,"%5d\n",IntVar1);
           //}
+
           fprintf(FPaOut,
               "%6d%6d%9d%6d%13.2f%11.2f%13.2f%11.2f%13.2f\n",
               j, CluIndex_sort[SdClusAr_pproc[Index_pproc[j]]],
@@ -4784,6 +4798,14 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
         }
         fprintf(FPaOut,"\n");
         /* END modification clangini 17/01/17 */
+
+        if (PosToRem.size() > 0){
+          fprintf(FPaOut,"The poses ");
+          for(std::vector<int>::iterator it = PosToRem.begin(); it != PosToRem.end(); ++it) {
+            fprintf(FPaOut, "%d, ", FrPosAr_pproc[*it]);
+          }
+          fprintf(FPaOut, "will not be written to the output files as they have a total slow energy > %lf\n", FrMaEn);
+        }
 
 
         /* Append lines to summary table. START clangini */
@@ -4802,7 +4824,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
           TabOutStream.open (TabFil, std::ios::out | std::ios::app); // append mode
           if(TabOutStream.is_open()){
             for (j=1;j<=((NuLiEnClus<NuPosSdCl)?NuLiEnClus:NuPosSdCl);j++) {
-              sprintf(TabLin,
+              if(To_s_ro[FrPosAr_sort[j]] <= FrMaEn){
+                sprintf(TabLin,
                     "%-30s%8d%10d%10d%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10d%10.4f",
                     FragNa,j,SdClusAr_sort[j],FrPosAr_sort[j],To_s_ro[FrPosAr_sort[j]],In_s_ro[FrPosAr_sort[j]],
                     Dr_s_ro[FrPosAr_sort[j]],Df_s_ro[FrPosAr_sort[j]],
@@ -4810,7 +4833,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     FrSolvEn,(To_s_ro[FrPosAr_sort[j]]/HeAtCo),
                     (VW_s_ro[FrPosAr_sort[j]]/HeAtCo),(In_s_ro[FrPosAr_sort[j]]/HeAtCo),
                     HeAtCo,MolWei);
-              TabOutStream << TabLin << std::endl;
+                TabOutStream << TabLin << std::endl;
+              }
             }
           } else {
             std::cerr << "Unable to write to file "<< TabFil << std::endl;
@@ -4828,7 +4852,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
           TabOutStream.open (TabFil, std::ios::out | std::ios::app); // append mode
           if(TabOutStream.is_open()){
             for (j=1;j<=((NuPosMem<NuPosSdCl)?NuPosMem:NuPosSdCl);j++) {
-              sprintf(TabLin,
+              if(To_s_ro[FrPosAr_pproc[Index_pproc[j]]] < FrMaEn){
+                sprintf(TabLin,
                     "%-30s%8d%10d%10d%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10d%10.4f",
                     FragNa,j,
                     CluIndex_sort[SdClusAr_pproc[Index_pproc[j]]],
@@ -4843,7 +4868,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     (VW_s_ro[FrPosAr_pproc[Index_pproc[j]]]/HeAtCo),
                     (In_s_ro[FrPosAr_pproc[Index_pproc[j]]]/HeAtCo),
                     HeAtCo,MolWei);
-              TabOutStream << TabLin << std::endl;
+                TabOutStream << TabLin << std::endl;
+              }
             }
           } else {
             std::cerr << "Unable to write to file "<< TabFil << std::endl;
@@ -4879,11 +4905,13 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                                 FrBdTy,SdClusAr_sort[j],To_s_ro[FrPosAr_sort[j]],
                                 FrPaCh,SubNa,AlTySp);
 #else
-            append_pose_to_mol2(FilePa,FragNa,/*FragNa_map[FragNa_str],*/FrAtNu,
-                                FrBdNu,j,FrAtEl,FrCoPo,
-                                FrPosAr_sort[j],FrSyAtTy,FrAtTy,CurFra,FrBdAr,
-                                FrBdTy,SdClusAr_sort[j],To_s_ro[FrPosAr_sort[j]],
-                                FrPaCh,SubNa,AlTySp);
+            if(To_s_ro[FrPosAr_sort[j]] <= FrMaEn){
+              append_pose_to_mol2(FilePa,FragNa,/*FragNa_map[FragNa_str],*/FrAtNu,
+                                  FrBdNu,j,FrAtEl,FrCoPo,
+                                  FrPosAr_sort[j],FrSyAtTy,FrAtTy,CurFra,FrBdAr,
+                                  FrBdTy,SdClusAr_sort[j],To_s_ro[FrPosAr_sort[j]],
+                                  FrPaCh,SubNa,AlTySp);
+            }
 #endif
           }
           fclose(FilePa);
@@ -4909,13 +4937,15 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                                 To_s_ro[FrPosAr_pproc[Index_pproc[j]]],
                                 FrPaCh,SubNa,AlTySp);
 #else
-            append_pose_to_mol2(FilePa,FragNa,/*FragNa_map[FragNa_str],*/FrAtNu,
-                                FrBdNu,j,FrAtEl,FrCoPo,
-                                FrPosAr_pproc[Index_pproc[j]],FrSyAtTy,
-                                FrAtTy,CurFra,FrBdAr,FrBdTy,
-                                CluIndex_sort[SdClusAr_pproc[Index_pproc[j]]],
-                                To_s_ro[FrPosAr_pproc[Index_pproc[j]]],
-                                FrPaCh,SubNa,AlTySp);
+            if(To_s_ro[FrPosAr_pproc[Index_pproc[j]]] < FrMaEn){
+              append_pose_to_mol2(FilePa,FragNa,/*FragNa_map[FragNa_str],*/FrAtNu,
+                                  FrBdNu,j,FrAtEl,FrCoPo,
+                                  FrPosAr_pproc[Index_pproc[j]],FrSyAtTy,
+                                  FrAtTy,CurFra,FrBdAr,FrBdTy,
+                                  CluIndex_sort[SdClusAr_pproc[Index_pproc[j]]],
+                                  To_s_ro[FrPosAr_pproc[Index_pproc[j]]],
+                                  FrPaCh,SubNa,AlTySp);
+            }
 #endif
           }
           fclose(FilePa);
