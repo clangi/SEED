@@ -1,3 +1,21 @@
+/*
+*    This file is part of SEED.
+*
+*    Copyright (C) 2017, Caflisch Lab, University of Zurich
+*
+*    SEED is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+*    SEED is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 #include <math.h>
 #include <iostream>
 #include "funct.h"
@@ -196,7 +214,7 @@ void align_3D(int n,double **FrAlSet,double **FrAlRef,Quaternion<T> **qrot,
     }
   } //end of loop over atoms
   //cout << "before eigen" << endl;
-  Jacobi eigmatn(matn,4); // Run Jacobi diagonalization
+  Jaco eigmatn(matn,4); // Run Jacobi diagonalization
   //cout << "before eigen 1" << endl;
   eigv = eigmatn.eigenvectors();
   //cout << "before eigen 2" << endl;

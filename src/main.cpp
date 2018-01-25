@@ -1,3 +1,21 @@
+/*
+*    This file is part of SEED.
+*
+*    Copyright (C) 2017, Caflisch Lab, University of Zurich
+*
+*    SEED is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+*    SEED is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -307,13 +325,27 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
 
   if(argc <= 1 )
   {
-    printf("         ----------------------------------------------------------             \n");
+    printf("    ---------------------------------------------------------------------       \n");
     printf("               Solvation Energy for Exhaustive Docking (SEED)                   \n");
     printf("          N. Majeux, M. Scarsi, F. Dey, C. Langini and A. Caflisch              \n");
     printf("                        Department of Biochemistry                              \n");
     printf("                           University of Zurich                                 \n");
     printf("                         %s  (SEED 4.0.0)                                       \n",__DATE__);
-    printf("         ----------------------------------------------------------             \n\n\n\n");
+    printf("\n    Copyright (C) 2017, Caflisch Lab, University of Zurich               \n");
+    printf("                                                                           \n");
+    printf("    SEED is free software: you can redistribute it and/or modify\n");
+    printf("    it under the terms of the GNU General Public License as published by\n");
+    printf("    the Free Software Foundation, either version 3 of the License, or\n");
+    printf("    (at your option) any later version.\n");
+    printf("\n");
+    printf("    SEED is distributed in the hope that it will be useful,\n");
+    printf("    but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
+    printf("    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
+    printf("    GNU General Public License for more details.\n");
+    printf("\n");
+    printf("    You should have received a copy of the GNU General Public License\n");
+    printf("    along with this program.  If not, see <http://www.gnu.org/licenses/>.\n");
+    printf("    ---------------------------------------------------------------------       \n\n\n\n");
 
     printf("                WARNING No input file specified, exiting !\n\n");
     printf("                usage : seed [inputfile]\n\n");
@@ -404,13 +436,27 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   time(&runtime);
   fprintf (FPaOut,"Date and time: %s\n",ctime(&runtime)); //WARNING possible memory leak
 
-  fprintf(FPaOut,"         ----------------------------------------------------------             \n");
+  fprintf(FPaOut,"    ---------------------------------------------------------------------       \n");
   fprintf(FPaOut,"               Solvation Energy for Exhaustive Docking (SEED)                   \n");
   fprintf(FPaOut,"          N. Majeux, M. Scarsi, F. Dey, C. Langini and A. Caflisch              \n");
   fprintf(FPaOut,"                        Department of Biochemistry                              \n");
   fprintf(FPaOut,"                           University of Zurich                                 \n");
   fprintf(FPaOut,"                         %s  (SEED 4.0.0)                                       \n",__DATE__);
-  fprintf(FPaOut,"         ----------------------------------------------------------             \n\n\n\n");
+  fprintf(FPaOut,"\n    Copyright (C) 2017, Caflisch Lab, University of Zurich               \n");
+  fprintf(FPaOut,"                                                                           \n");
+  fprintf(FPaOut,"    SEED is free software: you can redistribute it and/or modify\n");
+  fprintf(FPaOut,"    it under the terms of the GNU General Public License as published by\n");
+  fprintf(FPaOut,"    the Free Software Foundation, either version 3 of the License, or\n");
+  fprintf(FPaOut,"    (at your option) any later version.\n");
+  fprintf(FPaOut,"\n");
+  fprintf(FPaOut,"    SEED is distributed in the hope that it will be useful,\n");
+  fprintf(FPaOut,"    but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
+  fprintf(FPaOut,"    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
+  fprintf(FPaOut,"    GNU General Public License for more details.\n");
+  fprintf(FPaOut,"\n");
+  fprintf(FPaOut,"    You should have received a copy of the GNU General Public License\n");
+  fprintf(FPaOut,"    along with this program.  If not, see <http://www.gnu.org/licenses/>.\n");
+  fprintf(FPaOut,"    ---------------------------------------------------------------------       \n\n\n\n");
 
 
   fprintf(FPaOut,"Data of the input file :\n\n");

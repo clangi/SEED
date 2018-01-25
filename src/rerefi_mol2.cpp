@@ -1,3 +1,21 @@
+/*
+*    This file is part of SEED.
+*
+*    Copyright (C) 2017, Caflisch Lab, University of Zurich
+*
+*    SEED is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+*    SEED is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -13,7 +31,7 @@
 #ifndef _STRLENGTH
 #define _STRLENGTH 500
 #endif
-
+/* The code for the mol2 reader was partially inspired by RDKIT http://www.rdkit.org/ */
 // /* Older version, rewritten (see below) by clangini 2017 to read ALT_TYPE_SET */
 // void ReReFi_mol2(char *RecFil,int *ReAtNu,int *ReBdNu,int *ReReNu,
 //                  char ***ReAtEl,double ***ReCoor,char ***ReAtTy,int **ReResN,
@@ -186,7 +204,7 @@ void ReReFi_mol2(char *RecFil,int *ReAtNu,int *ReBdNu,int *ReReNu,
   }
   /* Read atom section */
   ReReNu_count = 0; //Initialize residue number counter
-  ReReNu_prev = -1; 
+  ReReNu_prev = -1;
   for (i=1; i<=(*ReAtNu); i++ ){
     std::getline(inStream,StrLin);
     //std::cout << "atom line "<<i<<": "<< StrLin << std::endl;

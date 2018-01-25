@@ -1,0 +1,28 @@
+* SEED 4.0.0   Testcase:  CREBBP bromodomain (PDB code 5mqk)
+* Authors:  Valentina Ferri, Dimitrios Spiliotopoulos, J.R. Marchand, and Amedeo Caflisch
+* Date:     June 28, 2017
+* Revised: 
+*
+
+Test case with multiple CREBBP inhibitors and target pdb structure 5mqk.
+In seed.inp, the 13 points for reduction of polar and apolar vectors (i.e., for defining the binding site) 
+are the coordinates of the 5mqk ligand (3-acetylindole). 
+
+Four of the CREBBP ligands are described in the paper by Spiliotopoulos et al., 
+Virtual screen to NMR (VS2NMR): Discovery of fragment hits for the CBP bromodomain
+Bioorg. Med. Chem. Lett. 27, 2472, 2017.
+
+For the ligand 5mgj_baz2 there are also X-ray structures in BAZ2A and BAZ2B.
+
+For 5mqg there are two different poses in the two proteins of the asymmetric unit.
+Thus, xr_5mqg_a and xr_5mqg_b are the binding modes in bromodomain chain A and B, respectively.
+
+Note that DElec is very unfavorable only for the compound with a formal charge (negatively charged carboxy).
+Thus, DElec should not be used for ranking charged compounds.
+From  outputs/seed_best.dat   
+Name                              Pose   Cluster     Fr_nu       Tot     ElinW   rec_des   frg_des       vdW     DElec   DG_hydr   Tot_eff   vdW_eff  Elec_eff       HAC        MW
+5QR_5ep7                             1         1       102    -15.83    -17.10     10.57     11.59    -20.89     25.16    -42.26     -0.79     -1.04     -0.86        20  271.2520
+
+
+
+

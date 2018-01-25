@@ -1,0 +1,2117 @@
+Date and time: Wed Jun 28 19:19:48 2017
+
+         ----------------------------------------------------------             
+               Solvation Energy for Exhaustive Docking (SEED)                   
+          N. Majeux, M. Scarsi, F. Dey, C. Langini and A. Caflisch              
+                        Department of Biochemistry                              
+                           University of Zurich                                 
+                         Jun 19 2017  (SEED 4.0.0)                                       
+         ----------------------------------------------------------             
+
+
+
+Data of the input file :
+
+#           Parameter filename
+../../seed4_cgenff4.par
+#           Receptor coordinates (in mol2 format) filename
+crebbp_5mqk_seed.mol2
+#           Binding site residue list
+#           First line:  number of residues
+2
+88 # conserved Asn
+119 # conserved water
+#           Modification of February 2002:
+#           List of points (e.g. ligand heavy atoms of a known ligand-receptor 
+#           complex structure) in the binding site used to select polar and apolar 
+#           rec. vectors which satisfy the angle criterion (see parameters file)
+#           First line:  number of points (0: no removal of vectors using the angle criterion)
+#           Following lines:  coordinates of the points.  In this test case from 5mqk ligand
+13
+     13.301  18.226  24.680  
+      9.430  17.744  28.268 
+     14.010  17.233  30.515  
+     12.753  17.148  31.091  
+     14.127  17.487  29.151  
+     11.649  17.321  30.266  
+     11.534  17.973  26.851  
+     13.795  18.058  26.127  
+     12.851  17.904  27.087  
+     13.034  17.653  28.399  
+     11.814  17.569  28.965  
+     10.899  17.761  28.008  
+     15.010  17.977  26.336  
+#           Metals in the binding site
+#           Make sure that the residue number of the metal is in the
+#           binding site residue list. 
+#           First line:  total number of coordination points 
+#           Following lines:  atom number of metal / x y z of coordination point
+0
+#           Spherical cutoff for docking (y,n / sphere center / sphere radius)
+n
+#           Fragment library specifications
+#           First line: Number of fragments / dock+energy (d), only energy (e)
+#           Following lines: Fragment filename /
+#           apolar docking, polar docking, or both (a,p,b) /
+#           energy cutoff in kcal/mol / 2nd clustering cutoff in kcal/mol
+d
+crebbp_ligands.mol2          b     0.0   0.0
+
+Data of the parameters file :
+
+#seed.param v4.0
+#           Dielectric constant of the solute (receptor and fragment)
+2.0
+#           Ratio of kept vectors for docking : polar / apolar
+1.0 1.0
+#           First value: write *_clus.mol2 file (y/n)
+#           Second value: write *_best.mol2 file (y/n) 
+n y
+#	    First value: write *_clus.dat summary table file (y/n)
+#           Second value: write *_best.dat summary table file (y/n)
+y y
+#           First value: maximum number of cluster members saved in *_clus* 
+#           output files. Note that this value determines the maximum number
+#           of poses per cluster that go through slow energy evaluation.
+#	    Second value: maximum number of poses saved in *_best* output files.
+5 1  
+#           The docked fragments are saved in the dir ./outputs         
+#           Filename for output log file. This is the main SEED output file.
+./outputs/seed.out
+#           write (w) or read (r) Coulombic grid / grid filename
+w  ./scratch/coulomb.grid
+#           write (w) or read (r) van der Waals grid / grid filename
+w  ./scratch/vanderwaals.grid
+#           write (w) or read (r) receptor desolvation grid / grid filename 
+w  ./scratch/desolvation.grid
+#
+#           Bump checking: used only if fast energy is switched off
+#           n x atoms = maximum tolerated bumps / 
+#           scaling factor for interatomic distance /
+#           severe overlap factor (beta factor in PROTEINS paper)
+2.0 0.89 0.6
+#           van der Waals energy cutoff (kcal/mol): 
+#           used if fast energy is switched on
+1.0
+#           Angle (deg) and number of points on the sphere around the HB vectors
+50.0 100
+#           Number of fragment rotations around each axis
+72
+#           -  angle_rmin  if distance <= (multipl_fact_rmin*minDist)
+#           -  angle_rmax  if distance >= (multipl_fact_rmax*maxDist)
+#           -  linear dependence (range between angle_rmin and angle_rmax)
+#              for other distances
+70.0 10.0 1.2 0.8
+#           Removal of the rec. polar vect.: vdW radius probe
+1.83
+#           Coulombic fast energy: 1=distance dept diel / grid margin / grid spacing
+1 20.0 0.5
+#           van der Waals fast energy: grid margin / grid spacing
+20.0 0.3
+#           accurate energy: Coulombic cutoff for formal charges is automatically
+#                            set to 1.3 x van_der_Waals_cutoff
+#           accurate energy (vdWaals): nonbonding cutoff / grid spacing 
+12.0 1.0
+#           Multiplicative factor (k) for apolar docking to skip evaluation of 
+#           electrostatics. The vdW energy cutoff is:
+#           k x Number of fragment atoms, including hydrogen atoms
+-0.333333
+#           Solvation grid: grid margin / grid spacing
+24.0 0.5
+#           Solvation: water radius / # points per sphere to generate SAS / 
+#                       solvent dielectric constant
+1.4 500 78.5
+#           Hydrophobicity maps: point densities (A^-2) on the SAS for apolar
+#                    vectors on the receptor / on the fragment /
+#                    probe radius to generate SAS for apolar vectors /
+#                    scaling factor for desolvation and / vdW interactions
+1.0 1.0 1.4 1.0 1.0
+#           Scaling factors for fast and also accurate energy evaluation:
+#           van der Waals / electrostatic interaction / receptor desolvation /
+#           fragment desolvation
+1.0 1.0 1.0 1.0
+#      ----------------------------------------------------------------------
+#           Clustering parameters
+#           Clustering parameters
+#           Clustering parameters
+#      ----------------------------------------------------------------------
+#           GSEAL : sim. weight factors (150 atom el.) 0 or # non-default + list
+4
+6  6  2.0
+7  7 10.0
+8  8 10.0
+16 16 10.0
+#           The clustering with GSEAL proceeds in two steps: the
+#           first clustering yields large clusters which contain almost 
+#           overlapping as well as more distant fragments; the second
+#           clustering is done on each cluster found in the first clustering
+#           to eliminate fragments which are very close in space.
+#
+#           First clustering:  overall clustering
+#           GSEAL similarity exponential factor / cutoff factor
+0.9 0.4
+#
+#           Second clustering: to discard redundant positions 
+#           GSEAL similarity exponential factor / cutoff factor
+0.9 0.9
+#           Maximal number of positions to be clustered
+20
+#           Number of lines to be written in the output file for the sorted 
+#           energies and the two clustering procedures / 
+#           Printlevel (0=lean, 1=adds sorting before postprocessing, 2=adds 2nd clustering)
+100 1
+#      ----------------------------------------------------------------------
+#           Forcefield parameters from now on
+#           Forcefield parameters from now on
+#           Forcefield parameters from now on
+#      ----------------------------------------------------------------------
+# parameters are cgenff v4 (2016) and param36 (2012) with water and ions as per toppar_water_ions.str
+#
+# NB: if the user includes metal ions in the binding site, appropriate hydrogen bond distances with these ions should 
+# be provided in the "Hydrogen bond distances between donor and acceptor" section below
+#
+# Hydrogen bond distances were specified for charge-charge and charge-neutral hydrogen bonding pairs according to the following:
+#
+# (+) charge H-bond donor of protein[4]: NR3, NC2, NP, NH3
+# neutral H-bond donor of protein [7]: NR1, NH1, NH2, NY, OH1, S, OT [water]
+# neutral H-bond acceptor of protein [8]: OH1, S, O, OB, OS, NR2, OT [water], OX
+# (-) charge H-bond acceptor of protein [1]: OC
+# (+) charge H-bond donor of ligand [5]: NG2P1, NG2R52, NG3P1, NG3P2, NG3P3
+# neutral H-bond donor of ligand [13]: NG2S1, NG2S2, NG2S3, NG2R43, NG2R51, NG2R53, NG2R61, NG311, NG321, NG331, NG3C51, OG311, SG311
+# neutral H-bond acceptor of ligand [29]: NG1T1, NG2D1, NG2S0, NG2R50, NG2R57, NG2R60, NG2R62, NG2R67, NG2RC0,  NG301, NG3N1, OG2D1, OG2D3, OG2D4, OG2D5, OG2R50, OG3R60, OG301, OG302, OG303, OG304, OG311, OG3C31, OG3C51, OG3C61, SG2D1, SG2R50, SG311, SG301
+# (-) charge H-bond acceptor of ligand [5]: OG2D2, OG2N1, OG2P1, OG312, SG302
+# Polar atoms, none of above categories NG3P0, NG2O1, SG3O2, SG3O1, SG3O3
+#
+#     Atom  element  van der Waals
+#     type  number  radius energy_min (absolute value)
+#   -----------------------------------
+225
+1      H      1     0.22450 0.046000  # polar H
+2      HC     1     0.22450 0.046000  # N-ter H
+3      HA     1     1.32000 0.022000  # nonpolar H
+4      HP     1     1.35820 0.030000  # aromatic H
+5      HB1    1     1.32000 0.022000  # backbone H
+6      HR1    1     0.90000 0.046000  # his he1, (+) his HG,HD2
+7      HR2    1     0.70000 0.046000  # (+) his HE1
+8      HR3    1     1.46800 0.007800  # neutral his HG, HD2
+9      HS     1     0.45000 0.100000  # thiol hydrogen
+10     HE1    1     1.25000 0.031000  # for alkene; RHC=CR
+11     HE2    1     1.26000 0.026000  # for alkene; H2C=CR
+12     C      6     2.00000 0.110000  # carbonyl C, peptide backbone
+13     CA     6     1.99240 0.070000  # aromatic C
+14     CT1    6     2.0000  0.0320    # aliphatic sp3 C for CH
+15     CT2    6     2.010   0.0560    # aliphatic sp3 C for CH2
+16     CT3    6     2.040   0.0780    # aliphatic sp3 C for CH3
+17     CPH1   6     1.80000 0.050000  # his CG and CD2 carbons
+18     CPH2   6     1.80000 0.050000  # his CE1 carbon
+19     CPT    6     1.80000 0.090000  # trp C between rings
+20     CY     6     1.99240 0.070000  # TRP C in pyrrole ring
+21     CP1    6     2.27500 0.020000  # tetrahedral C (proline CA)
+22     CP2    6     2.17500 0.055000  # tetrahedral C (proline CB/CG)
+23     CP3    6     2.17500 0.055000  # tetrahedral C (proline CD)
+24     CC     6     2.00000 0.070000  # carbonyl C, asn,asp,gln,glu,cter,ct2
+25     CD     6     2.00000 0.070000  # carbonyl C, pres aspp,glup,ct1
+26     CS     6     2.20000 0.110000  # thiolate carbon
+27     CE1    6     2.09000 0.068000  # for alkene; RHC=CR
+28     CE2    6     2.08000 0.064000  # for alkene; H2C=CR
+29     CAI    6     1.99000 0.073000  # aromatic C next to CPT in trp
+30     N      7     1.85000 0.200000  # proline N
+31     NR1    7     1.85000 0.200000  # neutral his protonated ring nitrogen
+32     NR2    7     1.85000 0.200000  # neutral his unprotonated ring nitrogen
+33     NR3    7     1.85000 0.200000  # charged his ring nitrogen
+34     NH1    7     1.85000 0.200000  # peptide nitrogen
+35     NH2    7     1.85000 0.200000  # amide nitrogen
+36     NH3    7     1.85000 0.200000  # ammonium nitrogen
+37     NC2    7     1.85000 0.200000  # guanidinium nitrogen
+38     NY     7     1.85000 0.200000  # TRP N in pyrrole ring
+39     NP     7     1.85000 0.200000  # Proline ring NH2+ (N-terminal)
+40     O      8     1.70000 0.120000  # carbonyl oxygen
+41     OB     8     1.70000 0.120000  # carbonyl oxygen in acetic acid
+42     OC     8     1.70000 0.120000  # carboxylate oxygen  
+43     OH1    8     1.77000 0.152100  # hydroxyl oxygen  
+44     OS     8     1.77000 0.152100  # ester oxygen  
+45     S      16    2.00000 0.450000  # sulphur  
+46     SM     16    1.97500 0.380000  # sulfur C-S-S-C type  
+47     SS     16    2.20000 0.470000  # thiolate sulfur  
+48     ALG1   13    2.00000 0.650000  # CGENFF 4 parameters  Aluminum, for ALF4, AlF4-
+49     BRGA1  35    1.97    0.48      # CGENFF 4 parameters   BRET, bromoethane
+50     BRGA2  35    2.05    0.53      # CGENFF 4 parameters   DBRE, 1,1-dibromoethane
+51     BRGA3  35    2.0     0.54       # CGENFF 4 parameters   TBRE, 1,1,1-dibromoethane
+52     BRGR1  35    1.98    0.32       # CGENFF 4 parameters   BROB, bromobenzene
+53     CG1N1  6     1.87    0.18       # CGENFF 4 parameters   C for cyano group
+54     CG1T1  6     1.84    0.167       # CGENFF 4 parameters   internal alkyne R-C#C
+55     CG1T2  6     1.9925  0.1032       # CGENFF 4 parameters   terminal alkyne H-C#C
+56     CG251O 6     2.09    0.068       # CGENFF 4 parameters  same as CG2D1O but in 5-membered ring with exocyclic double bond
+57     CG252O 6     2.09    0.068       # CGENFF 4 parameters  same as CG2D2O but in 5-membered ring with exocyclic double bond
+58     CG25C1 6     2.09    0.068       # CGENFF 4 parameters  same as CG2DC1 but in 5-membered ring with exocyclic double bond
+59     CG25C2 6     2.09    0.068       # CGENFF 4 parameters  same as CG2DC2 but in 5-membered ring with exocyclic double bond
+60     CG2D1  6     2.09    0.068       # CGENFF 4 parameters  alkene; RHC= ; imine C
+61     CG2D1O 6     2.09    0.068       # CGENFF 4 parameters  double bond carbon adjacent to heteroatom. In conjugated systems, the atom to which it is double bonded must be CG2DC1.
+62     CG2D2  6     2.08    0.064       # CGENFF 4 parameters  alkene; H2C=
+63     CG2D2O 6     2.09    0.068       # CGENFF 4 parameters  double bond carbon adjacent to heteroatom. In conjugated systems, the atom to which it is double bonded must be CG2DC2.
+64     CG2DC1 6     2.09    0.068       # CGENFF 4 parameters  double bond carbon adjacent to heteroatom. In conjugated systems, the atom to which it is double bonded must be CG2DC1.
+65     CG2DC2 6     2.09    0.068       # CGENFF 4 parameters  double bond carbon adjacent to heteroatom. In conjugated systems, the atom to which it is double bonded must be CG2DC2.
+66     CG2DC3 6     2.08    0.064       # CGENFF 4 parameters  conjugated alkenes, H2C=
+67     CG2N1  6     2.0     0.11       # CGENFF 4 parameters   conjugated C in guanidine/guanidinium
+68     CG2N2  6     2.0     0.11       # CGENFF 4 parameters   conjugated C in amidinium cation
+69     CG2O1  6     2.0     0.11       # CGENFF 4 parameters   carbonyl C: amides
+70     CG2O2  6     1.7     0.098       # CGENFF 4 parameters   carbonyl C: esters, [neutral] carboxylic acids
+71     CG2O3  6     2.0     0.07       # CGENFF 4 parameters   carbonyl C: [negative] carboxylates
+72     CG2O4  6     1.8     0.06       # CGENFF 4 parameters   carbonyl C: aldehydes
+73     CG2O5  6     2.0     0.09       # CGENFF 4 parameters   carbonyl C: ketones
+74     CG2O6  6     2.0     0.07       # CGENFF 4 parameters   carbonyl C: urea, carbonate
+75     CG2O7  6     1.563   0.058       # CGENFF 4 parameters   CO2 carbon
+76     CG2R51 6     2.1    0.05       # CGENFF 4 parameters   5-mem ring, his CG, CD2(0), trp
+77     CG2R52 6     2.2   0.02       # CGENFF 4 parameters   5-mem ring, double bound to N, PYRZ, pyrazole
+78     CG2R53 6     2.2   0.02       # CGENFF 4 parameters   5-mem ring, double bound to N and adjacent to another heteroatom, purine C8, his CE1 (0,+1), 2PDO, kevo
+79     CG2R57 6     2.1    0.05       # CGENFF 4 parameters   5-mem ring, bipyrroles
+80     CG2R61 6     1.9924    0.07       # CGENFF 4 parameters   6-mem aromatic C
+81     CG2R62 6     1.9    0.09       # CGENFF 4 parameters   6-mem aromatic C for protonated pyridine (NIC) and rings containing carbonyls (see CG2R63) (NA)
+82     CG2R63 6     1.9    0.1       # CGENFF 4 parameters   6-mem aromatic C for protonated pyridine (NIC) and rings containing carbonyls (see CG2R63) (NA)
+83     CG2R64 6     2.1    0.04       # CGENFF 4 parameters   6-mem aromatic amidine and guanidine carbon (between 2 or 3 Ns and double-bound to one of them), NA, PYRM
+84     CG2R66 6     1.9    0.07       # CGENFF 4 parameters   6-mem aromatic carbon bound to F
+85     CG2R67 6     1.9924    0.07       # CGENFF 4 parameters   6-mem aromatic carbon of biphenyl
+86     CG2R71 6     1.9948    0.067       # CGENFF 4 parameters   7-mem ring arom C, AZUL, azulene, kevo
+87     CG2RC0 6     1.86    0.099       # CGENFF 4 parameters   6/5-mem ring bridging C, guanine C4,C5, trp
+88     CG2RC7 6     1.86    0.099       # CGENFF 4 parameters   sp2 ring connection with single bond(
+89     CG301  6     2.0   0.032       # CGENFF 4 parameters   aliphatic C, no hydrogens, neopentane
+90     CG302  6     2.3    0.02       # CGENFF 4 parameters   aliphatic C, no hydrogens, trifluoromethyl
+91     CG311  6     2.0   0.032       # CGENFF 4 parameters   aliphatic C with 1 H, CH
+92     CG312  6     2.05    0.042       # CGENFF 4 parameters   aliphatic C with 1 H, difluoromethyl
+93     CG314  6     2.165    0.031       # CGENFF 4 parameters   aliphatic C with 1 H, adjacent to positive N (PROT NTER) (+)
+94     CG321  6     2.01    0.056       # CGENFF 4 parameters   aliphatic C for CH2
+95     CG322  6     1.9    0.06       # CGENFF 4 parameters   aliphatic C for CH2, monofluoromethyl
+96     CG323  6     2.2   0.11       # CGENFF 4 parameters   aliphatic C for CH2, thiolate carbon
+97     CG324  6     2.175    0.055       # CGENFF 4 parameters   aliphatic C for CH2, adjacent to positive N (piperidine) (+)
+98     CG331  6     2.05    0.078       # CGENFF 4 parameters   aliphatic C for methyl group (-CH3)
+99     CG334  6     2.215    0.077       # CGENFF 4 parameters   aliphatic C for methyl group (-CH3), adjacent to positive N (PROT NTER) (+)
+100    CG3AM0 6     1.97    0.07       # CGENFF 4 parameters   aliphatic C for CH3, NEUTRAL trimethylamine methyl carbon (#)
+101    CG3AM1 6     1.98    0.078       # CGENFF 4 parameters   aliphatic C for CH3, NEUTRAL dimethylamine methyl carbon (#)
+102    CG3AM2 6     1.99    0.08       # CGENFF 4 parameters   aliphatic C for CH3, NEUTRAL methylamine methyl carbon (#)
+103    CG3C31 6     2.01    0.056       # CGENFF 4 parameters   cyclopropyl carbon
+104    CG3C41 6     2.02   0.065       # CGENFF 4 parameters   cyclobutyl carbon
+105    CG3C50 6     2.01    0.036       # CGENFF 4 parameters   5-mem ring aliphatic quaternary C (cholesterol, bile acids)
+106    CG3C51 6     2.01    0.036       # CGENFF 4 parameters   5-mem ring aliphatic CH  (proline CA, furanoses)
+107    CG3C52 6     2.02   0.06       # CGENFF 4 parameters   5-mem ring aliphatic CH2 (proline CB/CG/CD, THF, deoxyribose)
+108    CG3C53 6     2.175    0.035       # CGENFF 4 parameters   5-mem ring aliphatic CH  adjacent to positive N (proline.H+ CA) (+)
+109    CG3C54 6     2.185    0.059       # CGENFF 4 parameters   5-mem ring aliphatic CH2 adjacent to positive N (proline.H+ CD) (+)
+110    CG3RC1 6     2.0   0.032       # CGENFF 4 parameters   bridgehead in bicyclic systems containing at least one 5-membered or smaller ring
+111    CLGA1  17    1.91    0.343       # CGENFF 4 parameters   CLET, DCLE, chloroethane, 1,1-dichloroethane
+112    CLGA3  17    1.91    0.31       # CGENFF 4 parameters   TCLE, 1,1,1-trichloroethane
+113    CLGR1  17    1.86    0.23       # CGENFF 4 parameters   CHLB, chlorobenzene
+114    FGA1   9    1.63    0.135       # CGENFF 4 parameters  aliphatic fluorine, monofluoro
+115    FGA2   9    1.63    0.105       # CGENFF 4 parameters  aliphatic fluorine, difluoro
+116    FGA3   9    1.6    0.097       # CGENFF 4 parameters  aliphatic fluorine, trifluoro
+117    FGP1   9    1.6    0.097       # CGENFF 4 parameters  anionic F, for ALF4 AlF4-
+118    FGR1   9    1.7    0.12       # CGENFF 4 parameters  aromatic flourine
+119    HGA1   1    1.34    0.045       # CGENFF 4 parameters  alphatic proton, CH
+120    HGA2   1    1.34    0.035       # CGENFF 4 parameters  alphatic proton, CH2
+121    HGA3   1    1.34    0.024       # CGENFF 4 parameters  alphatic proton, CH3
+122    HGA4   1    1.25    0.031       # CGENFF 4 parameters  alkene proton; RHC=
+123    HGA5   1    1.26    0.026       # CGENFF 4 parameters  alkene proton; H2C=CR
+124    HGA6   1    1.32   0.028       # CGENFF 4 parameters  aliphatic H on fluorinated C, monofluoro
+125    HGA7   1    1.3    0.03       # CGENFF 4 parameters  aliphatic H on fluorinated C, difluoro
+126    HGAAM0 1    1.28    0.028       # CGENFF 4 parameters  aliphatic H, NEUTRAL trimethylamine (#)
+127    HGAAM1 1    1.28    0.028       # CGENFF 4 parameters  aliphatic H, NEUTRAL dimethylamine (#)
+128    HGAAM2 1    1.26    0.04       # CGENFF 4 parameters  aliphatic H, NEUTRAL methylamine (#)
+129    HGP1   1    0.2245    0.046       # CGENFF 4 parameters  polar H
+130    HGP2   1    0.2245    0.046       # CGENFF 4 parameters  polar H, +ve charge
+131    HGP3   1    0.45    0.1       # CGENFF 4 parameters  polar H, thiol
+132    HGP4   1    0.2245    0.046       # CGENFF 4 parameters  polar H, neutral conjugated -NH2 group (NA bases)
+133    HGP5   1    0.7    0.046       # CGENFF 4 parameters  polar H on quarternary ammonium salt (choline)
+134    HGPAM1 1    0.875    0.009       # CGENFF 4 parameters  polar H, NEUTRAL dimethylamine (#), terminal alkyne H
+135    HGPAM2 1    0.875    0.01       # CGENFF 4 parameters  polar H, NEUTRAL methylamine (#)
+136    HGPAM3 1    0.87    0.012       # CGENFF 4 parameters  polar H, NEUTRAL ammonia (#)
+137    HGR51  1    1.3582    0.03       # CGENFF 4 parameters  nonpolar H, neutral 5-mem planar ring C, LJ based on benzene
+138    HGR52  1    0.9    0.046       # CGENFF 4 parameters  Aldehyde H, formamide H (RCOH); nonpolar H, neutral 5-mem planar ring C adjacent to heteroatom or + charge
+139    HGR53  1    0.7    0.046       # CGENFF 4 parameters  nonpolar H, +ve charge HIS he1(+1)
+140    HGR61  1    1.3582    0.03       # CGENFF 4 parameters  aromatic H
+141    HGR62  1    1.1    0.046       # CGENFF 4 parameters  nonpolar H, neutral 6-mem planar ring C adjacent to heteroatom
+142    HGR63  1    0.9    0.046       # CGENFF 4 parameters  nonpolar H, NAD+ nicotineamide all ring CH hydrogens
+143    HGR71  1    1.3582    0.03       # CGENFF 4 parameters  nonpolar H, neutral 7-mem arom ring, AZUL, azulene, kevo
+144    IGR1   53    2.24    0.52       # CGENFF 4 parameters  IODB, iodobenzene
+145    LPH    0    0    0       # CGENFF 4 parameters  Lone pair for halogens
+146    NG1T1  7    1.79    0.18       # CGENFF 4 parameters  N for cyano group
+147    NG2D1  7    1.85    0.2       # CGENFF 4 parameters  N for neutral imine/Schiff's base (C=N-R, acyclic amidine, gunaidine)
+148    NG2O1  7    1.85    0.2       # CGENFF 4 parameters  NITB, nitrobenzene
+149    NG2P1  7    1.85    0.2       # CGENFF 4 parameters  N for protonated imine/Schiff's base (C=N(+)H-R, acyclic amidinium, guanidinium)
+150    NG2R43 7    1.85    0.2       # CGENFF 4 parameters  amide in 4-memebered ring (planar), AZDO, lsk
+151    NG2R50 7    1.85    0.2       # CGENFF 4 parameters  double bound neutral 5-mem planar ring, purine N7
+152    NG2R51 7    1.85    0.2       # CGENFF 4 parameters  single bound neutral 5-mem planar (all atom types sp2) ring, his, trp pyrrole (fused)
+153    NG2R52 7    1.85    0.2       # CGENFF 4 parameters  protonated schiff base, amidinium, guanidinium in 5-membered ring, HIS, 2HPP, kevo
+154    NG2R53 7    1.85    0.2       # CGENFF 4 parameters  amide in 5-memebered NON-SP2 ring (slightly pyramidized), 2PDO, kevo
+155    NG2R57 7    1.85    0.2       # CGENFF 4 parameters  5-mem ring, bipyrroles
+156    NG2R60 7    1.89    0.06       # CGENFF 4 parameters  double bound neutral 6-mem planar ring, pyr1, pyzn
+157    NG2R61 7    1.85    0.2       # CGENFF 4 parameters  single bound neutral 6-mem planar ring imino nitrogen; glycosyl linkage
+158    NG2R62 7    2.06    0.05       # CGENFF 4 parameters  double bound 6-mem planar ring with heteroatoms in o or m, pyrd, pyrm
+159    NG2R67 7    1.85    0.2       # CGENFF 4 parameters  6-mem planar ring substituted with 6-mem planar ring (N-phenyl pyridinones etc.)
+160    NG2RC0 7    1.85    0.2       # CGENFF 4 parameters  6/5-mem ring bridging N, indolizine, INDZ, kevo
+161    NG2S0  7    1.85    0.2       # CGENFF 4 parameters  N,N-disubstituted amide, proline N (CO=NRR')
+162    NG2S1  7    1.85    0.2       # CGENFF 4 parameters  peptide nitrogen (CO=NHR)
+163    NG2S2  7    1.85    0.2       # CGENFF 4 parameters  terminal amide nitrogen (CO=NH2)
+164    NG2S3  7    1.85    0.2       # CGENFF 4 parameters  external amine ring nitrogen (planar/aniline), phosphoramidate
+165    NG301  7    2.0   0.035       # CGENFF 4 parameters  neutral trimethylamine nitrogen
+166    NG311  7    2.0   0.045       # CGENFF 4 parameters  neutral dimethylamine nitrogen
+167    NG321  7    1.99    0.06       # CGENFF 4 parameters  neutral methylamine nitrogen
+168    NG331  7    1.98    0.07       # CGENFF 4 parameters  neutral ammonia nitrogen
+169    NG3C51 7    1.85    0.2       # CGENFF 4 parameters  secondary sp3 amine in 5-membered ring
+170    NG3N1  7    2.05    0.06       # CGENFF 4 parameters  N in hydrazine, HDZN
+171    NG3P0  7    1.85    0.2       # CGENFF 4 parameters  quarternary N+, choline
+172    NG3P1  7    1.85    0.2       # CGENFF 4 parameters  tertiary NH+ (PIP)
+173    NG3P2  7    1.85    0.2       # CGENFF 4 parameters  secondary NH2+ (proline)
+174    NG3P3  7    1.85    0.2       # CGENFF 4 parameters  primary NH3+, phosphatidylethanolamine
+175    OG2D1  8    1.7    0.12       # CGENFF 4 parameters  carbonyl O: amides, esters, [neutral] carboxylic acids, aldehydes, uera
+176    OG2D2  8    1.7    0.12       # CGENFF 4 parameters  carbonyl O: negative groups: carboxylates, carbonate
+177    OG2D3  8    1.7    0.05       # CGENFF 4 parameters  carbonyl O: ketones
+178    OG2D4  8    1.7    0.12       # CGENFF 4 parameters  6-mem aromatic carbonyl oxygen (nucleic bases)
+179    OG2D5  8    1.692   0.165       # CGENFF 4 parameters  CO2 oxygen
+180    OG2N1  8    1.7    0.12       # CGENFF 4 parameters  NITB, nitrobenzene
+181    OG2P1  8    1.7    0.12       # CGENFF 4 parameters  =O in phosphate or sulfate
+182    OG2R50 8    1.7    0.12       # CGENFF 4 parameters  FURA, furan
+183    OG301  8    1.65    0.1       # CGENFF 4 parameters  ether -O- 
+184    OG302  8    1.65    0.1       # CGENFF 4 parameters  ester -O-
+185    OG303  8    1.65    0.1       # CGENFF 4 parameters  phosphate/sulfate ester oxygen
+186    OG304  8    1.65    0.1       # CGENFF 4 parameters  linkage oxygen in pyrophosphate/pyrosulphate
+187    OG311  8    1.765    0.1921       # CGENFF 4 parameters  hydroxyl oxygen
+188    OG312  8    1.75    0.12       # CGENFF 4 parameters  ionized alcohol oxygen
+189    OG3C31 8    1.65    0.1       # CGENFF 4 parameters  epoxide oxygen, 1EOX, 1BOX, sc
+190    OG3C51 8    1.65    0.1       # CGENFF 4 parameters  5-mem furanose ring oxygen (ether)
+191    OG3C61 8    1.65    0.1       # CGENFF 4 parameters  DIOX, dioxane, ether in 6-membered ring 
+192    OG3R60 8    1.65    0.1       # CGENFF 4 parameters  O in 6-mem cyclic enol ether (PY01, PY02) or ester
+193    PG0    15    2.15    0.585       # CGENFF 4 parameters  neutral phosphate
+194    PG1    15    2.15    0.585       # CGENFF 4 parameters  phosphate -1
+195    PG2    15    2.15    0.585       # CGENFF 4 parameters  phosphate -2
+196    SG2D1  16    2.05    0.565       # CGENFF 4 parameters  thiocarbonyl S
+197    SG2R50 16    2.0   0.45       # CGENFF 4 parameters  THIP, thiophene
+198    SG301  16    1.975    0.38       # CGENFF 4 parameters  sulfur C-S-S-C type
+199    SG302  16    2.2   0.47       # CGENFF 4 parameters  thiolate sulfur (-1)
+200    SG311  16    2.0   0.45       # CGENFF 4 parameters  sulphur, SH, -S-
+201    SG3O1  16    2.1    0.47       # CGENFF 4 parameters  sulfate -1 sulfur
+202    SG3O2  16    2.0   0.35       # CGENFF 4 parameters  neutral sulfone/sulfonamide sulfur
+203    SG3O3  16    2.0   0.35       # CGENFF 4 parameters  neutral sulfoxide sulfur
+204    HB2    1     1.3400  0.0280    # aliphatic backbone H, to CT2 
+205    HA1    1     1.3400  0.045     # alkane, CH, new LJ params (see toppar_all22_prot_aliphatic_c27.str)
+206    HA2    1     1.3400  0.034     # alkane, CH2, new LJ params (see toppar_all22_prot_aliphatic_c27.str)
+207    HA3    1     1.3400  0.024     # alkane, CH3, new LJ params (see toppar_all22_prot_aliphatic_c27.str)
+208    CT     6     2.275   0.020     # aliphatic sp3 C, new LJ params, no hydrogens, see retinol stream file for parameters
+209    CT2A   6     2.010   0.056     # from CT2 (GLU, HSP chi1/chi2 fitting) 05282010, zhu
+210    HX     1     0.2245  0.0460    # hydroxide hydrogen
+211    OX     8     1.7000  0.1200    # hydroxide oxygen
+212    LIT    3     1.2975  0.00233   # Lithium ion    
+213    SOD    11    1.41075 0.0469    # Sodium Ion
+214    MG     12    1.18500 0.0150    # Magnesium Ion
+215    POT    19    1.76375 0.0870    # Potassium Ion
+216    CAL    20    1.367   0.120     # Calcium Ion  
+217    RUB    44    1.90    0.15      # Rubidium Ion
+218    CES    55    2.100   0.1900    # Cesium Ion
+219    BAR    56    1.890   0.150     # Barium Ion
+220    ZN     30    1.0900  0.2500    # zinc (II) cation
+221    CAD    48    1.3570  0.1200    # cadmium (II) cation
+222    CLA    17    2.27    0.150     # Chloride Ion 
+223    CT     6     2.275   0.020     # TIP3P
+224    OT     8     1.7682  0.1521    # TIP3P
+225    HT     1     0.2245  0.0460    # TIP3P
+#
+# Hydrogen bond distances between donor and acceptor
+#
+# The table cannot be separated
+#       
+# First  line: Default distance for all atom and element types
+#       
+# First block:
+# element  donor
+# number   acceptor
+# i  j     distance
+# ------------------
+#
+# Second block:
+# atom     donor
+# type     acceptor
+# i  j     distance
+# ------------------
+#
+#
+#
+2.9
+9
+7    7    3.1
+7    8    2.9
+7   16    2.9
+8    8    2.7
+8   16    2.9
+16  16    2.9
+30   7    2.1
+30   8    2.05
+30  16    2.36
+507
+33  42  2.6  #  charged donor and charged acceptor
+33  176  2.6  #  charged donor and charged acceptor
+33  180  2.6  #  charged donor and charged acceptor
+33  181  2.6  #  charged donor and charged acceptor
+33  188  2.6  #  charged donor and charged acceptor
+33  199  2.6  #  charged donor and charged acceptor
+37  42  2.6  #  charged donor and charged acceptor
+37  176  2.6  #  charged donor and charged acceptor
+37  180  2.6  #  charged donor and charged acceptor
+37  181  2.6  #  charged donor and charged acceptor
+37  188  2.6  #  charged donor and charged acceptor
+37  199  2.6  #  charged donor and charged acceptor
+39  42  2.6  #  charged donor and charged acceptor
+39  176  2.6  #  charged donor and charged acceptor
+39  180  2.6  #  charged donor and charged acceptor
+39  181  2.6  #  charged donor and charged acceptor
+39  188  2.6  #  charged donor and charged acceptor
+39  199  2.6  #  charged donor and charged acceptor
+36  42  2.6  #  charged donor and charged acceptor
+36  176  2.6  #  charged donor and charged acceptor
+36  180  2.6  #  charged donor and charged acceptor
+36  181  2.6  #  charged donor and charged acceptor
+36  188  2.6  #  charged donor and charged acceptor
+36  199  2.6  #  charged donor and charged acceptor
+149  42  2.6  #  charged donor and charged acceptor
+149  176  2.6  # charged donor and charged acceptor
+149  180  2.6  # charged donor and charged acceptor
+149  181  2.6  # charged donor and charged acceptor
+149  188  2.6  # charged donor and charged acceptor
+149  199  2.6  # charged donor and charged acceptor
+153  42  2.6  #  charged donor and charged acceptor
+153  176  2.6  # charged donor and charged acceptor
+153  180  2.6  # charged donor and charged acceptor
+153  181  2.6  # charged donor and charged acceptor
+153  188  2.6  # charged donor and charged acceptor
+153  199  2.6  # charged donor and charged acceptor
+172  42  2.6  #  charged donor and charged acceptor
+172  176  2.6  # charged donor and charged acceptor
+172  180  2.6  # charged donor and charged acceptor
+172  181  2.6  # charged donor and charged acceptor
+172  188  2.6  # charged donor and charged acceptor
+172  199  2.6  # charged donor and charged acceptor
+173  42  2.6  #  charged donor and charged acceptor
+173  176  2.6  # charged donor and charged acceptor
+173  180  2.6  # charged donor and charged acceptor
+173  181  2.6  # charged donor and charged acceptor
+173  188  2.6  # charged donor and charged acceptor
+173  199  2.6  # charged donor and charged acceptor
+174  42  2.6  #  charged donor and charged acceptor
+174  176  2.6  # charged donor and charged acceptor
+174  180  2.6  # charged donor and charged acceptor
+174  181  2.6  # charged donor and charged acceptor
+174  188  2.6  # charged donor and charged acceptor
+174  199  2.6  # charged donor and charged acceptor
+33  32  2.75  #  charged donor and non charged acceptor
+33  40  2.75  #  charged donor and non charged acceptor
+33  41  2.75  #  charged donor and non charged acceptor
+33  43  2.75  #  charged donor and non charged acceptor
+33  44  2.75  #  charged donor and non charged acceptor
+33  45  2.75  #  charged donor and non charged acceptor
+33  205  2.75  # charged donor and non charged acceptor
+33  218  2.75  # charged donor and non charged acceptor
+33  146  2.75  # charged donor and non charged acceptor
+33  147  2.75  # charged donor and non charged acceptor
+33  151  2.75  # charged donor and non charged acceptor
+33  155  2.75  # charged donor and non charged acceptor
+33  156  2.75  # charged donor and non charged acceptor
+33  158  2.75  # charged donor and non charged acceptor
+33  159  2.75  # charged donor and non charged acceptor
+33  160  2.75  # charged donor and non charged acceptor
+33  161  2.75  # charged donor and non charged acceptor
+33  165  2.75  # charged donor and non charged acceptor
+33  170  2.75  # charged donor and non charged acceptor
+33  175  2.75  # charged donor and non charged acceptor
+33  177  2.75  # charged donor and non charged acceptor
+33  178  2.75  # charged donor and non charged acceptor
+33  179  2.75  # charged donor and non charged acceptor
+33  182  2.75  # charged donor and non charged acceptor
+33  183  2.75  # charged donor and non charged acceptor
+33  184  2.75  # charged donor and non charged acceptor
+33  185  2.75  # charged donor and non charged acceptor
+33  186  2.75  # charged donor and non charged acceptor
+33  187  2.75  # charged donor and non charged acceptor
+33  189  2.75  # charged donor and non charged acceptor
+33  190  2.75  # charged donor and non charged acceptor
+33  191  2.75  # charged donor and non charged acceptor
+33  192  2.75  # charged donor and non charged acceptor
+33  196  2.75  # charged donor and non charged acceptor
+33  197  2.75  # charged donor and non charged acceptor
+33  198  2.75  # charged donor and non charged acceptor
+33  200  2.75  # charged donor and non charged acceptor
+37  32  2.75  #  charged donor and non charged acceptor
+37  40  2.75  #  charged donor and non charged acceptor
+37  41  2.75  #  charged donor and non charged acceptor
+37  43  2.75  #  charged donor and non charged acceptor
+37  44  2.75  #  charged donor and non charged acceptor
+37  45  2.75  #  charged donor and non charged acceptor
+37  205  2.75  # charged donor and non charged acceptor
+37  218  2.75  # charged donor and non charged acceptor
+37  146  2.75  # charged donor and non charged acceptor
+37  147  2.75  # charged donor and non charged acceptor
+37  151  2.75  # charged donor and non charged acceptor
+37  155  2.75  # charged donor and non charged acceptor
+37  156  2.75  # charged donor and non charged acceptor
+37  158  2.75  # charged donor and non charged acceptor
+37  159  2.75  # charged donor and non charged acceptor
+37  160  2.75  # charged donor and non charged acceptor
+37  161  2.75  # charged donor and non charged acceptor
+37  165  2.75  # charged donor and non charged acceptor
+37  170  2.75  # charged donor and non charged acceptor
+37  175  2.75  # charged donor and non charged acceptor
+37  177  2.75  # charged donor and non charged acceptor
+37  178  2.75  # charged donor and non charged acceptor
+37  179  2.75  # charged donor and non charged acceptor
+37  182  2.75  # charged donor and non charged acceptor
+37  183  2.75  # charged donor and non charged acceptor
+37  184  2.75  # charged donor and non charged acceptor
+37  185  2.75  # charged donor and non charged acceptor
+37  186  2.75  # charged donor and non charged acceptor
+37  187  2.75  # charged donor and non charged acceptor
+37  189  2.75  # charged donor and non charged acceptor
+37  190  2.75  # charged donor and non charged acceptor
+37  191  2.75  # charged donor and non charged acceptor
+37  192  2.75  # charged donor and non charged acceptor
+37  196  2.75  # charged donor and non charged acceptor
+37  197  2.75  # charged donor and non charged acceptor
+37  198  2.75  # charged donor and non charged acceptor
+37  200  2.75  # charged donor and non charged acceptor
+39  32  2.75  #  charged donor and non charged acceptor
+39  40  2.75  #  charged donor and non charged acceptor
+39  41  2.75  #  charged donor and non charged acceptor
+39  43  2.75  #  charged donor and non charged acceptor
+39  44  2.75  #  charged donor and non charged acceptor
+39  45  2.75  #  charged donor and non charged acceptor
+39  205  2.75  # charged donor and non charged acceptor
+39  218  2.75  # charged donor and non charged acceptor
+39  146  2.75  # charged donor and non charged acceptor
+39  147  2.75  # charged donor and non charged acceptor
+39  151  2.75  # charged donor and non charged acceptor
+39  155  2.75  # charged donor and non charged acceptor
+39  156  2.75  # charged donor and non charged acceptor
+39  158  2.75  # charged donor and non charged acceptor
+39  159  2.75  # charged donor and non charged acceptor
+39  160  2.75  # charged donor and non charged acceptor
+39  161  2.75  # charged donor and non charged acceptor
+39  165  2.75  # charged donor and non charged acceptor
+39  170  2.75  # charged donor and non charged acceptor
+39  175  2.75  # charged donor and non charged acceptor
+39  177  2.75  # charged donor and non charged acceptor
+39  178  2.75  # charged donor and non charged acceptor
+39  179  2.75  # charged donor and non charged acceptor
+39  182  2.75  # charged donor and non charged acceptor
+39  183  2.75  # charged donor and non charged acceptor
+39  184  2.75  # charged donor and non charged acceptor
+39  185  2.75  # charged donor and non charged acceptor
+39  186  2.75  # charged donor and non charged acceptor
+39  187  2.75  # charged donor and non charged acceptor
+39  189  2.75  # charged donor and non charged acceptor
+39  190  2.75  # charged donor and non charged acceptor
+39  191  2.75  # charged donor and non charged acceptor
+39  192  2.75  # charged donor and non charged acceptor
+39  196  2.75  # charged donor and non charged acceptor
+39  197  2.75  # charged donor and non charged acceptor
+39  198  2.75  # charged donor and non charged acceptor
+39  200  2.75  # charged donor and non charged acceptor
+36  32  2.75  #  charged donor and non charged acceptor
+36  40  2.75  #  charged donor and non charged acceptor
+36  41  2.75  #  charged donor and non charged acceptor
+36  43  2.75  #  charged donor and non charged acceptor
+36  44  2.75  #  charged donor and non charged acceptor
+36  45  2.75  #  charged donor and non charged acceptor
+36  205  2.75  # charged donor and non charged acceptor
+36  218  2.75  # charged donor and non charged acceptor
+36  146  2.75  # charged donor and non charged acceptor
+36  147  2.75  # charged donor and non charged acceptor
+36  151  2.75  # charged donor and non charged acceptor
+36  155  2.75  # charged donor and non charged acceptor
+36  156  2.75  # charged donor and non charged acceptor
+36  158  2.75  # charged donor and non charged acceptor
+36  159  2.75  # charged donor and non charged acceptor
+36  160  2.75  # charged donor and non charged acceptor
+36  161  2.75  # charged donor and non charged acceptor
+36  165  2.75  # charged donor and non charged acceptor
+36  170  2.75  # charged donor and non charged acceptor
+36  175  2.75  # charged donor and non charged acceptor
+36  177  2.75  # charged donor and non charged acceptor
+36  178  2.75  # charged donor and non charged acceptor
+36  179  2.75  # charged donor and non charged acceptor
+36  182  2.75  # charged donor and non charged acceptor
+36  183  2.75  # charged donor and non charged acceptor
+36  184  2.75  # charged donor and non charged acceptor
+36  185  2.75  # charged donor and non charged acceptor
+36  186  2.75  # charged donor and non charged acceptor
+36  187  2.75  # charged donor and non charged acceptor
+36  189  2.75  # charged donor and non charged acceptor
+36  190  2.75  # charged donor and non charged acceptor
+36  191  2.75  # charged donor and non charged acceptor
+36  192  2.75  # charged donor and non charged acceptor
+36  196  2.75  # charged donor and non charged acceptor
+36  197  2.75  # charged donor and non charged acceptor
+36  198  2.75  # charged donor and non charged acceptor
+36  200  2.75  # charged donor and non charged acceptor
+149  32  2.75  # charged donor and non charged acceptor
+149  40  2.75  # charged donor and non charged acceptor
+149  41  2.75  # charged donor and non charged acceptor
+149  43  2.75  # charged donor and non charged acceptor
+149  44  2.75  # charged donor and non charged acceptor
+149  45  2.75  # charged donor and non charged acceptor
+149  205  2.75  # charged donor and non charged acceptor
+149  218  2.75  # charged donor and non charged acceptor
+149  146  2.75  # charged donor and non charged acceptor
+149  147  2.75  # charged donor and non charged acceptor
+149  151  2.75  # charged donor and non charged acceptor
+149  155  2.75  # charged donor and non charged acceptor
+149  156  2.75  # charged donor and non charged acceptor
+149  158  2.75  # charged donor and non charged acceptor
+149  159  2.75  # charged donor and non charged acceptor
+149  160  2.75  # charged donor and non charged acceptor
+149  161  2.75  # charged donor and non charged acceptor
+149  165  2.75  # charged donor and non charged acceptor
+149  170  2.75  # charged donor and non charged acceptor
+149  175  2.75  # charged donor and non charged acceptor
+149  177  2.75  # charged donor and non charged acceptor
+149  178  2.75  # charged donor and non charged acceptor
+149  179  2.75  # charged donor and non charged acceptor
+149  182  2.75  # charged donor and non charged acceptor
+149  183  2.75  # charged donor and non charged acceptor
+149  184  2.75  # charged donor and non charged acceptor
+149  185  2.75  # charged donor and non charged acceptor
+149  186  2.75  # charged donor and non charged acceptor
+149  187  2.75  # charged donor and non charged acceptor
+149  189  2.75  # charged donor and non charged acceptor
+149  190  2.75  # charged donor and non charged acceptor
+149  191  2.75  # charged donor and non charged acceptor
+149  192  2.75  # charged donor and non charged acceptor
+149  196  2.75  # charged donor and non charged acceptor
+149  197  2.75  # charged donor and non charged acceptor
+149  198  2.75  # charged donor and non charged acceptor
+149  200  2.75  # charged donor and non charged acceptor
+153  32  2.75  # charged donor and non charged acceptor
+153  40  2.75  # charged donor and non charged acceptor
+153  41  2.75  # charged donor and non charged acceptor
+153  43  2.75  # charged donor and non charged acceptor
+153  44  2.75  # charged donor and non charged acceptor
+153  45  2.75  # charged donor and non charged acceptor
+153  205  2.75  # charged donor and non charged acceptor
+153  218  2.75  # charged donor and non charged acceptor
+153  146  2.75  # charged donor and non charged acceptor
+153  147  2.75  # charged donor and non charged acceptor
+153  151  2.75  # charged donor and non charged acceptor
+153  155  2.75  # charged donor and non charged acceptor
+153  156  2.75  # charged donor and non charged acceptor
+153  158  2.75  # charged donor and non charged acceptor
+153  159  2.75  # charged donor and non charged acceptor
+153  160  2.75  # charged donor and non charged acceptor
+153  161  2.75  # charged donor and non charged acceptor
+153  165  2.75  # charged donor and non charged acceptor
+153  170  2.75  # charged donor and non charged acceptor
+153  175  2.75  # charged donor and non charged acceptor
+153  177  2.75  # charged donor and non charged acceptor
+153  178  2.75  # charged donor and non charged acceptor
+153  179  2.75  # charged donor and non charged acceptor
+153  182  2.75  # charged donor and non charged acceptor
+153  183  2.75  # charged donor and non charged acceptor
+153  184  2.75  # charged donor and non charged acceptor
+153  185  2.75  # charged donor and non charged acceptor
+153  186  2.75  # charged donor and non charged acceptor
+153  187  2.75  # charged donor and non charged acceptor
+153  189  2.75  # charged donor and non charged acceptor
+153  190  2.75  # charged donor and non charged acceptor
+153  191  2.75  # charged donor and non charged acceptor
+153  192  2.75  # charged donor and non charged acceptor
+153  196  2.75  # charged donor and non charged acceptor
+153  197  2.75  # charged donor and non charged acceptor
+153  198  2.75  # charged donor and non charged acceptor
+153  200  2.75  # charged donor and non charged acceptor
+172  32  2.75  # charged donor and non charged acceptor
+172  40  2.75  # charged donor and non charged acceptor
+172  41  2.75  # charged donor and non charged acceptor
+172  43  2.75  # charged donor and non charged acceptor
+172  44  2.75  # charged donor and non charged acceptor
+172  45  2.75  # charged donor and non charged acceptor
+172  205  2.75  # charged donor and non charged acceptor
+172  218  2.75  # charged donor and non charged acceptor
+172  146  2.75  # charged donor and non charged acceptor
+172  147  2.75  # charged donor and non charged acceptor
+172  151  2.75  # charged donor and non charged acceptor
+172  155  2.75  # charged donor and non charged acceptor
+172  156  2.75  # charged donor and non charged acceptor
+172  158  2.75  # charged donor and non charged acceptor
+172  159  2.75  # charged donor and non charged acceptor
+172  160  2.75  # charged donor and non charged acceptor
+172  161  2.75  # charged donor and non charged acceptor
+172  165  2.75  # charged donor and non charged acceptor
+172  170  2.75  # charged donor and non charged acceptor
+172  175  2.75  # charged donor and non charged acceptor
+172  177  2.75  # charged donor and non charged acceptor
+172  178  2.75  # charged donor and non charged acceptor
+172  179  2.75  # charged donor and non charged acceptor
+172  182  2.75  # charged donor and non charged acceptor
+172  183  2.75  # charged donor and non charged acceptor
+172  184  2.75  # charged donor and non charged acceptor
+172  185  2.75  # charged donor and non charged acceptor
+172  186  2.75  # charged donor and non charged acceptor
+172  187  2.75  # charged donor and non charged acceptor
+172  189  2.75  # charged donor and non charged acceptor
+172  190  2.75  # charged donor and non charged acceptor
+172  191  2.75  # charged donor and non charged acceptor
+172  192  2.75  # charged donor and non charged acceptor
+172  196  2.75  # charged donor and non charged acceptor
+172  197  2.75  # charged donor and non charged acceptor
+172  198  2.75  # charged donor and non charged acceptor
+172  200  2.75  # charged donor and non charged acceptor
+173  32  2.75  # charged donor and non charged acceptor
+173  40  2.75  # charged donor and non charged acceptor
+173  41  2.75  # charged donor and non charged acceptor
+173  43  2.75  # charged donor and non charged acceptor
+173  44  2.75  # charged donor and non charged acceptor
+173  45  2.75  # charged donor and non charged acceptor
+173  205  2.75  # charged donor and non charged acceptor
+173  218  2.75  # charged donor and non charged acceptor
+173  146  2.75  # charged donor and non charged acceptor
+173  147  2.75  # charged donor and non charged acceptor
+173  151  2.75  # charged donor and non charged acceptor
+173  155  2.75  # charged donor and non charged acceptor
+173  156  2.75  # charged donor and non charged acceptor
+173  158  2.75  # charged donor and non charged acceptor
+173  159  2.75  # charged donor and non charged acceptor
+173  160  2.75  # charged donor and non charged acceptor
+173  161  2.75  # charged donor and non charged acceptor
+173  165  2.75  # charged donor and non charged acceptor
+173  170  2.75  # charged donor and non charged acceptor
+173  175  2.75  # charged donor and non charged acceptor
+173  177  2.75  # charged donor and non charged acceptor
+173  178  2.75  # charged donor and non charged acceptor
+173  179  2.75  # charged donor and non charged acceptor
+173  182  2.75  # charged donor and non charged acceptor
+173  183  2.75  # charged donor and non charged acceptor
+173  184  2.75  # charged donor and non charged acceptor
+173  185  2.75  # charged donor and non charged acceptor
+173  186  2.75  # charged donor and non charged acceptor
+173  187  2.75  # charged donor and non charged acceptor
+173  189  2.75  # charged donor and non charged acceptor
+173  190  2.75  # charged donor and non charged acceptor
+173  191  2.75  # charged donor and non charged acceptor
+173  192  2.75  # charged donor and non charged acceptor
+173  196  2.75  # charged donor and non charged acceptor
+173  197  2.75  # charged donor and non charged acceptor
+173  198  2.75  # charged donor and non charged acceptor
+173  200  2.75  # charged donor and non charged acceptor
+174  32  2.75  # charged donor and non charged acceptor
+174  40  2.75  # charged donor and non charged acceptor
+174  41  2.75  # charged donor and non charged acceptor
+174  43  2.75  # charged donor and non charged acceptor
+174  44  2.75  # charged donor and non charged acceptor
+174  45  2.75  # charged donor and non charged acceptor
+174  205  2.75  # charged donor and non charged acceptor
+174  218  2.75  # charged donor and non charged acceptor
+174  146  2.75  # charged donor and non charged acceptor
+174  147  2.75  # charged donor and non charged acceptor
+174  151  2.75  # charged donor and non charged acceptor
+174  155  2.75  # charged donor and non charged acceptor
+174  156  2.75  # charged donor and non charged acceptor
+174  158  2.75  # charged donor and non charged acceptor
+174  159  2.75  # charged donor and non charged acceptor
+174  160  2.75  # charged donor and non charged acceptor
+174  161  2.75  # charged donor and non charged acceptor
+174  165  2.75  # charged donor and non charged acceptor
+174  170  2.75  # charged donor and non charged acceptor
+174  175  2.75  # charged donor and non charged acceptor
+174  177  2.75  # charged donor and non charged acceptor
+174  178  2.75  # charged donor and non charged acceptor
+174  179  2.75  # charged donor and non charged acceptor
+174  182  2.75  # charged donor and non charged acceptor
+174  183  2.75  # charged donor and non charged acceptor
+174  184  2.75  # charged donor and non charged acceptor
+174  185  2.75  # charged donor and non charged acceptor
+174  186  2.75  # charged donor and non charged acceptor
+174  187  2.75  # charged donor and non charged acceptor
+174  189  2.75  # charged donor and non charged acceptor
+174  190  2.75  # charged donor and non charged acceptor
+174  191  2.75  # charged donor and non charged acceptor
+174  192  2.75  # charged donor and non charged acceptor
+174  196  2.75  # charged donor and non charged acceptor
+174  197  2.75  # charged donor and non charged acceptor
+174  198  2.75  # charged donor and non charged acceptor
+174  200  2.75  # charged donor and non charged acceptor
+31  42  2.75  #  non charged donor and charged acceptor
+31  176  2.75  # non charged donor and charged acceptor
+31  180  2.75  # non charged donor and charged acceptor
+31  181  2.75  # non charged donor and charged acceptor
+31  188  2.75  # non charged donor and charged acceptor
+31  199  2.75  # non charged donor and charged acceptor
+34  42  2.75  #  non charged donor and charged acceptor
+34  176  2.75  # non charged donor and charged acceptor
+34  180  2.75  # non charged donor and charged acceptor
+34  181  2.75  # non charged donor and charged acceptor
+34  188  2.75  # non charged donor and charged acceptor
+34  199  2.75  # non charged donor and charged acceptor
+35  42  2.75  #  non charged donor and charged acceptor
+35  176  2.75  # non charged donor and charged acceptor
+35  180  2.75  # non charged donor and charged acceptor
+35  181  2.75  # non charged donor and charged acceptor
+35  188  2.75  # non charged donor and charged acceptor
+35  199  2.75  # non charged donor and charged acceptor
+38  42  2.75  #  non charged donor and charged acceptor
+38  176  2.75  # non charged donor and charged acceptor
+38  180  2.75  # non charged donor and charged acceptor
+38  181  2.75  # non charged donor and charged acceptor
+38  188  2.75  # non charged donor and charged acceptor
+38  199  2.75  # non charged donor and charged acceptor
+43  42  2.75  #  non charged donor and charged acceptor
+43  176  2.75  # non charged donor and charged acceptor
+43  180  2.75  # non charged donor and charged acceptor
+43  181  2.75  # non charged donor and charged acceptor
+43  188  2.75  # non charged donor and charged acceptor
+43  199  2.75  # non charged donor and charged acceptor
+45  42  2.75  #  non charged donor and charged acceptor
+45  176  2.75  # non charged donor and charged acceptor
+45  180  2.75  # non charged donor and charged acceptor
+45  181  2.75  # non charged donor and charged acceptor
+45  188  2.75  # non charged donor and charged acceptor
+45  199  2.75  # non charged donor and charged acceptor
+218  42  2.75  # non charged donor and charged acceptor
+218  176  2.75  # non charged donor and charged acceptor
+218  180  2.75  # non charged donor and charged acceptor
+218  181  2.75  # non charged donor and charged acceptor
+218  188  2.75  # non charged donor and charged acceptor
+218  199  2.75  # non charged donor and charged acceptor
+150  42  2.75  # non charged donor and charged acceptor
+150  176  2.75  # non charged donor and charged acceptor
+150  180  2.75  # non charged donor and charged acceptor
+150  181  2.75  # non charged donor and charged acceptor
+150  188  2.75  # non charged donor and charged acceptor
+150  199  2.75  # non charged donor and charged acceptor
+152  42  2.75  # non charged donor and charged acceptor
+152  176  2.75  # non charged donor and charged acceptor
+152  180  2.75  # non charged donor and charged acceptor
+152  181  2.75  # non charged donor and charged acceptor
+152  188  2.75  # non charged donor and charged acceptor
+152  199  2.75  # non charged donor and charged acceptor
+154  42  2.75  # non charged donor and charged acceptor
+154  176  2.75  # non charged donor and charged acceptor
+154  180  2.75  # non charged donor and charged acceptor
+154  181  2.75  # non charged donor and charged acceptor
+154  188  2.75  # non charged donor and charged acceptor
+154  199  2.75  # non charged donor and charged acceptor
+157  42  2.75  # non charged donor and charged acceptor
+157  176  2.75  # non charged donor and charged acceptor
+157  180  2.75  # non charged donor and charged acceptor
+157  181  2.75  # non charged donor and charged acceptor
+157  188  2.75  # non charged donor and charged acceptor
+157  199  2.75  # non charged donor and charged acceptor
+162  42  2.75  # non charged donor and charged acceptor
+162  176  2.75  # non charged donor and charged acceptor
+162  180  2.75  # non charged donor and charged acceptor
+162  181  2.75  # non charged donor and charged acceptor
+162  188  2.75  # non charged donor and charged acceptor
+162  199  2.75  # non charged donor and charged acceptor
+163  42  2.75  # non charged donor and charged acceptor
+163  176  2.75  # non charged donor and charged acceptor
+163  180  2.75  # non charged donor and charged acceptor
+163  181  2.75  # non charged donor and charged acceptor
+163  188  2.75  # non charged donor and charged acceptor
+163  199  2.75  # non charged donor and charged acceptor
+164  42  2.75  # non charged donor and charged acceptor
+164  176  2.75  # non charged donor and charged acceptor
+164  180  2.75  # non charged donor and charged acceptor
+164  181  2.75  # non charged donor and charged acceptor
+164  188  2.75  # non charged donor and charged acceptor
+164  199  2.75  # non charged donor and charged acceptor
+166  42  2.75  # non charged donor and charged acceptor
+166  176  2.75  # non charged donor and charged acceptor
+166  180  2.75  # non charged donor and charged acceptor
+166  181  2.75  # non charged donor and charged acceptor
+166  188  2.75  # non charged donor and charged acceptor
+166  199  2.75  # non charged donor and charged acceptor
+167  42  2.75  # non charged donor and charged acceptor
+167  176  2.75  # non charged donor and charged acceptor
+167  180  2.75  # non charged donor and charged acceptor
+167  181  2.75  # non charged donor and charged acceptor
+167  188  2.75  # non charged donor and charged acceptor
+167  199  2.75  # non charged donor and charged acceptor
+168  42  2.75  # non charged donor and charged acceptor
+168  176  2.75  # non charged donor and charged acceptor
+168  180  2.75  # non charged donor and charged acceptor
+168  181  2.75  # non charged donor and charged acceptor
+168  188  2.75  # non charged donor and charged acceptor
+168  199  2.75  # non charged donor and charged acceptor
+169  42  2.75  # non charged donor and charged acceptor
+169  176  2.75  # non charged donor and charged acceptor
+169  180  2.75  # non charged donor and charged acceptor
+169  181  2.75  # non charged donor and charged acceptor
+169  188  2.75  # non charged donor and charged acceptor
+169  199  2.75  # non charged donor and charged acceptor
+187  42  2.75  # non charged donor and charged acceptor
+187  176  2.75  # non charged donor and charged acceptor
+187  180  2.75  # non charged donor and charged acceptor
+187  181  2.75  # non charged donor and charged acceptor
+187  188  2.75  # non charged donor and charged acceptor
+187  199  2.75  # non charged donor and charged acceptor
+200  42  2.75  # non charged donor and charged acceptor
+200  176  2.75  # non charged donor and charged acceptor
+200  180  2.75  # non charged donor and charged acceptor
+200  181  2.75  # non charged donor and charged acceptor
+200  188  2.75  # non charged donor and charged acceptor
+200  199  2.75  # non charged donor and charged acceptor
+#
+# List of relative atomic weights
+#
+# First line: number of elements (without element 0)
+# element_name element_number atomic_weight
+#
+118
+LPH  0       0.000   # Lone Pair Hole
+H    1       1.008   # Hydrogen
+He   2       4.002   # Helium
+Li   3        6.94   # Lithium
+Be   4       9.012   # Beryllium
+B    5       10.81   # Boron
+C    6      12.011   # Carbon
+N    7      14.007   # Nitrogen
+O    8      15.999   # Oxygen
+F    9      18.998   # Fluorine
+Ne  10    20.17976   # Neon
+Na  11      22.989   # Sodium
+Mg  12      24.305   # Magnesium
+Al  13      26.981   # Aluminium
+Si  14      28.085   # Silicon
+P   15      30.973   # Phosphorus
+S   16       32.06   # Sulfur
+Cl  17       35.45   # Chlorine
+Ar  18     39.9481   # Argon
+K   19    39.09831   # Potassium
+Ca  20     40.0784   # Calcium
+Sc  21      44.955   # Scandium
+Ti  22     47.8671   # Titanium
+V   23    50.94151   # Vanadium
+Cr  24    51.99616   # Chromium
+Mn  25      54.938   # Manganese
+Fe  26     55.8452   # Iron
+Co  27      58.933   # Cobalt
+Ni  28    58.69344   # Nickel
+Cu  29     63.5463   # Copper
+Zn  30      65.382   # Zinc
+Ga  31     69.7231   # Gallium
+Ge  32     72.6308   # Germanium
+As  33      74.921   # Arsenic
+Se  34     78.9718   # Selenium
+Br  35      79.904   # Bromine
+Kr  36     83.7982   # Krypton
+Rb  37    85.46783   # Rubidium
+Sr  38      87.621   # Strontium
+Y   39      88.905   # Yttrium
+Zr  40     91.2242   # Zirconium
+Nb  41      92.906   # Niobium
+Mo  42      95.951   # Molybdenum
+Tc  43          97   # Technetium
+Ru  44     101.072   # Ruthenium
+Rh  45     102.905   # Rhodium
+Pd  46     106.421   # Palladium
+Ag  47   107.86822   # Silver
+Cd  48    112.4144   # Cadmium
+In  49    114.8181   # Indium
+Sn  50    118.7107   # Tin
+Sb  51    121.7601   # Antimony
+Te  52     127.603   # Tellurium
+I   53     126.904   # Iodine
+Xe  54    131.2936   # Xenon
+Cs  55     132.905   # Caesium
+Ba  56    137.3277   # Barium
+La  57     138.905   # Lanthanum
+Ce  58    140.1161   # Cerium
+Pr  59     140.907   # Praseodymium
+Nd  60    144.2423   # Neodymium
+Pm  61         145   # Promethium
+Sm  62     150.362   # Samarium
+Eu  63    151.9641   # Europium
+Gd  64     157.253   # Gadolinium
+Tb  65     158.925   # Terbium
+Dy  66    162.5001   # Dysprosium
+Ho  67     164.930   # Holmium
+Er  68    167.2593   # Erbium
+Tm  69     168.934   # Thulium
+Yb  70   173.04510   # Ytterbium
+Lu  71   174.96681   # Lutetium
+Hf  72     178.492   # Hafnium
+Ta  73     180.947   # Tantalum
+W   74     183.841   # Tungsten
+Re  75    186.2071   # Rhenium
+Os  76     190.233   # Osmium
+Ir  77    192.2173   # Iridium
+Pt  78    195.0849   # Platinum
+Au  79     196.966   # Gold
+Hg  80    200.5923   # Mercury
+Tl  81      204.38   # Thallium
+Pb  82      207.21   # Lead
+Bi  83     208.980   # Bismuth
+Po  84         209   # Polonium
+At  85         210   # Astatine
+Rn  86         222   # Radon
+Fr  87         223   # Francium
+Ra  88         226   # Radium
+Ac  89         227   # Actinium
+Th  90   232.03774   # Thorium
+Pa  91     231.035   # Protactinium
+U   92     238.028   # Uranium
+Np  93         237   # Neptunium
+Pu  94         244   # Plutonium
+Am  95         243   # Americium
+Cm  96         247   # Curium
+Bk  97         247   # Berkelium
+Cf  98         251   # Californium
+Es  99         252   # Einsteinium
+Fm 100         257   # Fermium
+Md 101         258   # Mendelevium
+No 102         259   # Nobelium
+Lr 103         262   # Lawrencium
+Rf 104         267   # Rutherfordium
+Db 105         270   # Dubnium
+Sg 106         269   # Seaborgium
+Bh 107         270   # Bohrium
+Hs 108         270   # Hassium
+Mt 109         278   # Meitnerium
+Ds 110         281   # Darmstadtium
+Rg 111         281   # Roentgenium
+Cn 112         285   # Copernicium
+Nh 113         286   # Nihonium
+Fl 114         289   # Flerovium
+Mc 115         289   # Moscovium
+Lv 116         293   # Livermorium
+Ts 117         293   # Tennessine
+Og 118         294   # Oganesson
+#
+
+Data for the receptor :
+
+Residue  First  Last  Tot_charge  Residue-representative
+    1       1      26      1.6800      13
+    2      27      48      1.0000      46
+    3      49      70      1.0000      65
+    4      71      89      0.0000      75
+    5      90     109      0.0000      97
+    6     110     131      1.0000     126
+    7     132     145      0.0000     138
+    8     146     160     -1.0000     156
+    9     161     175     -1.0000     171
+   10     176     194      0.0000     180
+   11     195     218      1.0000     210
+   12     219     235      0.0000     223
+   13     236     245      0.0000     238
+   14     246     264      0.0000     250
+   15     265     281      0.0000     269
+   16     282     295      0.0000     288
+   17     296     309      0.0000     300
+   18     310     328      0.0000     314
+   19     329     343     -1.0000     339
+   20     344     353      0.0000     346
+   21     354     372      0.0000     358
+   22     373     393      0.0000     380
+   23     394     417      1.0000     409
+   24     418     434      0.0000     422
+   25     435     446     -1.0000     442
+   26     447     460      0.0000     453
+   27     461     475     -1.0000     471
+   28     476     486      0.0000     478
+   29     487     505      0.0000     494
+   30     506     519      0.0000     512
+   31     520     539      0.0000     527
+   32     540     563      1.0000     555
+   33     564     580      0.0000     568
+   34     581     594      0.0000     587
+   35     595     610      0.0000     599
+   36     611     622     -1.0000     618
+   37     623     636      0.0000     629
+   38     637     653      0.0000     641
+   39     654     672      0.0000     658
+   40     673     691      0.0000     677
+   41     692     698      0.0000     694
+   42     699     717      0.0000     703
+   43     718     731      0.0000     724
+   44     732     743     -1.0000     739
+   45     744     764      0.0000     751
+   46     765     784      0.0000     772
+   47     785     796     -1.0000     792
+   48     797     815      0.0000     801
+   49     816     831      0.0000     820
+   50     832     853      1.0000     848
+   51     854     867      0.0000     858
+   52     868     881      0.0000     874
+   53     882     898      0.0000     886
+   54     899     910     -1.0000     907
+   55     911     929      0.0000     915
+   56     930     940      0.0000     932
+   57     941     954      0.0000     945
+   58     955     973      0.0000     959
+   59     974     995      1.0000     990
+   60     996    1019      1.0000    1012
+   61    1020    1041      1.0000    1037
+   62    1042    1060      0.0000    1046
+   63    1061    1072     -1.0000    1068
+   64    1073    1086      0.0000    1077
+   65    1087    1093      0.0000    1089
+   66    1094    1110      0.0000    1101
+   67    1111    1131      0.0000    1118
+   68    1132    1148      0.0000    1136
+   69    1149    1163     -1.0000    1159
+   70    1164    1177      0.0000    1170
+   71    1178    1201      0.0000    1191
+   72    1202    1218      0.0000    1206
+   73    1219    1239      0.0000    1226
+   74    1240    1255      0.0000    1244
+   75    1256    1267     -1.0000    1264
+   76    1268    1279     -1.0000    1276
+   77    1280    1295      0.0000    1284
+   78    1296    1319      0.0000    1309
+   79    1320    1338      0.0000    1327
+   80    1339    1355      0.0000    1343
+   81    1356    1375      0.0000    1363
+   82    1376    1389      0.0000    1380
+   83    1390    1403      0.0000    1394
+   84    1404    1413      0.0000    1406
+   85    1414    1437      0.0000    1421
+   86    1438    1456      0.0000    1445
+   87    1457    1477      0.0000    1464
+   88    1478    1491      0.0000    1482
+   89    1492    1515      1.0000    1507
+   90    1516    1537      1.0000    1534
+   91    1538    1551      0.0000    1542
+   92    1552    1562      0.0000    1554
+   93    1563    1586      1.0000    1578
+   94    1587    1602      0.0000    1591
+   95    1603    1623      0.0000    1610
+   96    1624    1645      1.0000    1642
+   97    1646    1665      0.0000    1653
+   98    1666    1676      0.0000    1668
+   99    1677    1687      0.0000    1679
+  100    1688    1709      1.0000    1701
+  101    1710    1728      0.0000    1714
+  102    1729    1738      0.0000    1731
+  103    1739    1753     -1.0000    1749
+  104    1754    1769      0.0000    1758
+  105    1770    1789      0.0000    1777
+  106    1790    1804     -1.0000    1800
+  107    1805    1821      0.0000    1812
+  108    1822    1836     -1.0000    1833
+  109    1837    1855      0.0000    1841
+  110    1856    1867     -1.0000    1863
+  111    1868    1881      0.0000    1874
+  112    1882    1897      0.0000    1886
+  113    1898    1914      0.0000    1902
+  114    1915    1931      0.0000    1919
+  115    1932    1942      0.0000    1934
+  116    1943    1961      0.0000    1947
+  117    1962    1969     -0.8300    1967
+  118    1970    1972      0.0000    1970
+  119    1973    1975      0.0000    1973
+  120    1976    1978      0.0000    1976
+  121    1979    1981      0.0000    1979
+  122    1982    1984      0.0000    1982
+  123    1985    1987      0.0000    1985
+
+
+Actual number of points on the sphere part :
+108
+
+Atom N  1478     1 donor vector
+Atom O  1486     2 acceptor vectors
+Atom N  1487     2 donor vectors
+Atom O  1491     2 acceptor vectors
+Atom O  1973     2 acceptor and 2 donor vectors
+
+Minimal and maximal distances between receptor polar vectors 
+and points in the binding site:      0.2165    15.9613
+
+Total number of polar vectors generated on the receptor binding site : 1188
+Number of kept polar vectors for seeding of polar fragments : 418
+
+The following 12 charged residues are kept for the energy evaluation
+   27
+   36
+   44
+   47
+   50
+   54
+   61
+   76
+   89
+   90
+   93
+   96
+
+Number of points of the coulombic grid : 821748
+
+Number of points of the van der Waals grid : 3699540
+
+Minimal and maximal distances between receptor apolar vectors 
+and points in the binding site:      0.5136    15.9419
+
+Total number of apolar vectors generated on the receptor binding site : 25
+Number of kept apolar vectors for seeding of apolar fragments : 10
+
+-------------------------------------------------
+
+Data for the fragment type 1 :
+
+
+Fragment name is: xr_5mgj_baz2
+
+Atom O    11     2 acceptor vectors
+Atom O    12     2 acceptor vectors
+Atom O    13     2 acceptor vectors
+
+This fragment is considered as a polar and apolar fragment
+
+Numb. of frag. vectors (surf. points) used to seed this apolar fragment : 381
+This number is then reduced if undistinguishable fragment atoms
+
+
+Total number of generated fragments of type 1 (xr_5mgj_baz2) : 389232
+Fragments that passed the bump checking : 34169
+Fragments that passed the vdW energy cutoff : 2961
+Fragments that passed the total energy cutoff : 1628
+CPU time in sec. for the seeding of xr_5mgj_baz2 : 0.58
+
+Number of positions conserved for clustering : 20
+
+Sorted frag. of type 1 (xr_5mgj_baz2) :
+   Num    Fr_nu  Conf    VW_f    In_f    Dr_f    Df_f    To_f
+     1      256     1  -15.75   -0.57    4.08    2.53   -9.70
+     2      104     1  -14.71   -4.31    6.45    2.90   -9.66
+     3      270     1  -16.54   -0.97    5.33    2.65   -9.53
+     4      257     1  -15.40   -0.59    4.09    2.46   -9.43
+     5      269     1  -16.06   -0.92    5.02    2.66   -9.31
+     6      255     1  -15.52   -0.58    4.29    2.54   -9.26
+     7      698     1  -14.85   -0.36    4.24    2.51   -8.46
+     8      254     1  -14.67   -0.59    4.37    2.49   -8.39
+     9      103     1  -13.27   -4.15    6.56    2.89   -7.96
+    10      697     1  -14.91   -0.21    4.71    2.52   -7.89
+    11       34     1  -17.78    1.67    5.56    2.96   -7.58
+    12       38     1  -14.85   -0.06    6.23    1.39   -7.29
+    13      463     1  -15.82   -1.81    8.25    2.21   -7.17
+    14      670     1  -11.47   -3.25    5.47    2.09   -7.16
+    15      268     1  -13.61   -0.86    4.71    2.63   -7.14
+    16       83     1  -15.34   -0.57    6.45    2.38   -7.08
+    17       39     1  -14.29   -0.21    6.12    1.34   -7.04
+    18       11     1  -16.35   -0.63    7.30    2.67   -7.02
+    19      671     1  -11.52   -3.40    5.86    2.15   -6.91
+    20      708     1  -15.12    0.58    5.96    1.78   -6.80
+
+Number of clusters after first clustering for the fragment type 1 (xr_5mgj_baz2) : 9
+
+
+CPU time in sec. for the sorting and clusterings of xr_5mgj_baz2 : 0.00
+
+Dielectric value =  2.0 -> 78.5 transfer energy for the fragment (xr_5mgj_baz2) :    -6.7950
+
+Total number of conserved second clusters : 9
+Total number of conserved positions : 14
+
+Postprocessed clusters for fragment type 1 (xr_5mgj_baz2) :
+
+                             intermolecular       electrostat_desolv.       Total
+   Num    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment       energy
+
+    1
+     1      104     1       -18.20      -8.13         7.84       6.62       -11.86
+
+    2
+     2      270     1       -17.91      -4.09         5.59       5.70       -10.71
+     3      256     1       -16.95      -1.64         4.74       4.49        -9.35
+     4      268     1       -15.01      -2.75         4.56       5.29        -7.90
+     5      698     1       -16.07      -1.12         4.86       4.75        -7.59
+     6      254     1       -15.74      -1.34         5.11       4.66        -7.31
+
+    3
+     7       38     1       -15.98       0.11         6.49       2.20        -7.18
+     8       39     1       -15.29      -0.05         7.15       2.02        -6.17
+
+    4
+     9      670     1       -12.29      -3.73         5.94       3.32        -6.76
+
+    5
+    10       83     1       -16.43      -0.62         6.62       4.36        -6.06
+
+    6
+    11       11     1       -17.43      -1.50         8.09       4.92        -5.92
+
+    7
+    12      463     1       -17.09      -1.62         9.79       3.70        -5.21
+
+    8
+    13      708     1       -16.47       1.27         6.70       3.51        -5.00
+
+    9
+    14       34     1       -19.25       2.91         6.10       6.58        -3.66
+
+Best postprocessed poses for fragment type 1 (xr_5mgj_baz2) :
+
+                                   intermolecular       electrostat_desolv.       Total
+   Num   Clu    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment       energy
+
+     1     1      104     1       -18.20      -8.13         7.84       6.62       -11.86
+
+CPU time in sec. for the postprocessing (energy with slow method) : 0.20
+CPU time in sec. for the sorting of the postprocessed positions : 0.00
+
+Total CPU time in sec. for the seeding of fragment 1 (xr_5mgj_baz2) : 0.78
+-------------------------------------------------
+
+Data for the fragment type 2 :
+
+
+Fragment name is: xr_5mqe
+
+Atom N     7     1 donor vector
+Atom N     8     1 donor vector
+Atom O     9     2 acceptor vectors
+
+This fragment is considered as a polar and apolar fragment
+
+Numb. of frag. vectors (surf. points) used to seed this apolar fragment : 301
+This number is then reduced if undistinguishable fragment atoms
+
+
+Total number of generated fragments of type 2 (xr_5mqe) : 276912
+Fragments that passed the bump checking : 44351
+Fragments that passed the vdW energy cutoff : 12737
+Fragments that passed the total energy cutoff : 7095
+CPU time in sec. for the seeding of xr_5mqe : 0.98
+
+Number of positions conserved for clustering : 20
+
+Sorted frag. of type 2 (xr_5mqe) :
+   Num    Fr_nu  Conf    VW_f    In_f    Dr_f    Df_f    To_f
+     1      626     1  -15.70   -3.49    2.92    1.72  -14.54
+     2      627     1  -15.44   -3.78    2.92    1.78  -14.53
+     3     2068     1  -16.19   -2.01    3.10    1.75  -13.36
+     4      628     1  -13.90   -4.00    3.08    1.76  -13.05
+     5      625     1  -13.95   -3.29    3.00    1.74  -12.51
+     6     2067     1  -15.41   -1.78    3.10    1.74  -12.35
+     7     2069     1  -14.36   -2.35    3.08    1.71  -11.92
+     8     1338     1  -16.40    0.11    3.00    1.72  -11.57
+     9     1339     1  -16.21    0.01    3.02    1.73  -11.45
+    10     3716     1  -14.98   -1.27    3.59    1.50  -11.16
+    11     1337     1  -15.43    0.19    3.00    1.81  -10.43
+    12      815     1  -14.89   -1.40    4.56    1.68  -10.05
+    13      862     1  -13.36   -1.17    3.20    1.47   -9.86
+    14     3715     1  -14.19   -1.00    4.00    1.51   -9.68
+    15      125     1  -11.55   -3.76    4.14    1.63   -9.54
+    16      147     1  -12.17   -2.89    4.01    1.54   -9.51
+    17      146     1  -12.25   -2.87    4.19    1.56   -9.37
+    18     1418     1  -14.45   -0.28    3.73    1.70   -9.31
+    19      816     1  -14.05   -1.67    4.94    1.72   -9.06
+    20     1428     1  -12.46   -1.45    3.21    1.72   -8.99
+
+Number of clusters after first clustering for the fragment type 2 (xr_5mqe) : 6
+
+
+CPU time in sec. for the sorting and clusterings of xr_5mqe : 0.00
+
+Dielectric value =  2.0 -> 78.5 transfer energy for the fragment (xr_5mqe) :    -4.2995
+
+Total number of conserved second clusters : 6
+Total number of conserved positions : 10
+
+Postprocessed clusters for fragment type 2 (xr_5mqe) :
+
+                             intermolecular       electrostat_desolv.       Total
+   Num    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment       energy
+
+    1
+     1      626     1       -17.85      -4.76         3.87       4.17       -14.57
+     2     2068     1       -17.81      -3.23         4.01       3.90       -13.13
+     3     1428     1       -14.12      -1.97         4.14       4.05        -7.90
+
+    2
+     4     3716     1       -16.30      -2.72         4.63       2.54       -11.84
+     5      862     1       -15.24      -3.05         3.98       2.60       -11.72
+
+    3
+     6     1338     1       -18.20      -0.44         3.83       3.61       -11.19
+
+    4
+     7      125     1       -12.73      -6.46         4.85       3.27       -11.07
+     8      147     1       -13.58      -4.63         4.62       3.41       -10.18
+
+    5
+     9      815     1       -16.39      -1.76         5.34       3.78        -9.03
+
+    6
+    10     1418     1       -15.32       0.20         4.18       3.50        -7.43
+
+Best postprocessed poses for fragment type 2 (xr_5mqe) :
+
+                                   intermolecular       electrostat_desolv.       Total
+   Num   Clu    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment       energy
+
+     1     1      626     1       -17.85      -4.76         3.87       4.17       -14.57
+
+CPU time in sec. for the postprocessing (energy with slow method) : 0.12
+CPU time in sec. for the sorting of the postprocessed positions : 0.00
+
+Total CPU time in sec. for the seeding of fragment 2 (xr_5mqe) : 1.10
+-------------------------------------------------
+
+Data for the fragment type 3 :
+
+
+Fragment name is: xr_5mpz
+
+Atom N    10     1 donor vector
+Atom O    11     2 acceptor vectors
+Atom O    12     2 acceptor vectors
+Atom O    13     2 acceptor vectors
+Atom O    14     1 acceptor vector
+
+This fragment is considered as a polar and apolar fragment
+
+Numb. of frag. vectors (surf. points) used to seed this apolar fragment : 346
+This number is then reduced if undistinguishable fragment atoms
+
+
+Total number of generated fragments of type 3 (xr_5mpz) : 394128
+Fragments that passed the bump checking : 42589
+Fragments that passed the vdW energy cutoff : 8025
+Fragments that passed the total energy cutoff : 3467
+CPU time in sec. for the seeding of xr_5mpz : 0.84
+
+Number of positions conserved for clustering : 20
+
+Sorted frag. of type 3 (xr_5mpz) :
+   Num    Fr_nu  Conf    VW_f    In_f    Dr_f    Df_f    To_f
+     1      906     1  -19.00   -0.64    3.75    2.08  -13.81
+     2      340     1  -17.15   -2.50    3.76    2.33  -13.56
+     3      339     1  -16.81   -2.28    3.61    2.23  -13.26
+     4      905     1  -17.87   -0.66    3.50    2.11  -12.91
+     5      341     1  -15.59   -2.74    3.50    2.17  -12.66
+     6      907     1  -18.00   -0.46    3.91    1.95  -12.61
+     7      549     1  -18.56   -1.70    3.88    3.81  -12.57
+     8      915     1  -16.20   -3.53    3.88    3.68  -12.18
+     9      548     1  -18.43   -1.45    3.88    3.86  -12.14
+    10     1334     1  -16.63   -1.24    4.22    2.23  -11.41
+    11      706     1  -14.97   -4.61    4.90    3.40  -11.28
+    12      338     1  -15.12   -2.05    3.83    2.18  -11.16
+    13      914     1  -16.04   -2.74    3.88    3.77  -11.13
+    14     1335     1  -16.13   -1.15    4.18    2.15  -10.96
+    15      910     1  -15.33   -1.34    3.54    2.45  -10.67
+    16      707     1  -15.15   -4.30    5.49    3.44  -10.53
+    17      550     1  -15.88   -1.72    3.48    3.76  -10.37
+    18      911     1  -14.97   -1.28    3.59    2.33  -10.33
+    19      651     1  -15.70   -3.92    6.16    3.58   -9.88
+    20      650     1  -14.18   -4.23    5.22    3.55   -9.63
+
+Number of clusters after first clustering for the fragment type 3 (xr_5mpz) : 3
+
+
+CPU time in sec. for the sorting and clusterings of xr_5mpz : 0.00
+
+Dielectric value =  2.0 -> 78.5 transfer energy for the fragment (xr_5mpz) :    -8.3239
+
+Total number of conserved second clusters : 3
+Total number of conserved positions : 8
+
+Postprocessed clusters for fragment type 3 (xr_5mpz) :
+
+                             intermolecular       electrostat_desolv.       Total
+   Num    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment       energy
+
+    1
+     1      340     1       -19.20      -4.77         4.52       2.83       -16.62
+     2      906     1       -20.14      -2.69         4.63       2.40       -15.80
+     3     1334     1       -17.98      -3.27         5.09       2.66       -13.50
+     4      910     1       -16.72      -3.43         4.37       3.16       -12.61
+     5      915     1       -17.59      -7.38         4.68       7.79       -12.50
+
+    2
+     6      706     1       -16.51      -9.12         5.35       7.32       -12.96
+     7      651     1       -17.41      -7.33         6.91       7.30       -10.54
+
+    3
+     8      549     1       -20.49      -3.67         4.47       8.33       -11.36
+
+Best postprocessed poses for fragment type 3 (xr_5mpz) :
+
+                                   intermolecular       electrostat_desolv.       Total
+   Num   Clu    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment       energy
+
+     1     1      340     1       -19.20      -4.77         4.52       2.83       -16.62
+
+CPU time in sec. for the postprocessing (energy with slow method) : 0.13
+CPU time in sec. for the sorting of the postprocessed positions : 0.00
+
+Total CPU time in sec. for the seeding of fragment 3 (xr_5mpz) : 0.98
+-------------------------------------------------
+
+Data for the fragment type 4 :
+
+
+Fragment name is: xr_5mqg_a
+
+Atom N    10     2 donor vectors
+Atom O    11     2 acceptor vectors
+Atom O    12     2 acceptor vectors
+
+This fragment is considered as a polar and apolar fragment
+
+Numb. of frag. vectors (surf. points) used to seed this apolar fragment : 319
+This number is then reduced if undistinguishable fragment atoms
+
+
+Total number of generated fragments of type 4 (xr_5mqg_a) : 328176
+Fragments that passed the bump checking : 39124
+Fragments that passed the vdW energy cutoff : 3565
+Fragments that passed the total energy cutoff : 2816
+CPU time in sec. for the seeding of xr_5mqg_a : 0.54
+
+Number of positions conserved for clustering : 20
+
+Sorted frag. of type 4 (xr_5mqg_a) :
+   Num    Fr_nu  Conf    VW_f    In_f    Dr_f    Df_f    To_f
+     1      648     1  -11.71   -4.48    4.20    1.52  -10.47
+     2      705     1  -14.88   -0.78    4.40    1.19  -10.08
+     3      891     1  -13.40   -2.20    4.32    1.43   -9.85
+     4      706     1  -14.55   -0.86    4.40    1.20   -9.81
+     5      707     1  -13.62   -0.89    4.52    1.16   -8.83
+     6      576     1  -12.94   -0.76    3.86    1.22   -8.63
+     7      704     1  -13.85   -0.71    4.74    1.19   -8.62
+     8      724     1  -14.73    0.25    4.23    1.64   -8.62
+     9      518     1  -16.35    0.01    6.35    1.59   -8.40
+    10      723     1  -14.48    0.11    4.43    1.65   -8.31
+    11      649     1   -9.59   -4.75    4.57    1.56   -8.20
+    12      733     1  -15.83    0.90    5.23    1.50   -8.20
+    13      732     1  -15.34    0.84    4.96    1.56   -7.98
+    14      921     1  -15.11    0.60    5.28    1.33   -7.91
+    15      922     1  -15.02    0.48    5.31    1.33   -7.89
+    16      892     1  -11.50   -2.10    4.32    1.45   -7.83
+    17      734     1  -15.52    0.91    5.25    1.54   -7.82
+    18      577     1  -12.36   -0.75    4.22    1.20   -7.70
+    19      713     1  -13.01   -1.10    5.34    1.09   -7.68
+    20      517     1  -15.77    0.12    6.42    1.62   -7.62
+
+Number of clusters after first clustering for the fragment type 4 (xr_5mqg_a) : 6
+
+
+CPU time in sec. for the sorting and clusterings of xr_5mqg_a : 0.00
+
+Dielectric value =  2.0 -> 78.5 transfer energy for the fragment (xr_5mqg_a) :    -4.0779
+
+Total number of conserved second clusters : 6
+Total number of conserved positions : 12
+
+Postprocessed clusters for fragment type 4 (xr_5mqg_a) :
+
+                             intermolecular       electrostat_desolv.       Total
+   Num    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment       energy
+
+    1
+     1      648     1       -13.84      -7.43         4.85       2.76       -13.66
+     2      891     1       -15.17      -4.48         5.04       2.60       -12.02
+
+    2
+     3      705     1       -15.93      -0.11         4.93       1.96        -9.15
+     4      576     1       -14.18      -0.47         4.31       2.28        -8.06
+     5      707     1       -14.82      -0.34         5.02       2.15        -7.99
+     6      713     1       -14.02      -0.45         5.53       2.05        -6.89
+     7      723     1       -15.74       1.18         5.45       2.63        -6.48
+
+    3
+     8      518     1       -17.62       0.28         6.14       2.28        -8.91
+     9      517     1       -17.12       0.48         6.20       2.21        -8.22
+
+    4
+    10      921     1       -16.47       0.67         5.52       2.19        -8.09
+
+    5
+    11      724     1       -16.04       1.20         5.27       2.64        -6.94
+
+    6
+    12      733     1       -17.27       2.51         5.91       3.37        -5.48
+
+Best postprocessed poses for fragment type 4 (xr_5mqg_a) :
+
+                                   intermolecular       electrostat_desolv.       Total
+   Num   Clu    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment       energy
+
+     1     1      648     1       -13.84      -7.43         4.85       2.76       -13.66
+
+CPU time in sec. for the postprocessing (energy with slow method) : 0.17
+CPU time in sec. for the sorting of the postprocessed positions : 0.00
+
+Total CPU time in sec. for the seeding of fragment 4 (xr_5mqg_a) : 0.71
+-------------------------------------------------
+
+Data for the fragment type 5 :
+
+
+Fragment name is: xr_5mqk
+
+Atom O    13     2 acceptor vectors
+
+This fragment is considered as a polar and apolar fragment
+
+Numb. of frag. vectors (surf. points) used to seed this apolar fragment : 318
+This number is then reduced if undistinguishable fragment atoms
+
+
+Total number of generated fragments of type 5 (xr_5mqk) : 267264
+Fragments that passed the bump checking : 35502
+Fragments that passed the vdW energy cutoff : 3884
+Fragments that passed the total energy cutoff : 2947
+CPU time in sec. for the seeding of xr_5mqk : 0.49
+
+Number of positions conserved for clustering : 20
+
+Sorted frag. of type 5 (xr_5mqk) :
+   Num    Fr_nu  Conf    VW_f    In_f    Dr_f    Df_f    To_f
+     1        2     1  -15.44   -3.90    4.54    1.42  -13.38
+     2      562     1  -18.51   -0.66    5.03    0.91  -13.23
+     3      563     1  -18.13   -1.00    5.37    0.90  -12.85
+     4      303     1  -16.95   -1.71    4.99    1.37  -12.29
+     5      567     1  -17.14   -1.67    5.18    1.36  -12.26
+     6      568     1  -16.23   -1.86    5.04    1.37  -11.68
+     7      302     1  -16.54   -1.49    5.28    1.38  -11.37
+     8      561     1  -16.99   -0.35    5.17    0.92  -11.25
+     9      564     1  -15.88   -1.38    5.18    0.89  -11.19
+    10        3     1  -12.88   -4.05    4.54    1.40  -10.99
+    11       14     1  -16.91   -0.67    5.96    0.79  -10.83
+    12       13     1  -17.15   -0.44    6.20    0.78  -10.60
+    13      586     1  -18.18    0.50    5.97    1.18  -10.54
+    14        1     1  -12.57   -3.61    4.34    1.41  -10.42
+    15      339     1  -16.77   -0.40    5.96    0.99  -10.21
+    16      585     1  -17.56    0.26    6.15    1.19   -9.96
+    17       27     1  -17.88    1.34    5.41    1.33   -9.81
+    18      526     1  -15.13   -1.43    5.41    1.34   -9.81
+    19      340     1  -16.01   -0.76    5.99    0.99   -9.80
+    20       26     1  -17.07    0.98    5.05    1.30   -9.74
+
+Number of clusters after first clustering for the fragment type 5 (xr_5mqk) : 3
+
+
+CPU time in sec. for the sorting and clusterings of xr_5mqk : 0.00
+
+Dielectric value =  2.0 -> 78.5 transfer energy for the fragment (xr_5mqk) :    -3.2008
+
+Total number of conserved second clusters : 3
+Total number of conserved positions : 10
+
+Postprocessed clusters for fragment type 5 (xr_5mqk) :
+
+                             intermolecular       electrostat_desolv.       Total
+   Num    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment       energy
+
+    1
+     1        2     1       -16.80      -6.17         5.58       3.52       -13.87
+     2      303     1       -18.38      -3.57         5.89       3.42       -12.64
+     3      567     1       -18.46      -3.24         6.27       3.37       -12.06
+
+    2
+     4      562     1       -19.92      -0.65         5.80       1.56       -13.21
+     5       14     1       -18.30      -0.72         6.02       1.48       -11.52
+     6      339     1       -18.46      -0.18         6.73       1.56       -10.35
+     7       27     1       -19.57       1.05         6.39       2.79        -9.34
+
+    3
+     8      586     1       -19.46       0.30         6.92       1.94       -10.31
+     9      526     1       -16.47      -2.83         6.85       3.27        -9.18
+    10       26     1       -18.65       1.09         6.23       2.64        -8.69
+
+Best postprocessed poses for fragment type 5 (xr_5mqk) :
+
+                                   intermolecular       electrostat_desolv.       Total
+   Num   Clu    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment       energy
+
+     1     1        2     1       -16.80      -6.17         5.58       3.52       -13.87
+
+CPU time in sec. for the postprocessing (energy with slow method) : 0.15
+CPU time in sec. for the sorting of the postprocessed positions : 0.00
+
+Total CPU time in sec. for the seeding of fragment 5 (xr_5mqk) : 0.65
+-------------------------------------------------
+
+Data for the fragment type 6 :
+
+
+Fragment name is: 5QR_5ep7
+
+Atom O     4     2 acceptor vectors
+Atom O    12     2 acceptor vectors
+Atom N    13     1 donor vector
+Atom O    17     2 acceptor vectors
+Atom O    18     2 acceptor vectors
+
+This fragment is considered as a polar and apolar fragment
+
+Numb. of frag. vectors (surf. points) used to seed this apolar fragment : 464
+This number is then reduced if undistinguishable fragment atoms
+
+
+Total number of generated fragments of type 6 (5QR_5ep7) : 498240
+Fragments that passed the bump checking : 31673
+Fragments that passed the vdW energy cutoff : 1657
+Fragments that passed the total energy cutoff : 453
+CPU time in sec. for the seeding of 5QR_5ep7 : 0.73
+
+Number of positions conserved for clustering : 20
+
+Sorted frag. of type 6 (5QR_5ep7) :
+   Num    Fr_nu  Conf    VW_f    In_f    Dr_f    Df_f    To_f
+     1      103     1  -17.92  -14.29    8.03   11.60  -12.58
+     2      104     1  -16.41  -12.29    7.89   11.06   -9.76
+     3       35     1  -19.67   -9.35    8.17   11.70   -9.16
+     4      119     1  -17.86   -1.42    6.02    4.31   -8.94
+     5       51     1  -16.37   -2.61    5.86    4.59   -8.54
+     6       22     1  -14.01  -14.53    8.20   11.85   -8.49
+     7       69     1  -13.89   -2.39    4.82    3.08   -8.39
+     8       50     1  -16.75   -2.36    5.97    4.80   -8.34
+     9       70     1  -13.66   -2.67    4.98    3.01   -8.33
+    10       68     1  -13.99   -2.17    4.89    2.98   -8.29
+    11       67     1  -14.02   -2.03    4.78    3.14   -8.13
+    12       90     1  -15.57   -1.51    5.66    3.61   -7.81
+    13       71     1  -13.68   -3.07    5.38    3.75   -7.62
+    14       49     1  -15.59   -2.11    5.71    4.56   -7.44
+    15       19     1  -18.73   -3.04    6.67    7.89   -7.21
+    16      225     1  -14.13   -8.19    7.09    8.13   -7.10
+    17       66     1  -13.03   -1.93    4.98    3.09   -6.90
+    18      224     1  -14.20   -7.07    6.87    7.58   -6.81
+    19      106     1  -15.45   -0.30    4.87    4.25   -6.64
+    20       52     1  -15.22   -3.02    6.48    5.15   -6.62
+
+Number of clusters after first clustering for the fragment type 6 (5QR_5ep7) : 8
+
+
+CPU time in sec. for the sorting and clusterings of 5QR_5ep7 : 0.00
+
+Dielectric value =  2.0 -> 78.5 transfer energy for the fragment (5QR_5ep7) :   -42.2639
+
+Total number of conserved second clusters : 8
+Total number of conserved positions : 19
+
+Postprocessed clusters for fragment type 6 (5QR_5ep7) :
+
+                             intermolecular       electrostat_desolv.       Total
+   Num    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment       energy
+
+    1
+     1      103     1       -20.89     -17.10        10.57      11.59       -15.83
+     2      104     1       -18.86     -15.17        10.61      11.06       -12.35
+     3       22     1       -16.75     -17.26        10.75      12.89       -10.38
+
+    2
+     4       19     1       -21.80      -6.28         8.28       7.86       -11.94
+
+    3
+     5       35     1       -21.51     -11.93        10.71      12.28       -10.45
+
+    4
+     6      225     1       -15.44      -7.04         7.69       7.46        -7.33
+     7      224     1       -15.31      -5.78         7.81       6.91        -6.38
+
+    5
+     8      119     1       -19.50       1.08         6.63       5.38        -6.42
+     9       51     1       -17.62       0.30         6.54       4.84        -5.93
+    10       50     1       -17.97       0.53         6.53       5.37        -5.54
+    11       90     1       -17.15       0.47         6.53       6.03        -4.13
+    12      106     1       -18.04       1.76         6.07       7.11        -3.10
+
+    6
+    13       67     1       -15.16      -1.35         6.08       4.23        -6.19
+    14       68     1       -15.08      -1.12         5.90       4.85        -5.45
+    15       70     1       -14.75      -1.06         5.79       4.68        -5.34
+    16       71     1       -14.76      -1.19         5.85       4.81        -5.30
+    17       69     1       -14.88      -0.85         5.87       4.94        -4.92
+
+    7
+    18       66     1       -14.45      -1.35         6.14       4.32        -5.34
+
+    8
+    19       49     1       -16.76       0.12         6.50       5.17        -4.96
+
+Best postprocessed poses for fragment type 6 (5QR_5ep7) :
+
+                                   intermolecular       electrostat_desolv.       Total
+   Num   Clu    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment       energy
+
+     1     1      103     1       -20.89     -17.10        10.57      11.59       -15.83
+
+CPU time in sec. for the postprocessing (energy with slow method) : 0.32
+CPU time in sec. for the sorting of the postprocessed positions : 0.00
+
+Total CPU time in sec. for the seeding of fragment 6 (5QR_5ep7) : 1.05
+-------------------------------------------------
+
+Data for the fragment type 7 :
+
+
+Fragment name is: acetofenone
+
+Atom O     8     2 acceptor vectors
+Atom O    10     2 acceptor vectors
+Atom N    13     2 donor vectors
+
+This fragment is considered as a polar and apolar fragment
+
+Numb. of frag. vectors (surf. points) used to seed this apolar fragment : 356
+This number is then reduced if undistinguishable fragment atoms
+
+
+Total number of generated fragments of type 7 (acetofenone) : 354816
+Fragments that passed the bump checking : 36511
+Fragments that passed the vdW energy cutoff : 1842
+Fragments that passed the total energy cutoff : 1192
+CPU time in sec. for the seeding of acetofenone : 0.50
+
+Number of positions conserved for clustering : 20
+
+Sorted frag. of type 7 (acetofenone) :
+   Num    Fr_nu  Conf    VW_f    In_f    Dr_f    Df_f    To_f
+     1       68     1  -14.61   -2.85    4.86    1.92  -10.69
+     2      109     1  -16.17   -0.17    4.12    1.56  -10.66
+     3      165     1  -12.15   -4.98    5.31    1.97   -9.85
+     4      161     1  -13.04   -3.58    4.95    1.99   -9.69
+     5      245     1  -15.16   -0.61    4.51    1.71   -9.55
+     6       67     1  -13.45   -2.73    4.95    1.91   -9.33
+     7       69     1  -12.84   -2.97    5.08    1.88   -8.86
+     8      164     1  -11.88   -4.31    5.40    1.98   -8.81
+     9      346     1  -14.61   -0.03    4.36    1.58   -8.69
+    10      244     1  -14.03   -0.48    4.16    1.67   -8.67
+    11      345     1  -14.52   -0.09    4.45    1.52   -8.64
+    12      246     1  -14.50   -0.72    4.87    1.75   -8.60
+    13      415     1  -14.93    0.88    4.46    1.05   -8.54
+    14      162     1  -10.71   -4.45    4.75    1.97   -8.43
+    15      110     1  -13.81   -0.08    3.96    1.58   -8.35
+    16      416     1  -14.45    0.63    4.46    1.06   -8.31
+    17       77     1  -11.72   -2.79    4.24    1.99   -8.29
+    18      414     1  -15.11    1.15    4.63    1.05   -8.28
+    19      159     1   -9.36   -5.60    4.70    2.02   -8.24
+    20      408     1  -14.96   -1.27    6.21    1.87   -8.15
+
+Number of clusters after first clustering for the fragment type 7 (acetofenone) : 5
+
+
+CPU time in sec. for the sorting and clusterings of acetofenone : 0.00
+
+Dielectric value =  2.0 -> 78.5 transfer energy for the fragment (acetofenone) :    -3.7599
+
+Total number of conserved second clusters : 5
+Total number of conserved positions : 11
+
+Postprocessed clusters for fragment type 7 (acetofenone) :
+
+                             intermolecular       electrostat_desolv.       Total
+   Num    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment       energy
+
+    1
+     1       68     1       -16.46      -5.27         5.68       3.59       -12.46
+     2      161     1       -15.36      -6.12         5.48       4.04       -11.97
+     3      165     1       -14.15      -6.98         5.83       4.16       -11.14
+     4      245     1       -16.17      -2.50         5.34       3.04       -10.29
+     5       77     1       -13.97      -4.74         5.60       4.10        -9.02
+
+    2
+     6      159     1       -11.44      -7.69         5.22       4.26        -9.64
+
+    3
+     7      109     1       -17.42       0.60         4.92       2.48        -9.43
+     8      110     1       -15.73       0.78         4.90       2.42        -7.63
+     9      346     1       -15.64       1.33         5.82       2.36        -6.12
+
+    4
+    10      244     1       -15.42      -1.98         5.29       3.11        -9.01
+
+    5
+    11      415     1       -16.29       0.39         5.62       1.45        -8.84
+
+Best postprocessed poses for fragment type 7 (acetofenone) :
+
+                                   intermolecular       electrostat_desolv.       Total
+   Num   Clu    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment       energy
+
+     1     1       68     1       -16.46      -5.27         5.68       3.59       -12.46
+
+CPU time in sec. for the postprocessing (energy with slow method) : 0.19
+CPU time in sec. for the sorting of the postprocessed positions : 0.00
+
+Total CPU time in sec. for the seeding of fragment 7 (acetofenone) : 0.68
+-------------------------------------------------
+
+Data for the fragment type 8 :
+
+
+Fragment name is: benzotriazolo
+
+Atom N     7     1 acceptor vector
+Atom N     9     1 acceptor vector
+Atom N    10     2 donor vectors
+
+This fragment is considered as a polar and apolar fragment
+
+Numb. of frag. vectors (surf. points) used to seed this apolar fragment : 306
+This number is then reduced if undistinguishable fragment atoms
+
+
+Total number of generated fragments of type 8 (benzotriazolo) : 280512
+Fragments that passed the bump checking : 46840
+Fragments that passed the vdW energy cutoff : 14833
+Fragments that passed the total energy cutoff : 7583
+CPU time in sec. for the seeding of benzotriazolo : 1.14
+
+Number of positions conserved for clustering : 20
+
+Sorted frag. of type 8 (benzotriazolo) :
+   Num    Fr_nu  Conf    VW_f    In_f    Dr_f    Df_f    To_f
+     1     1235     1  -17.90   -2.28    3.60    3.24  -13.34
+     2     2028     1  -18.74   -2.09    4.18    3.38  -13.27
+     3     1236     1  -17.05   -2.41    3.66    3.30  -12.50
+     4     2027     1  -18.21   -1.89    4.64    3.36  -12.10
+     5     1221     1  -14.01   -4.41    3.16    3.36  -11.91
+     6     1217     1  -13.88   -5.28    3.86    3.47  -11.83
+     7     1220     1  -13.97   -4.16    3.46    3.35  -11.32
+     8     2029     1  -16.72   -2.27    4.34    3.38  -11.26
+     9     1234     1  -15.49   -2.10    3.39    3.19  -11.01
+    10     1317     1  -18.41    0.83    4.15    2.91  -10.51
+    11     1222     1  -12.42   -4.65    3.22    3.36  -10.49
+    12     1318     1  -18.43    1.02    4.12    3.00  -10.29
+    13     2084     1  -17.65    0.11    5.03    2.55   -9.94
+    14     1320     1  -16.55   -0.67    4.57    2.76   -9.90
+    15     1218     1  -11.34   -5.66    3.75    3.44   -9.81
+    16     1321     1  -17.05   -0.21    4.65    2.88   -9.73
+    17     1225     1  -12.71   -4.48    3.92    3.55   -9.72
+    18     1216     1  -11.98   -4.92    3.81    3.42   -9.67
+    19     1626     1  -15.47   -0.64    4.23    2.26   -9.62
+    20     1228     1  -12.95   -3.70    3.51    3.54   -9.59
+
+Number of clusters after first clustering for the fragment type 8 (benzotriazolo) : 2
+
+
+CPU time in sec. for the sorting and clusterings of benzotriazolo : 0.00
+
+Dielectric value =  2.0 -> 78.5 transfer energy for the fragment (benzotriazolo) :    -6.6548
+
+Total number of conserved second clusters : 2
+Total number of conserved positions : 8
+
+Postprocessed clusters for fragment type 8 (benzotriazolo) :
+
+                             intermolecular       electrostat_desolv.       Total
+   Num    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment       energy
+
+    1
+     1     1217     1       -16.33      -9.55         4.46       6.55       -14.87
+     2     1221     1       -17.28      -8.03         3.87       6.60       -14.84
+     3     2028     1       -20.36      -5.39         4.90       6.40       -14.44
+     4     1235     1       -19.57      -4.96         4.14       6.35       -14.04
+     5     1225     1       -15.17      -8.42         4.82       6.65       -12.12
+
+    2
+     6     2084     1       -18.98       0.34         5.21       2.02       -11.41
+     7     1320     1       -18.28       0.38         5.02       3.52        -9.35
+     8     1317     1       -20.05       1.82         5.19       3.96        -9.08
+
+Best postprocessed poses for fragment type 8 (benzotriazolo) :
+
+                                   intermolecular       electrostat_desolv.       Total
+   Num   Clu    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment       energy
+
+     1     1     1217     1       -16.33      -9.55         4.46       6.55       -14.87
+
+CPU time in sec. for the postprocessing (energy with slow method) : 0.11
+CPU time in sec. for the sorting of the postprocessed positions : 0.00
+
+Total CPU time in sec. for the seeding of fragment 8 (benzotriazolo) : 1.26
+-------------------------------------------------
+
+Data for the fragment type 9 :
+
+
+Fragment name is: cinnoline
+
+Atom N     5     1 acceptor vector
+Atom N     6     1 acceptor vector
+Atom N    12     2 donor vectors
+
+This fragment is considered as a polar and apolar fragment
+
+Numb. of frag. vectors (surf. points) used to seed this apolar fragment : 321
+This number is then reduced if undistinguishable fragment atoms
+
+
+Total number of generated fragments of type 9 (cinnoline) : 291312
+Fragments that passed the bump checking : 42381
+Fragments that passed the vdW energy cutoff : 6491
+Fragments that passed the total energy cutoff : 3471
+CPU time in sec. for the seeding of cinnoline : 0.68
+
+Number of positions conserved for clustering : 20
+
+Sorted frag. of type 9 (cinnoline) :
+   Num    Fr_nu  Conf    VW_f    In_f    Dr_f    Df_f    To_f
+     1      536     1  -14.53   -3.38    3.59    2.81  -11.50
+     2      537     1  -13.27   -3.74    3.83    2.81  -10.37
+     3      575     1  -15.45   -0.43    4.21    2.03   -9.64
+     4      574     1  -15.54   -0.21    4.21    1.96   -9.58
+     5     1154     1  -16.24    0.27    4.15    2.25   -9.57
+     6     1155     1  -15.69    0.21    4.06    2.19   -9.23
+     7      613     1  -15.79   -0.28    4.50    2.72   -8.85
+     8     1165     1  -16.51   -0.31    6.11    2.25   -8.46
+     9      535     1  -11.79   -3.05    3.59    2.83   -8.41
+    10      568     1  -14.33   -0.21    4.35    2.04   -8.16
+    11      569     1  -14.00   -0.39    4.23    2.10   -8.05
+    12     1153     1  -14.60    0.38    4.17    2.21   -7.83
+    13      586     1  -14.36   -0.25    4.79    2.03   -7.78
+    14      624     1  -14.97   -0.46    5.34    2.37   -7.72
+    15     1179     1  -14.37   -0.03    4.57    2.23   -7.60
+    16      572     1  -13.43   -0.71    4.20    2.47   -7.47
+    17      625     1  -15.03   -0.51    5.72    2.47   -7.36
+    18      614     1  -14.74   -0.01    4.62    2.79   -7.34
+    19     1146     1  -14.35    0.13    4.40    2.58   -7.24
+    20     1162     1  -14.78   -0.61    5.98    2.23   -7.18
+
+Number of clusters after first clustering for the fragment type 9 (cinnoline) : 4
+
+
+CPU time in sec. for the sorting and clusterings of cinnoline : 0.00
+
+Dielectric value =  2.0 -> 78.5 transfer energy for the fragment (cinnoline) :    -5.9693
+
+Total number of conserved second clusters : 4
+Total number of conserved positions : 11
+
+Postprocessed clusters for fragment type 9 (cinnoline) :
+
+                             intermolecular       electrostat_desolv.       Total
+   Num    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment       energy
+
+    1
+     1      536     1       -16.89      -8.10         4.39       5.83       -14.76
+     2      613     1       -17.12      -3.13         5.61       5.73        -8.91
+     3     1153     1       -16.03       1.89         5.10       3.06        -5.97
+     4      572     1       -14.93       1.16         5.14       3.42        -5.21
+
+    2
+     5      575     1       -16.88       0.70         4.96       2.70        -8.53
+     6     1154     1       -17.84       2.27         5.16       2.90        -7.52
+     7      586     1       -15.67       0.00         5.69       2.58        -7.39
+     8     1165     1       -18.04       0.82         6.99       3.07        -7.16
+     9      568     1       -15.65       1.43         5.11       2.77        -6.35
+
+    3
+    10      624     1       -16.01       1.21         6.25       2.61        -5.93
+
+    4
+    11     1146     1       -15.40       1.39         5.36       4.72        -3.93
+
+Best postprocessed poses for fragment type 9 (cinnoline) :
+
+                                   intermolecular       electrostat_desolv.       Total
+   Num   Clu    Fr_nu  Conform.  vdWaals  electrost     receptor   fragment       energy
+
+     1     1      536     1       -16.89      -8.10         4.39       5.83       -14.76
+
+CPU time in sec. for the postprocessing (energy with slow method) : 0.15
+CPU time in sec. for the sorting of the postprocessed positions : 0.00
+
+Total CPU time in sec. for the seeding of fragment 9 (cinnoline) : 0.83
+-------------------------------------------------
+
+CPU time in sec. for creating/reading Coulombic grid : 2.74
+CPU time in sec. for creating/reading van der Waals grid : 7.70
+CPU time in sec. up to the loop over the fragments : 12.64
+Total CPU time in sec. : 20.67
