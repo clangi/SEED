@@ -4737,6 +4737,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
           }
           fprintf(FPaOut, "will not be written to the output files as they have a total slow energy > %lf\n", FrMaEn);
         }
+        PosToRem.clear();
 
 
         /* Append lines to summary table. START clangini */
@@ -4773,7 +4774,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
           TabOutStream.open (TabFil, std::ios::out | std::ios::app); // append mode
           if(TabOutStream.is_open()){
             for (j=1;j<=((NuPosMem<NuPosSdCl)?NuPosMem:NuPosSdCl);j++) {
-              if(To_s_ro[FrPosAr_pproc[Index_pproc[j]]] < FrMaEn){
+              if(To_s_ro[FrPosAr_pproc[Index_pproc[j]]] <= FrMaEn){
                 sprintf(TabLin,
                     "%-30s%8d%10d%10d%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10.2f%10d%10.4f",
                     FragNa,j,
@@ -4858,7 +4859,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                                 To_s_ro[FrPosAr_pproc[Index_pproc[j]]],
                                 FrPaCh,SubNa,AlTySp);
 #else
-            if(To_s_ro[FrPosAr_pproc[Index_pproc[j]]] < FrMaEn){
+            if(To_s_ro[FrPosAr_pproc[Index_pproc[j]]] <= FrMaEn){
               append_pose_to_mol2(FilePa,FragNa,/*FragNa_map[FragNa_str],*/FrAtNu,
                                   FrBdNu,j,FrAtEl,FrCoPo,
                                   FrPosAr_pproc[Index_pproc[j]],FrSyAtTy,
