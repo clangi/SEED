@@ -4806,6 +4806,7 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
           }
           fprintf(FPaOut, "will not be written to the output files as they have a total slow energy > %lf\n", FrMaEn);
         }
+        PosToRem.clear();
 
 
         /* Append lines to summary table. START clangini */
