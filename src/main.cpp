@@ -1396,6 +1396,15 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
   }
 
   /* MC initialization */
+  #ifdef ENABLE_MPI
+  if (seed_par.do_mc == 'y') {
+    if(seed_par.mc_rand_seed == -1){
+      rnd_gen::set_rng_seed(time(NULL) + myrank);
+    } else { // case seed is set by user
+      rnd_gen::set_rng_seed(seed_par.mc_rand_seed + myrank);
+    }
+  }
+  #else
   if (seed_par.do_mc == 'y') {
     if (seed_par.mc_rand_seed == -1)
       rnd_gen::set_rng_seed(time(NULL));
@@ -1403,6 +1412,7 @@ TotFra fragment counter (both sane and failed fragments). For the sane only, Cur
       rnd_gen::set_rng_seed(seed_par.mc_rand_seed);
     }
   }
+  #endif
 
   while((FrInStream.eof() == 0)&&(LstFra_f == 0)) { /* loop until reach end of file -> loop over fragments clangini*/
     /*for (i=1;i<=FragNu;i++) */ /* open loop over fragments (has to be removed) clangini */
