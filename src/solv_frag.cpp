@@ -553,20 +553,15 @@ struct point *surfpt_fr - Coor of points over frag SAS1 (relative to RoSFCo)
   for (iat=1;iat<=FrAtNu;iat++)
     if (FrPaCh[iat] != 0. ) {
 
-
-
-
-
       if (EmpCorrB[0]!='y')
         FrEffRad[iat] = 1. / ( 1./FrRadOut[iat] - FrSelfVol[iat]/pi4 );
       else
       {
 
-	  FrEffRad[iat] = 1./( (-1.*(1./FrRadOut[iat] - FrSelfVol[iat]/pi4))
+	       FrEffRad[iat] = 1./( (-1.*(1./FrRadOut[iat] - FrSelfVol[iat]/pi4))
 			       + 3.0*sqrt( (1./(2.*FrRadOut[iat]*FrRadOut[iat])) -
 					   (FrSelfVol_corrB[iat]/pi4) ) )
-	      + 0.215;
-
+	           + 0.215;
 
 	  /*
 	    Dey exception handling :
@@ -576,23 +571,34 @@ struct point *surfpt_fr - Coor of points over frag SAS1 (relative to RoSFCo)
 	    to "nan" values or the effective born radius is smaller than 0
 
 	  */
-	  if(FrEffRad[iat]<=0 || isnan(FrEffRad[iat]))
-	  {
+	      if(FrEffRad[iat]<=0 || isnan(FrEffRad[iat])) {
 #ifndef NOWARN
-	      fprintf(FPaOut,"WARNING could not calculate empirically-corrected effective born radius of fragment atom %d, using standard approach\n",iat);
+	         fprintf(FPaOut,"WARNING could not calculate empirically-corrected effective born radius of fragment atom %d, using standard approach\n",iat);
 #endif
-        //clangini debug start
-        //std::cout << "Eff radius either none or zero" << std::cout;
-        //clangini debug end
-	      FrEffRad[iat] = 1. / ( 1./FrRadOut[iat] - FrSelfVol[iat]/pi4 );
+          std::cout << "Brooks -G0[15]: " << (-1.*(1./FrRadOut[15] - FrSelfVol[15]/pi4)) << "\n";
+          std::cout << "Brooks G1[15]: " << 3.0*sqrt( (1./(2.*FrRadOut[15]*FrRadOut[15])) -
+          (FrSelfVol_corrB[15]/pi4) )  << "\n";
+          std::cout << "SelfVol(not corr and corr)[12]:" << FrSelfVol[15] << "  " << FrSelfVol_corrB[15] << "\n";
+          std::cout << "FrEffRad_corrB[" << 15 << "] = " << FrEffRad[15] << "\n";
+          std::cout << "FrEffRad[15]" << 1. / ( 1./FrRadOut[15] - FrSelfVol[15]/pi4 ) << "\n";
+          std::cout << "=========" << "\n";
+          std::cout << "Brooks -G0: " << (-1.*(1./FrRadOut[iat] - FrSelfVol[iat]/pi4)) << "\n";
+          std::cout << "Brooks G1: " << 3.0*sqrt( (1./(2.*FrRadOut[iat]*FrRadOut[iat])) -
+          (FrSelfVol_corrB[iat]/pi4) )  << "\n";
 
-	  }
+           /*for (int iat2=1;iat2<=FrAtNu;iat2++){
+            std::cout << "SelfVol(not corr and corr):" << FrSelfVol[iat2] << "  " << FrSelfVol_corrB[iat2] << "\n";
+          }*/
+          std::cout << "FrRadOut = " << FrRadOut[iat] << "  1/FrRadOut = " << 1./FrRadOut[iat] << "\n";
+          std::cout << "SelfVol(not corr and corr):" << FrSelfVol[iat] << "  " << FrSelfVol_corrB[iat] << "\n";
+          std::cout << "FrEffRad_corrB[" << iat << "] = " << FrEffRad[iat] << "\n";
+          FrEffRad[iat] = 1. / ( 1./FrRadOut[iat] - FrSelfVol[iat]/pi4 );
+          std::cout << "FrEffRad = " << FrEffRad[iat] << std::endl;
+	      }
 
       }
       FrSelfEn += Ksolv * FrPaCh[iat] * FrPaCh[iat] / (2. * FrEffRad[iat]);
-
-
-    }
+  }
 
 /* Calculate the electrostatic intermolecular interactions
   printf("\n\tElectrostatic intermolecular interactions...\n"); */
@@ -604,9 +610,16 @@ struct point *surfpt_fr - Coor of points over frag SAS1 (relative to RoSFCo)
   printf("\n\tElectrostatic intra-ligand interactions...\n"); */
   nn = GB_int_fr(FrAtNu,Frdist2,FrPaCh,FrEffRad,Ksolv,&FrIntEn);
 
+  // clangini debug
+  std::cout << "FrSelfEn = " << FrSelfEn << " FrIntEn = " << FrIntEn;
+
+  // clangini debug end
+
   *PFrDesoElec = FrSelfEn + FrIntEn;
   *PFrDesoElec -= *PFrSolvEn;
   *PFrDesoElec *= corr_fr_deso;
+
+  std::cout << "  Corr frg. desolv:  " << *PFrDesoElec << "\n";
 
   free_dmatrix(dist,1,FrAtNu,1,ReAtNu);
   free_dvector(FrSelfVol,1,FrAtNu); /* dey memory leak */
@@ -1775,6 +1788,7 @@ double *SelfVol --------- SelfVol[iat] = integral of 1/r^4 over the solute
                   SelfVol[iat] -= UnitVol / r4;
 		              if (EmpCorrB[0]=='y')
 		                SelfVol_corrB[iat] -= UnitVol / (r4*sqrt(r2));
+                  //std::cout << "may be some problem with atom iat =" << iat << std::endl; // clangini debug
                 }
                 else if ( (FrGridMat[ix][iy][iz] == 'o' ||
                            GridMat[ix][iy][iz] == 'o') &&
@@ -1890,7 +1904,7 @@ double *SelfVol --------- SelfVol[iat] = integral of 1/r^4 over the solute
   }
   else {
     // clangini debug start
-    //std::cout << "fragment partially out or rec elec grid box" << std::endl;
+    std::cout << "fragment partially out or rec elec grid box" << std::endl;
     //clangini debug end
 /* The fragment is partially out of the rec elec grid box --> you need to check
    carefully the boundaries in order not ot go out of the box */
@@ -2295,12 +2309,22 @@ char ***FrGridMat ------- Matrix telling if a grid point is occupied by the
   nn = Excl_Grid(FrAtNu,FrCoor,Min,FrRadOut,FrRadOut2,WaMoRa,GrSiSo,
                  1,1,1,NGridx,NGridy,NGridz,UnitVol,
                  FrGridMat,Nsurfpt_fr,surfpt_fr_orig,FrSelfVol,FrSelfVol_corrB,
-		 EmpCorrB);
+		             EmpCorrB);
+  for (int jj=1;jj<=FrAtNu;jj++){
+    std::cout << "FrSelfVol_corrB[" << jj << "]= " << FrSelfVol_corrB[jj] << '\n';
+    std::cout << "FrSelfVol[" << jj << "]= " << FrSelfVol[jj] << '\n';
+  }
 /* Calculate the frag self energy */
   nn = Get_Self_En_Fr(FrAtNu,FrCoor,FrPaCh,FrRadOut,FrRadOut2,
                       XGrid,YGrid,ZGrid,UnitVol,Ksolv,pi4,FrGridMat,
                       1,1,1,NGridx,NGridy,NGridz,FrSelfVol,FrEffRad,&FrSelfEn,
-		      FrSelfVol_corrB,EmpCorrB,FPaOut);
+		                  FrSelfVol_corrB,EmpCorrB,FPaOut);
+
+  /*for (int jj=1;jj<=FrAtNu;jj++){
+    std::cout << "FrSelfVol_corrB[" << jj << "]= " << FrSelfVol_corrB[jj] << '\n';
+    std::cout << "FrSelfVol[" << jj << "]= " << FrSelfVol[jj] << '\n';
+  }*/
+
 /* Calculate the frag interaction energy */
   nn = GB_int_fr(FrAtNu,Frdist2,FrPaCh,FrEffRad,Ksolv,&FrIntEn);
 
@@ -2328,7 +2352,7 @@ int Get_Self_En_Fr(int FrAtNu,double **RoSFCo,double *FrPaCh,double *FrRadOut,
                    int nxminFr,int nyminFr,int nzminFr,
                    int nxmaxFr,int nymaxFr,int nzmaxFr,
                    double *FrSelfVol,double *FrEffRad,double *PFrSelfEn,
-		   double *FrSelfVol_corrB,char *EmpCorrB,FILE * FPaOut)
+		               double *FrSelfVol_corrB,char *EmpCorrB,FILE * FPaOut)
 /*##########################################
 Calculate the frag self energy
 ###########################################*/
@@ -2365,7 +2389,11 @@ double *PFrSelfEn ------- Tot frag self-energy
   ix=nxminFr;
 
   *PFrSelfEn = 0.;
+  //int jumppoint; //debug
   for (iat=1;iat<=FrAtNu;iat++) {
+    //jumppoint = 0; //debug
+
+
     if (FrPaCh[iat] != 0. ) {
       for (ix=nxminFr;ix<=nxmaxFr;ix++) {
         for (iy=nyminFr;iy<=nymaxFr;iy++) {
@@ -2380,13 +2408,29 @@ double *PFrSelfEn ------- Tot frag self-energy
               if ( r2 > FrRadOut2[iat]) {
                 r4 = r2 * r2;
                 FrSelfVol[iat] += UnitVol / r4;
-		if (EmpCorrB[0]=='y')
-		  FrSelfVol_corrB[iat] += UnitVol / (r4*sqrt(r2));
+		            if (EmpCorrB[0]=='y')
+		              FrSelfVol_corrB[iat] += UnitVol / (r4*sqrt(r2));
               }
             }
+            /*else if (FrGridMat[ix][iy][iz] == 's') {
+              r2 = (XGrid[ix]-RoSFCo[iat][1]) *
+                   (XGrid[ix]-RoSFCo[iat][1]) +
+                   (YGrid[iy]-RoSFCo[iat][2]) *
+                   (YGrid[iy]-RoSFCo[iat][2]) +
+                   (ZGrid[iz]-RoSFCo[iat][3]) *
+                   (ZGrid[iz]-RoSFCo[iat][3]);
+              if ( r2 <= FrRadOut2[iat]) {
+                jumppoint++;
+              }
+            }FrSelfVol_corrB[ */ //debug
           }
         }
       }
+
+      //std::cout << "FrSelfVol[" << iat << "]/pi4 = " << FrSelfVol[iat]/pi4 << "\n";
+      //std::cout << "Calculated Born radius[" << iat << "] = " << 1. / ( 1./(FrRadOut[iat]) - FrSelfVol[iat]/pi4 ) << "\n";
+      //std::cout << "My hypothesis Born radius[" << iat << "] = " << 1. / ( 1./(FrRadOut[iat]-3.5) + FrSelfVol[iat]/pi4 ) << "\n";
+      //std::cout << "FrRadOut[" << iat << "] = " << FrRadOut[iat] << "\n" ;
 
       if (EmpCorrB[0]!='y')
         FrEffRad[iat] = 1. / ( 1./FrRadOut[iat] - FrSelfVol[iat]/pi4 );
@@ -2411,7 +2455,7 @@ double *PFrSelfEn ------- Tot frag self-energy
 #ifndef NOWARN
 	    fprintf(FPaOut,"WARNING could not calculate empirically-corrected effective born radius of fragment atom %d, using standard approach\n",iat);
 #endif
-      std::cout << "Fragment effective radius is 0 or nan" << std::endl;
+      // std::cout << "Fragment effective radius is 0 or nan" << std::endl;
 	    FrEffRad[iat] = 1. / ( 1./FrRadOut[iat] - FrSelfVol[iat]/pi4 );
 	  }
 
@@ -2420,6 +2464,7 @@ double *PFrSelfEn ------- Tot frag self-energy
       *PFrSelfEn += Ksolv * FrPaCh[iat] * FrPaCh[iat] / (2. * FrEffRad[iat]);
 
     }
+    //std::cout << "Jumped surf point for atom " << iat << " = " << jumppoint <<"\n";
   }
 
   if (ix == FrAtNu+1 )

@@ -755,10 +755,14 @@ double *PRmax ----------- Largest charge radius
                   (ReCoor[i][2]-ReCoor[j][2])*(ReCoor[i][2]-ReCoor[j][2]) +
                   (ReCoor[i][3]-ReCoor[j][3])*(ReCoor[i][3]-ReCoor[j][3]);
       d = sqrtf (dist2[i][j]);
-      if ( d + ReVdWR[i] < ReVdWR[j] )
+      if ( d + ReVdWR[i] < ReVdWR[j] ){
         ReRad[i] = ReVdWR[j] - d;
-      else if ( d + ReVdWR[j] < ReVdWR[i] )
+        std::cout << "Correction for atom "<< i <<std::endl;
+      }
+      else if ( d + ReVdWR[j] < ReVdWR[i] ){
         ReRad[j] = ReVdWR[i] - d;
+        std::cout << "Correction for atom "<< j <<std::endl;
+      }
     }
     *PRmin = (*PRmin < ReRad[i]) ? *PRmin : ReRad[i];
     *PRmax = (*PRmax > ReRad[i]) ? *PRmax : ReRad[i];
@@ -767,6 +771,14 @@ double *PRmax ----------- Largest charge radius
     ReRadOut2[i] = ReRadOut[i]*ReRadOut[i];
 
   }
+
+  // clangini debug:
+  /*std::cout << "ReRad list: " << std::endl;
+  for (i=1;i<=ReAtNu;i++){
+    std::cout << "ReRad[" << i << "] = " << ReRad[i] << std::endl;
+  }*/
+  // clangini debug end
+
   if (i == ReAtNu+1 )
     return 1;
   else
@@ -1050,8 +1062,7 @@ struct point midgpt -- nstep/2. + 1
 /* loop over atoms associated with current grid point: */
                   for (inayb=1;inayb<=nlist[ix][iy][iz];inayb++) {
 
-                    if ( (listmp =
-			  list[inayb][nstep*nstep*(ix-1) + nstep*(iy-1) + iz])
+                    if ( (listmp = list[inayb][nstep*nstep*(ix-1) + nstep*(iy-1) + iz])
                       != iat ) {
                       d=pt_minus_pt(ccrd[listmp],sphpt);
                       d2 = pt_scal_pt(d,d);
@@ -1647,7 +1658,7 @@ int Excl_Grid(int ReAtNu,double **ReCoor,struct point Min,double *ReRadOut,
               int NGridx,int NGridy,int NGridz,
               double UnitVol,char ***GridMat,int Nsurfpt,
               struct point *surfpt,double *SelfVol,double *SelfVol_corrB,
-	      char *EmpCorrB)
+	            char *EmpCorrB)
 /*########################################################
 Place a sphere (WaMoRa) over each SAS point (surfpt) and set to empty
 (GridMat = 'e') all the grid points occupied by the sphere
@@ -1727,7 +1738,7 @@ double *SelfVol --------- SelfVol[iat] = integral of 1/r^4 over the solute
 /* Check if our grid point is inside the sphere. If yes change GridMat */
 
               if (WaMoRa2 > r2){
-                GridMat[ix][iy][iz] = 's';
+                GridMat[ix][iy][iz] = 's';//'s';
               }
             }
           }
@@ -1738,10 +1749,12 @@ double *SelfVol --------- SelfVol[iat] = integral of 1/r^4 over the solute
 
 /* Loop over the atom and when they include a 3D grid point marked 's'
    assign a negative contribution to the integral Selfvol. This is
-   done to balance a successive assignement of the same contribution
+   done to balance a successive assignment of the same contribution
    with a sign +. It is done to make things faster and simpler. */
 
+  //int jumppoint; //debug
   for (iat=1;iat<=ReAtNu;iat++) {
+    //jumppoint = 0;
     ixmin = ( (ReCoor[iat][1] - ReRadOut[iat] - Min.x) / GrSiSo + 1 );
     iymin = ( (ReCoor[iat][2] - ReRadOut[iat] - Min.y) / GrSiSo + 1 );
     izmin = ( (ReCoor[iat][3] - ReRadOut[iat] - Min.z) / GrSiSo + 1 );
@@ -1769,17 +1782,20 @@ double *SelfVol --------- SelfVol[iat] = integral of 1/r^4 over the solute
             ztemp += GrSiSo;
             r2 = ztemp * ztemp + xy2temp;
             if (ReRadOut2[iat] > r2) {
-              if (GridMat[ix][iy][iz] == 's') {
+              if (GridMat[ix][iy][iz] == 's') { // 's'
                 r4 = r2 * r2;
                 SelfVol[iat] -= UnitVol/r4;
-		if (EmpCorrB[0]=='y')
-		  SelfVol_corrB[iat] -= UnitVol/(r4*sqrt(r2));
+		            if (EmpCorrB[0]=='y')
+		              SelfVol_corrB[iat] -= UnitVol/(r4*sqrt(r2));
+                /*std::cout << "here subtracting volume for atom " << iat << "\n";*/
+                //jumppoint++;
               }
             }
           }
         }
       }
     }
+    //std::cout << "Subtracted surf point for atom " << iat << " = " << jumppoint <<"\n";
   }
   if (iat == ReAtNu+1 )
     return 1;
@@ -1919,7 +1935,7 @@ to the integral of 1/r^4 */
               }
             }
           }
-        }
+        } // end of if(dolist)
       }
     }
   }

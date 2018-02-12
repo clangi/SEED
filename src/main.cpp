@@ -4749,6 +4749,8 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
 
                   accept_prob = exp(-1/(R_constant*sa_temp) * (new_mc_en - old_mc_en));
                   if (rnd_gen::get_uniform(0, 1) <= accept_prob){
+
+                    fprintf(FPaOut, "ACCEPT %d with fr_desolv jump to %f\n", cyc_out + 1, SFDeso_fr*FrDesoElec);
                     old_mc_en = new_mc_en;
                     copy_dmatrix(RoSFCo, old_mc_FrCoor, 1, FrAtNu, 1, 3);
                     /* Update energies */
@@ -4768,7 +4770,6 @@ NPtSphereMax_Fr = (int) (SurfDens_deso * pi4 * (FrRmax+WaMoRa));
                     //   if(do_fine_move)
                     //     n_accept_trans_fine++;
                     // }
-               // fprintf(FPaOut, "ACCEPT %d\n", cyc_out + 1);
                     // /* dump pose for checking */
                     // sprintf(WriPat,"%s","outputs/mc_poses.mol2\0"); // clangini
                     // FilePa=fopen(WriPat,"a");
