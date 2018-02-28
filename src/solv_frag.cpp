@@ -502,7 +502,7 @@ struct point *surfpt_fr - Coor of points over frag SAS1 (relative to RoSFCo)
 					(ReSelfVol[hVar_corrB]+ReSelfVol_add[hVar_corrB])/pi4))
 				  + 3.0*sqrt( (1./(2.*ReRadOut[hVar_corrB]*ReRadOut[hVar_corrB])) -
 					      ((ReSelfVol_corrB[hVar_corrB]+ReSelfVol_add_corrB[hVar_corrB])/pi4) ) )
-	  + 0.215;
+	        + 0.215;
 
 
       /*
@@ -521,7 +521,7 @@ struct point *surfpt_fr - Coor of points over frag SAS1 (relative to RoSFCo)
     //clangini debug start
     //std::cout << "Eff radius either none or zero" << std::cout;
     //clangini debug end
-	  ReEffRad[NeighList3[iat]] = 1. / ( 1./ReRadOut[NeighList3[iat]] -
+	      ReEffRad[NeighList3[iat]] = 1. / ( 1./ReRadOut[NeighList3[iat]] -
 					     (ReSelfVol[NeighList3[iat]]+ReSelfVol_add[NeighList3[iat]])/pi4 );
       }
 
@@ -575,28 +575,43 @@ struct point *surfpt_fr - Coor of points over frag SAS1 (relative to RoSFCo)
 #ifndef NOWARN
 	         fprintf(FPaOut,"WARNING could not calculate empirically-corrected effective born radius of fragment atom %d, using standard approach\n",iat);
 #endif
-          std::cout << "Brooks -G0[15]: " << (-1.*(1./FrRadOut[15] - FrSelfVol[15]/pi4)) << "\n";
-          std::cout << "Brooks G1[15]: " << 3.0*sqrt( (1./(2.*FrRadOut[15]*FrRadOut[15])) -
-          (FrSelfVol_corrB[15]/pi4) )  << "\n";
-          std::cout << "SelfVol(not corr and corr)[12]:" << FrSelfVol[15] << "  " << FrSelfVol_corrB[15] << "\n";
-          std::cout << "FrEffRad_corrB[" << 15 << "] = " << FrEffRad[15] << "\n";
-          std::cout << "FrEffRad[15]" << 1. / ( 1./FrRadOut[15] - FrSelfVol[15]/pi4 ) << "\n";
-          std::cout << "=========" << "\n";
-          std::cout << "Brooks -G0: " << (-1.*(1./FrRadOut[iat] - FrSelfVol[iat]/pi4)) << "\n";
-          std::cout << "Brooks G1: " << 3.0*sqrt( (1./(2.*FrRadOut[iat]*FrRadOut[iat])) -
-          (FrSelfVol_corrB[iat]/pi4) )  << "\n";
+          std::cout << "========== atom " << iat << "\n";
+          std::cout << "1/2R^2 = " << 1./(2.*FrRadOut2[iat]) << "  FrSelfVol_corrB[iat]/pi4 = " << (FrSelfVol_corrB[iat]/pi4) << std::endl;
+          std::cout << "G0 = " << 1./FrRadOut[iat] - FrSelfVol[iat]/pi4 << std::endl;
+          std::cout << "G1 = " << 3.0*sqrt( (1./(2.*FrRadOut[iat]*FrRadOut[iat])) - (FrSelfVol_corrB[iat]/pi4) ) << "\n";
+          std::cout << "FrEffRad_corrB[" << iat << "] = " << FrEffRad[iat] << std::endl;
+          std::cout << "1/R = " << 1./FrRadOut[iat] << "  FrSelfVol[iat]/pi4 = " << FrSelfVol[iat]/pi4 << std::endl;
+          std::cout << "FrEffRad[" << iat << "] = " << 1. / ( 1./FrRadOut[iat] - FrSelfVol[iat]/pi4 ) << std::endl;
+          std::cout << "Lower bound (Born radius) = " << FrRadOut[iat] - 1.4 << std::endl;
+          // std::cout << "Brooks -G0[15]: " << (-1.*(1./FrRadOut[15] - FrSelfVol[15]/pi4)) << "\n";
+          // std::cout << "Brooks G1[15]: " << 3.0*sqrt( (1./(2.*FrRadOut[15]*FrRadOut[15])) -
+          // (FrSelfVol_corrB[15]/pi4) )  << "\n";
+          // std::cout << "SelfVol(not corr and corr)[12]:" << FrSelfVol[15] << "  " << FrSelfVol_corrB[15] << "\n";
+          // std::cout << "FrEffRad_corrB[" << 15 << "] = " << FrEffRad[15] << "\n";
+          // std::cout << "FrEffRad[15]" << 1. / ( 1./FrRadOut[15] - FrSelfVol[15]/pi4 ) << "\n";
+          // std::cout << "=========" << "\n";
+          // std::cout << "Brooks -G0: " << (-1.*(1./FrRadOut[iat] - FrSelfVol[iat]/pi4)) << "\n";
+          // std::cout << "Brooks G1: " << 3.0*sqrt( (1./(2.*FrRadOut[iat]*FrRadOut[iat])) -
+          // (FrSelfVol_corrB[iat]/pi4) )  << "\n";
 
            /*for (int iat2=1;iat2<=FrAtNu;iat2++){
             std::cout << "SelfVol(not corr and corr):" << FrSelfVol[iat2] << "  " << FrSelfVol_corrB[iat2] << "\n";
           }*/
-          std::cout << "FrRadOut = " << FrRadOut[iat] << "  1/FrRadOut = " << 1./FrRadOut[iat] << "\n";
-          std::cout << "SelfVol(not corr and corr):" << FrSelfVol[iat] << "  " << FrSelfVol_corrB[iat] << "\n";
-          std::cout << "FrEffRad_corrB[" << iat << "] = " << FrEffRad[iat] << "\n";
+          // std::cout << "FrRadOut = " << FrRadOut[iat] << "  1/FrRadOut = " << 1./FrRadOut[iat] << "\n";
+          // std::cout << "SelfVol(not corr and corr):" << FrSelfVol[iat] << "  " << FrSelfVol_corrB[iat] << "\n";
+          // std::cout << "FrEffRad_corrB[" << iat << "] = " << FrEffRad[iat] << "\n";
           FrEffRad[iat] = 1. / ( 1./FrRadOut[iat] - FrSelfVol[iat]/pi4 );
-          std::cout << "FrEffRad = " << FrEffRad[iat] << std::endl;
+          // std::cout << "FrEffRad = " << FrEffRad[iat] << std::endl;
+
+
 	      }
 
-      }
+        // Lower bound on Born Effective radius
+        // if (iat == 18 && FrEffRad[iat] < 0.28){
+        //   FrEffRad[iat] = 0.28;
+        //   std::cout << "Override of FrEffRad[" << iat << "]" << std::endl;
+        // }
+      } // end of else
       FrSelfEn += Ksolv * FrPaCh[iat] * FrPaCh[iat] / (2. * FrEffRad[iat]);
   }
 
@@ -2437,31 +2452,39 @@ double *PFrSelfEn ------- Tot frag self-energy
       else
       {
 
-	  FrEffRad[iat] = 1./( (-1.*(1./FrRadOut[iat] - FrSelfVol[iat]/pi4))
-			       + 3.0*sqrt( (1./(2.*FrRadOut[iat]*FrRadOut[iat])) -
-					   (FrSelfVol_corrB[iat]/pi4) ) )
-	      + 0.215;
+    	  FrEffRad[iat] = 1./( (-1.*(1./FrRadOut[iat] - FrSelfVol[iat]/pi4))
+    			       + 3.0*sqrt( (1./(2.*FrRadOut[iat]*FrRadOut[iat])) - (FrSelfVol_corrB[iat]/pi4) ) )
+    	           + 0.215;
 
-	  /*
-	    Dey exception handling :
-	    in rare cases the expression :
-	    (1./(2.*ReRadOut[iat]*ReRadOut[iat])) - ((*SelfVol_corrB)[iat]/pi4)
-	    can become < 0 -> the sqrt() function cannot be evaluated, which leads
-	    to "nan" values or the effective born radius is smaller than 0
+        std::cout << "=====" << "\n";
+        std::cout << "1/2R^2 = " << 1./(2.*FrRadOut2[iat]) << " FrSelfVol_corrB[iat]/pi4 " << (FrSelfVol_corrB[iat]/pi4) << std::endl;
+        std::cout << "G0 = " << 1./FrRadOut[iat] - FrSelfVol[iat]/pi4 << std::endl;
+        std::cout << "G1 = " << 3.0*sqrt( (1./(2.*FrRadOut[iat]*FrRadOut[iat])) - (FrSelfVol_corrB[iat]/pi4) ) << "\n";
+        std::cout << "FrEffRad_corrB[" << iat << "] = " << FrEffRad[iat] << std::endl;
+        std::cout << "1/R = " << 1./FrRadOut[iat] << "  FrSelfVol[iat]/pi4 = " << FrSelfVol[iat]/pi4 << std::endl;
+        std::cout << "FrEffRad[" << iat << "] = " << 1. / ( 1./FrRadOut[iat] - FrSelfVol[iat]/pi4 ) << std::endl;
+        std::cout << "Lower bound (Born radius) = " << FrRadOut[iat] - 1.4 << std::endl;
 
-	  */
-	  if(FrEffRad[iat]<=0 || isnan(FrEffRad[iat]))
-	  {
-#ifndef NOWARN
-	    fprintf(FPaOut,"WARNING could not calculate empirically-corrected effective born radius of fragment atom %d, using standard approach\n",iat);
-#endif
-      // std::cout << "Fragment effective radius is 0 or nan" << std::endl;
-	    FrEffRad[iat] = 1. / ( 1./FrRadOut[iat] - FrSelfVol[iat]/pi4 );
-	  }
+    	  /*
+    	    Dey exception handling :
+    	    in rare cases the expression :
+    	    (1./(2.*ReRadOut[iat]*ReRadOut[iat])) - ((*SelfVol_corrB)[iat]/pi4)
+    	    can become < 0 -> the sqrt() function cannot be evaluated, which leads
+    	    to "nan" values or the effective born radius is smaller than 0
 
-      }
+    	  */
+    	  if(FrEffRad[iat]<=0 || isnan(FrEffRad[iat]))
+    	  {
+    #ifndef NOWARN
+    	    fprintf(FPaOut,"WARNING could not calculate empirically-corrected effective born radius of fragment atom %d, using standard approach\n",iat);
+    #endif
+          // std::cout << "Fragment effective radius is 0 or nan" << std::endl;
+    	    FrEffRad[iat] = 1. / ( 1./FrRadOut[iat] - FrSelfVol[iat]/pi4 );
+    	  }
 
-      *PFrSelfEn += Ksolv * FrPaCh[iat] * FrPaCh[iat] / (2. * FrEffRad[iat]);
+          }
+
+          *PFrSelfEn += Ksolv * FrPaCh[iat] * FrPaCh[iat] / (2. * FrEffRad[iat]);
 
     }
     //std::cout << "Jumped surf point for atom " << iat << " = " << jumppoint <<"\n";
