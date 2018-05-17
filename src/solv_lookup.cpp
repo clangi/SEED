@@ -2032,11 +2032,11 @@ int *NAtom_per_Res --------- NAtom_per_Res[n] = # of atoms of residue n
   Previous = 0;
   Nres = 0;
   for (iat=1;iat<=ReAtNu;iat++) {
-    if (ReResN[iat] == Previous+1 ) {
+    if (ReResN[iat] != Previous ) {
       if (Nres != 0 )
         NAtom_per_Res[Nres] = Natom;
       ResFirstAtom[++Nres] = iat;
-      Previous++;
+      Previous = ReResN[iat];
       Natom = 0;
     }
     Natom++;

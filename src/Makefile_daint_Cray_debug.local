@@ -1,0 +1,12 @@
+CXX = CC
+#CXXFLAGS = -std=c++11 -O3 -hpf2 -pedantic -Wall -march=native -DUSE_QUATERNION_ROTATION #-DDEBUG_CL
+CXXFLAGS = -K trap=inv,divz -emfFD -O3 -hfp2 -DUSE_QUATERNION_ROTATION
+LDFLAGS = -O3
+
+INC_FLAGS = -I. -I/users/clangini/boost_1_63_0
+
+# For seed MPI:
+MPICXX = CC
+#MPICXXFLAGS = -std=c++11 -O3 -hpf2 -pedantic -Wall -march=native -DUSE_QUATERNION_ROTATION
+MPICXXFLAGS = -K trap=inv,divz -emfFD -O3 -hfp2 -DUSE_QUATERNION_ROTATION
+MPILDFLAGS = -O3
