@@ -1,4 +1,8 @@
-# SEED (Solvation Energy for Exhaustive Docking) version 4.0.0
+This repository is no longer mantained, as the project has been moved to the new homepage at: [https://gitlab.com/CaflischLab/SEED](https://gitlab.com/CaflischLab/SEED)
+
+# SEED (Solvation Energy for Exhaustive Docking) version 4.0.0 
+
+# ! DEPRECATED PLEASE VISIT [https://gitlab.com/CaflischLab/SEED](https://gitlab.com/CaflischLab/SEED) for the up-to-date version!
 
 SEED is a program for fragment docking with force-field based evaluation of binding energy.
 
